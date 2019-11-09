@@ -11,7 +11,7 @@ export default class QuestionOuverte extends React.Component {
         <Form.Group>
           <Form.Input
             fluid
-            label='Nombre de caractère autorisé'
+            label='Nombre de caractères autorisés'
             placeholder='100'
           />
         </Form.Group>

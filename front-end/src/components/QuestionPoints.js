@@ -50,8 +50,8 @@ const forme = [
 export default class QuestionPoints extends React.Component {
   state = {
     echelle: 0,
-    forme: "",
-    onColorPicker: false,
+    forme: '',
+    isColorPicker: false,
     colorPicker: 'yellow'
   }
 
@@ -82,15 +82,15 @@ export default class QuestionPoints extends React.Component {
               size='big'
               style={{ background: this.state.colorPicker }}
               onClick={() =>
-                this.setState({ onColorPicker: true })
+                this.setState({ isColorPicker: true })
               }
             />
-            {this.state.onColorPicker?
+            {this.state.isColorPicker?
               <GithubPicker
                 color={this.state.colorPicker}
                 onChangeComplete={(color) => {
                   this.setState({
-                    onColorPicker: false,
+                    isColorPicker: false,
                     colorPicker: color.hex
                   })
                 }}
@@ -98,7 +98,7 @@ export default class QuestionPoints extends React.Component {
             }
           </div>
           <div>
-            <p style={{ fontWeight: "bold" }}>Icon</p>
+            <p style={{ fontWeight: 'bold' }}>Icon</p>
             {(this.state.forme === '')?
               <Icon 
                 name='star'

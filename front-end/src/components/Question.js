@@ -1,7 +1,10 @@
 import React from 'react'
 
-import { 
-  Form 
+import {
+  Divider,
+  Form, 
+  Segment,
+  Button
 } from 'semantic-ui-react'
 
 import ListTypeQuestion from './ListTypeQuestion'
@@ -21,61 +24,100 @@ const options = [
 
 export default class Question extends React.Component {
   state = {
-    typeQuestion: ""
+    typeQuestion: ''
   }
 
   onChangeTypeQuestion = value => {
-    this.setState({
-      typeQuestion: value
-    });
+    this.setState({ typeQuestion: value });
+    
+    if (this.props.onChangeTypeQuestion) {
+      this.props.onChangeTypeQuestion(value);
+    }
   }
 
   render() {
-    console.log(this.state.typeQuestion);
-
     return (
       <React.Fragment>
-        <Form>
-          <p>Q1</p>
-          <Form.Group widths='equal'>
-            <Form.Input
-              placeholder='Saisissez votre question'
-            />
-            <ListTypeQuestion
-              fluid={false}
-              onChangeTypeQuestion={this.onChangeTypeQuestion}
-            />
-            <Form.Select
-              options={options}
-              placeholder='Facultative'
-            />
-          </Form.Group>
-          {(this.state.typeQuestion === 'Question ouverte')?
-              (
-                <QuestionOuverte />
-              ):
-            (this.state.typeQuestion === 'Choix unique')?
-              (
-                <React.Fragment>
-                  <QuestionChoixUnique />
-                  <QuestionChoixUnique />
-                  <QuestionChoixUnique />
-                </React.Fragment>
-              ):
-            (this.state.typeQuestion === 'Choix multiple')?
-              (
-                <React.Fragment>
-                  <QuestionChoixMultiple />
-                  <QuestionChoixMultiple />
-                  <QuestionChoixMultiple />
-                </React.Fragment>
-              ):
-            (this.state.typeQuestion === 'Évaluation par points')?
-              (
-                <QuestionPoints />
-              ):''
+        <Segment 
+          secondary 
+          color='black'
+          clearing
+        >
+          <Form>
+            <p
+              style={{ 
+                fontFamily: 'serif',
+                fontWeight: 'bold'
+              }}
+            >Question n°{this.props.numberOfQuestion}</p>
+            <Form.Group widths='equal'>
+              <Form.Input
+                placeholder='Saisissez votre question'
+                onChange={(e, data) => {
+                  if (this.props.onChangeQuestion) {
+                    this.props.onChangeQuestion(data.value);
+                  }
+                }}
+              />
+              <ListTypeQuestion
+                fluid={false}
+                onChangeTypeQuestion={this.onChangeTypeQuestion}
+              />
+              <Form.Select
+                options={options}
+                placeholder='Facultative'
+                onChange={(e, data) => {
+                  if (this.props.onChangeCharacter) {
+                    this.props.onChangeCharacter(data.value);
+                  }
+                }}
+              />
+            </Form.Group>
+            <Divider />
+            {(this.state.typeQuestion === 'Question ouverte')?
+                (
+                  <QuestionOuverte />
+                ):
+              (this.state.typeQuestion === 'Choix unique')?
+                (
+                  <React.Fragment>
+                    <QuestionChoixUnique />
+                    <QuestionChoixUnique />
+                    <QuestionChoixUnique />
+                  </React.Fragment>
+                ):
+              (this.state.typeQuestion === 'Choix multiple')?
+                (
+                  <React.Fragment>
+                    <QuestionChoixMultiple />
+                    <QuestionChoixMultiple />
+                    <QuestionChoixMultiple />
+                  </React.Fragment>
+                ):
+              (this.state.typeQuestion === 'Évaluation par points')?
+                (
+                  <QuestionPoints />
+                ):''
+            }
+          </Form>
+          {(this.state.typeQuestion !== '')?
+            (
+              <React.Fragment>
+                <Button
+                  content='Enregistrer'
+                  floated='right'
+                  positive
+                />
+                <Button
+                  content='Annuler'
+                  floated='right'
+                  basic
+                  color='black'
+                />
+              </React.Fragment>
+            ):''
           }
-        </Form>
+        </Segment>
       </React.Fragment>
     );
   }
