@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import _ from 'lodash'
 
 import { 
@@ -8,6 +9,10 @@ import {
 import Question from './Question'
 
 export default class ListeQuestions extends React.Component {
+  static propTypes = {
+    listQuestions: PropTypes.array
+  }
+
   state = {
     question: '',
     typeQuestion: '',

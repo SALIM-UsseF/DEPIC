@@ -6,7 +6,7 @@ import {
   Segment
 } from 'semantic-ui-react'
 
-import ListeQuestions from './ListeQuestions'
+import ListQuestions from './ListQuestions'
 
 export default class CreationQuestions extends React.Component {
   state = {
@@ -27,7 +27,7 @@ export default class CreationQuestions extends React.Component {
     return (
       <React.Fragment>
         <Segment>
-          <ListeQuestions
+          <ListQuestions
             listQuestions={this.state.listQuestions}
           />
           <Button

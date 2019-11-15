@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import {
   Form
@@ -40,6 +41,12 @@ const typeOfQuestion = [
  */
 
 export default class ListTypeQuestion extends React.Component {
+  static propTypes = {
+    onChangeTypeQuestion: PropTypes.func,
+    fluid: PropTypes.bool,
+    width: PropTypes.bool
+  }
+
   render() {
     return (
       <React.Fragment>

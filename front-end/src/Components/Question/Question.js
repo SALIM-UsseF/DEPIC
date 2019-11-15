@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import {
   Divider,
@@ -23,6 +24,13 @@ const options = [
  */
 
 export default class Question extends React.Component {
+  static propTypes = {
+    numberOfQuestion: PropTypes.number,
+    onChangeQuestion: PropTypes.func,
+    onChangeTypeQuestion: PropTypes.func,
+    onChangeCharacter: PropTypes.func
+  }
+
   state = {
     typeQuestion: ''
   }
