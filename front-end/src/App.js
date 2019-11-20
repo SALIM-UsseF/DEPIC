@@ -1,5 +1,4 @@
 import React from 'react'
-import './App.css'
 
 import MainAdministration from './Components/Administration/MainAdministration'
 
@@ -11,9 +10,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div>
-        <div className='App-header'>
-          <MainAdministration />
-        </div>
+        <MainAdministration />
       </div>
     );
   }

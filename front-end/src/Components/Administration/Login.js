@@ -35,7 +35,7 @@ export default class Login extends React.Component {
     };
 
     _.set(state, name, e.target.value);
-    this.setState({...state})
+    this.setState({...state});
   }
 
   valideForm = () => {
@@ -109,7 +109,7 @@ export default class Login extends React.Component {
                   type='password'
                   onChange={e => this.handleChangeInput(e, 'password')} />
 
-                <Button 
+                <Form.Button 
                   fluid
                   content='Connexion'
                   color='teal'
