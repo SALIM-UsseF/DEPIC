@@ -3,14 +3,18 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 
 import {
+  Button,
   Form, 
   Header,
-  Segment 
+  Message,
+  Modal,
+  Segment
 } from 'semantic-ui-react'
 
 export default class Register extends React.Component {
   static propTypes = {
-    onSuccess: PropTypes.func
+    onSuccess: PropTypes.func,
+    onCancel: PropTypes.func
   }
 
   state = {
@@ -22,7 +26,8 @@ export default class Register extends React.Component {
     email: '',
     error: false,
     errorMessage: '',
-    openMessage: false
+    openMessage: false,
+    modalType: null // success en cas de succès et error dans le cas contraire
   }
 
   handleChangeInput = (e, name) => {
@@ -62,7 +67,7 @@ export default class Register extends React.Component {
     if (!this.checkValidity()) {
       this.setState({
         error: true,
-        errorMessage: '',
+        errorMessage: 'Certains champs ne sont pas valides',
         openMessage: true
       });
 
@@ -74,6 +79,23 @@ export default class Register extends React.Component {
      * Si les coordonnées sont enregistrés dans la BDD, alors on revient à la page de connexion pour se connecter
      * Sinon on affiche un message d'erreur
      */
+
+    // Je fais un test si l'identifiant n'existe pas déjà
+    if (this.state.login === 'user') {
+      this.setState({
+        modalType: 2
+      })
+    } else {
+      this.setState({
+        modalType: 1
+      })
+    }
+  }
+
+  onCancel = () => {
+    if (this.props.onCancel) {
+      this.props.onCancel();
+    }
   }
 
   render() {
@@ -99,7 +121,7 @@ export default class Register extends React.Component {
               onChange={e => this.handleChangeInput(e, 'firstname')} />
 
             <Form.Input
-              error={!this.emailValidity}
+              error={!this.emailValidity()}
               focus
               placeholder='E-mail'
               onChange={e => this.handleChangeInput(e, 'email')} />
@@ -116,6 +138,10 @@ export default class Register extends React.Component {
               onChange={e => this.handleChangeInput(e, 'password')} />
           
             <Form.Input
+              error={
+                !_.isEmpty(this.state.confirmPassword) &&
+                this.state.confirmPassword !== this.state.password
+              }
               focus
               placeholder='Confirmation de mot de passe'
               type='password'
@@ -131,9 +157,61 @@ export default class Register extends React.Component {
             <Form.Button
               fluid
               content='Annuler'
-              size='large' />
+              size='large'
+              onClick={this.onCancel} />
           </Form>
         </Segment>
+
+        {/* Message d'erreur */}
+        {this.state.openMessage?
+          (
+            <Message
+              error={this.state.error}
+              content={this.state.errorMessage}
+            />
+          ):''
+        }
+
+        {/* Modal, retour inscription (success ou error) */}
+        <Modal 
+          size='small' 
+          open={!_.isNull(this.state.modalType)}
+          dimmer='blurring'
+          closeOnDimmerClick={false}
+        >
+          <Modal.Header
+            content='Inscription'
+            style={{ 
+              color:this.state.modalType === 1?'teal':'red'
+            }}
+          />
+          <Modal.Content>
+            {this.state.modalType === 1?
+              <p>Bienvenue. La création de votre compte a été effectuée avec succès et vous pouvez y accéder en utilisant l'dentifiant et le mot de passe créés.</p>
+              : this.state.modalType === 2?
+                <p>Erreur lors de la création de votre compte. L'identifiant a déjà été utilisé par un autre utilisateur.</p>
+                : null
+            }
+          </Modal.Content>
+          <Modal.Actions>
+            <Button
+              positive={this.state.modalType === 1?true:false}
+              negative={this.state.modalType === 2?true:false}
+              content='OK'
+              onClick={() => {
+                if (this.state.modalType === 1) {
+                  if (this.props.onSuccess) {
+                    this.props.onSuccess();
+                  }
+                } else {
+                  this.setState({
+                    modalType: null
+                  });
+                }
+              }}
+            />
+          </Modal.Actions>
+        </Modal>
       </React.Fragment>
     );
   }

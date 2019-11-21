@@ -14,7 +14,8 @@ import {
 
 export default class Login extends React.Component {
   static propTypes = {
-    onSuccess: PropTypes.func
+    onSuccess: PropTypes.func,
+    createAccount: PropTypes.func
   }
 
   state = {
@@ -75,6 +76,12 @@ export default class Login extends React.Component {
     }
   }
 
+  register = () => {
+    if (this.props.createAccount) {
+      this.props.createAccount();
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -95,6 +102,7 @@ export default class Login extends React.Component {
 
               <Form>
                 <Form.Input
+                  error={this.state.error}
                   focus
                   icon='user'
                   iconPosition='left'
@@ -102,6 +110,7 @@ export default class Login extends React.Component {
                   onChange={e => this.handleChangeInput(e, 'login')} />
 
                 <Form.Input
+                  error={this.state.error}
                   focus
                   icon='lock'
                   iconPosition='left'
@@ -122,12 +131,16 @@ export default class Login extends React.Component {
               <Button
                 content='Créer un compte' 
                 icon='signup' 
-                size='large' />
+                size='large'
+                onClick={this.register}
+              />
             </Grid.Column>
           </Grid>
 
           <Divider vertical>Ou</Divider>
         </Segment>
+
+        {/* Message d'erreur */}
         {this.state.openMessage?
           (
             <Message
