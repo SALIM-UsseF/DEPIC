@@ -1,6 +1,8 @@
 import React from 'react'
 
-import MainAdministration from './Components/Administration/MainAdministration'
+import {
+  MainUser
+} from './lib'
 
 export default class App extends React.Component {
   onSuccess = msg => {
@@ -10,7 +12,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div>
-        <MainAdministration />
+        <MainUser />
       </div>
     );
   }

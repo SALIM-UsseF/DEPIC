@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import Login from './Login'
 import Register from './Register'
@@ -16,13 +17,21 @@ const styles = {
   }
 };
 
-export default class MainAdministration extends React.Component {
+export default class MainUser extends React.Component {
+  static propTypes = {
+    onSuccess: PropTypes.func
+  }
+
   state = {
     page: 'connexion'
   }
 
   onSuccessConnexion = msg => {
     console.log(msg);
+
+    if (this.props.onSuccess) {
+      this.props.onSuccess();
+    }
   }
 
   onSuccessRegister = () => {
