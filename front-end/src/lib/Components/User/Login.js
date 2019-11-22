@@ -12,10 +12,17 @@ import {
   Segment 
 } from 'semantic-ui-react'
 
+import { dictionnary } from '../../Langs/langs'
+
 export default class Login extends React.Component {
   static propTypes = {
+    lang: PropTypes.string,
     onSuccess: PropTypes.func,
     createAccount: PropTypes.func
+  }
+
+  static defaultProps = {
+    lang: 'fr'
   }
 
   state = {
@@ -45,9 +52,11 @@ export default class Login extends React.Component {
 
   connexion = () => {
     if (!this.valideForm()) {
+      let lang = _.toUpper(this.props.lang);
+      let invalidForm = _.get(dictionnary, lang + '.invalidForm');
       this.setState({
         error: true,
-        errorMessage: 'Renseignez l\'identifiant et le mot de passe',
+        errorMessage: _.upperFirst(invalidForm),
         openMessage: true
       });
 
@@ -62,15 +71,16 @@ export default class Login extends React.Component {
      */
 
     if (this.state.login === 'user' && this.state.password === 'user') {
-      let successMessage = 'CONNEXION REUSSIE\nIdentifiant : ' + this.state.login + '\nMot de passe : ' + this.state.password;
-
       if (this.props.onSuccess) {
-        this.props.onSuccess(successMessage);
+        this.props.onSuccess();
       }
     } else {
+      let lang = _.toUpper(this.props.lang);
+      let errorMessageLogin2 = _.get(dictionnary, lang + '.errorMessageLogin2');
+
       this.setState({
         error: true,
-        errorMessage: 'Identifiant ou mot de passe incorrect',
+        errorMessage: _.upperFirst(errorMessageLogin2),
         openMessage: true
       });
     }
@@ -83,6 +93,14 @@ export default class Login extends React.Component {
   }
 
   render() {
+    let lang = _.toUpper(this.props.lang);
+    let login = _.get(dictionnary, lang + '.login');
+    let password = _.get(dictionnary, lang + '.password');
+    let createAccount = _.get(dictionnary, lang + '.createAccount');
+    let signIn1 = _.get(dictionnary, lang + '.signIn1');
+    let signIn2 = _.get(dictionnary, lang + '.signIn2');
+    let dividerOr = _.get(dictionnary, lang + '.dividerOr');
+
     return (
       <React.Fragment>
         <Segment placeholder>
@@ -97,7 +115,7 @@ export default class Login extends React.Component {
                 color='teal' 
                 textAlign='center'
               >
-                Connectez-vous à votre compte
+                {_.upperFirst(signIn2)}
               </Header>
 
               <Form>
@@ -106,7 +124,7 @@ export default class Login extends React.Component {
                   focus
                   icon='user'
                   iconPosition='left'
-                  placeholder="Identifiant"
+                  placeholder={_.upperFirst(login)}
                   onChange={e => this.handleChangeInput(e, 'login')} />
 
                 <Form.Input
@@ -114,13 +132,13 @@ export default class Login extends React.Component {
                   focus
                   icon='lock'
                   iconPosition='left'
-                  placeholder='Mot de passe'
+                  placeholder={_.upperFirst(password)}
                   type='password'
                   onChange={e => this.handleChangeInput(e, 'password')} />
 
                 <Form.Button 
                   fluid
-                  content='Connexion'
+                  content={_.upperFirst(signIn1)}
                   color='teal'
                   size='large'
                   onClick={this.connexion} />
@@ -129,7 +147,7 @@ export default class Login extends React.Component {
 
             <Grid.Column verticalAlign='middle'>
               <Button
-                content='Créer un compte' 
+                content={_.upperFirst(createAccount)} 
                 icon='signup' 
                 size='large'
                 onClick={this.register}
@@ -137,7 +155,7 @@ export default class Login extends React.Component {
             </Grid.Column>
           </Grid>
 
-          <Divider vertical>Ou</Divider>
+          <Divider vertical>{_.upperFirst(dividerOr)}</Divider>
         </Segment>
 
         {/* Message d'erreur */}

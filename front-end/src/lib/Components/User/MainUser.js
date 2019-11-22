@@ -26,9 +26,7 @@ export default class MainUser extends React.Component {
     page: 'connexion'
   }
 
-  onSuccessConnexion = msg => {
-    console.log(msg);
-
+  onSuccessConnexion = () => {
     if (this.props.onSuccess) {
       this.props.onSuccess();
     }

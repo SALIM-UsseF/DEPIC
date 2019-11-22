@@ -11,10 +11,18 @@ import {
   Segment
 } from 'semantic-ui-react'
 
+import { dictionnary } from '../../Langs/langs'
+import { emailValidityForm } from '../../Helpers/Helpers'
+
 export default class Register extends React.Component {
   static propTypes = {
+    lang: PropTypes.string,
     onSuccess: PropTypes.func,
     onCancel: PropTypes.func
+  }
+
+  static defaultProps = {
+    lang: 'fr'
   }
 
   state = {
@@ -48,8 +56,7 @@ export default class Register extends React.Component {
   }
 
   emailValidity = () => {
-    let regex = /\S+@\S+\.\S+/;
-    return (_.isEmpty(this.state.email) || regex.test(this.state.email));
+    return (_.isEmpty(this.state.email) || emailValidityForm(this.state.email));
   }
 
   checkValidity = () => {
@@ -65,9 +72,11 @@ export default class Register extends React.Component {
 
   register = () => {
     if (!this.checkValidity()) {
+      let lang = _.toUpper(this.props.lang);
+      let invalidForm = _.get(dictionnary, lang + '.invalidForm');
       this.setState({
         error: true,
-        errorMessage: 'Certains champs ne sont pas valides',
+        errorMessage: _.upperFirst(invalidForm),
         openMessage: true
       });
 
@@ -99,6 +108,19 @@ export default class Register extends React.Component {
   }
 
   render() {
+    let lang = _.toUpper(this.props.lang);
+    let lastname = _.get(dictionnary, lang + '.lastname');
+    let firstname = _.get(dictionnary, lang + '.firstname');
+    let email = _.get(dictionnary, lang + '.email');
+    let login = _.get(dictionnary, lang + '.login');
+    let password = _.get(dictionnary, lang + '.password');
+    let confirmPassword = _.get(dictionnary, lang + '.confirmPassword');
+    let createAccount = _.get(dictionnary, lang + '.createAccount');
+    let validate = _.get(dictionnary, lang + '.validate');
+    let cancel = _.get(dictionnary, lang + '.cancel');
+    let successRegister = _.get(dictionnary, lang + '.successRegister');
+    let errorRegister = _.get(dictionnary, lang + '.errorRegister');
+
     return (
       <React.Fragment>
         <Segment secondary>
@@ -107,33 +129,33 @@ export default class Register extends React.Component {
             color='teal'
             textAlign='center'
           >
-            Créer un compte
+            {_.upperFirst(createAccount)}
           </Header>
           <Form size='big'>
             <Form.Input
               focus
-              placeholder='Nom'
+              placeholder={_.upperFirst(lastname)}
               onChange={e => this.handleChangeInput(e, 'lastname')} />
 
             <Form.Input
               focus
-              placeholder='Prénom'
+              placeholder={_.upperFirst(firstname)}
               onChange={e => this.handleChangeInput(e, 'firstname')} />
 
             <Form.Input
               error={!this.emailValidity()}
               focus
-              placeholder='E-mail'
+              placeholder={_.upperFirst(email)}
               onChange={e => this.handleChangeInput(e, 'email')} />
 
             <Form.Input
               focus
-              placeholder='Identifiant'
+              placeholder={_.upperFirst(login)}
               onChange={e => this.handleChangeInput(e, 'login')} />
 
             <Form.Input
               focus
-              placeholder='Mot de passe'
+              placeholder={_.upperFirst(password)}
               type='password'
               onChange={e => this.handleChangeInput(e, 'password')} />
           
@@ -143,20 +165,20 @@ export default class Register extends React.Component {
                 this.state.confirmPassword !== this.state.password
               }
               focus
-              placeholder='Confirmation de mot de passe'
+              placeholder={_.upperFirst(confirmPassword)}
               type='password'
               onChange={e => this.handleChangeInput(e, 'confirmPassword')} />
 
             <Form.Button
               fluid
-              content='Valider'
+              content={_.upperFirst(validate)}
               color='teal'
               size='large'
               onClick={this.register} />
 
             <Form.Button
               fluid
-              content='Annuler'
+              content={_.upperFirst(cancel)}
               size='large'
               onClick={this.onCancel} />
           </Form>
@@ -187,9 +209,9 @@ export default class Register extends React.Component {
           />
           <Modal.Content>
             {this.state.modalType === 1?
-              <p>Bienvenue. La création de votre compte a été effectuée avec succès et vous pouvez y accéder en utilisant l'dentifiant et le mot de passe créés.</p>
+              <p>{_.upperFirst(successRegister)}</p>
               : this.state.modalType === 2?
-                <p>Erreur lors de la création de votre compte. L'identifiant a déjà été utilisé par un autre utilisateur.</p>
+                <p>{_.upperFirst(errorRegister)}</p>
                 : null
             }
           </Modal.Content>
