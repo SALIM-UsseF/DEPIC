@@ -1,12 +1,3 @@
-import { 
-  MainUser
-} from './Components/User'
+import { MainView } from './Components'
 
-import {
-  MainQuestion
-} from './Components/Question'
-
-export {
-  MainUser,
-  MainQuestion
-}
+export { MainView }

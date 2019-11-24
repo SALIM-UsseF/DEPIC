@@ -1,5 +1,3 @@
 import MainQuestion from './MainQuestion'
 
-export { 
-  MainQuestion 
-}
+export { MainQuestion }
