@@ -34,7 +34,9 @@ const FR = {
   successRegister: "bienvenue. La création de votre compte a été effectuée avec succès et vous pouvez y accéder en utilisant l'dentifiant et le mot de passe créés.",
   time: "heure",
   validate: "valider",
-  venue: "adresse"
+  venue: "adresse",
+
+  dashboard: "tableau de bord",
 };
 
 export { FR };

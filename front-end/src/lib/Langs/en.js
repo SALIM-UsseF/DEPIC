@@ -34,7 +34,9 @@ const EN = {
   successRegister: "welcome. Your account creation has been successfully completed. You can access your account using the login and password created",
   time: "time",
   validate: "validate",
-  venue: "venue"
+  venue: "venue",
+
+  dashboard: "dashboard"
 };
   
   export { EN };

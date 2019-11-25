@@ -1,11 +1,11 @@
 import React from 'react'
 
 import { MainUser } from './User'
-import SettingsView from './SettingsView'
+import { View } from './View'
 
 export default class MainView extends React.Component {
   state = {
-    page: 'connexion'
+    page: 'mainView'
   }
 
   onSuccess = () => {
@@ -20,7 +20,7 @@ export default class MainView extends React.Component {
         {(this.state.page === 'connexion')?
             <MainUser onSuccess={this.onSuccess}/>
             :(this.state.page === 'mainView')?
-              <SettingsView />
+              <View />
               :''
         }
       </React.Fragment>
