@@ -5,7 +5,8 @@ import { View } from './View'
 
 export default class MainView extends React.Component {
   state = {
-    page: 'mainView'
+    page: 'connexion',
+    lang: 'fr'
   }
 
   onSuccess = () => {
@@ -18,9 +19,12 @@ export default class MainView extends React.Component {
     return (
       <React.Fragment>
         {(this.state.page === 'connexion')?
-            <MainUser onSuccess={this.onSuccess}/>
+            <MainUser
+              lang={this.state.lang}
+              onSuccess={this.onSuccess} />
             :(this.state.page === 'mainView')?
-              <View />
+              <View
+                lang={this.state.lang} />
               :''
         }
       </React.Fragment>

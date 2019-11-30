@@ -6,7 +6,17 @@ import Register from './Register'
 
 const styles = {
   connexion: {
-    paddingTop: "20px",
+    paddingTop: "200px",
+    paddingLeft: "10px",
+    paddingRight: "10px",
+    margin: "0 auto",
+    maxWidth: "600px",
+    display: "flex",
+    flexDirection: "column",
+    width: "Auto"
+  },
+  register: {
+    paddingTop: "150px",
     paddingLeft: "10px",
     paddingRight: "10px",
     margin: "0 auto",
@@ -19,7 +29,12 @@ const styles = {
 
 export default class MainUser extends React.Component {
   static propTypes = {
+    lang: PropTypes.string,
     onSuccess: PropTypes.func
+  }
+
+  static defaultProps = {
+    lang: 'fr'
   }
 
   state = {
@@ -47,20 +62,24 @@ export default class MainUser extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div style={styles.connexion}>
-          {this.state.page === 'connexion'?
+        {this.state.page === 'connexion'?
+          <div style={styles.connexion}>
             <Login 
+              lang={this.props.lang}
               onSuccess={this.onSuccessConnexion}
               createAccount={this.createAccount}
             />
-            : this.state.page === 'register'?
-              <Register 
+          </div>
+          : this.state.page === 'register'?
+            <div style={styles.register}>
+              <Register
+                lang={this.props.lang}
                 onSuccess={this.onSuccessRegister}
                 onCancel={this.onSuccessRegister}
               />
-              :''
-          }
-        </div>
+            </div>
+            :''
+        }
       </React.Fragment>
     );
   }

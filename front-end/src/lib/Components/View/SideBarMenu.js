@@ -8,6 +8,8 @@ import {
   Sidebar 
 } from 'semantic-ui-react'
 
+import Title from './Title'
+
 import { dictionnary } from '../../Langs/langs'
 
 export default class SideBarMenu extends React.Component {
@@ -51,7 +53,7 @@ export default class SideBarMenu extends React.Component {
           vertical
           visible={this.props.open}
           icon='labeled'
-          width='wide'
+          style={{ width:'250px' }}
           onHide={this.onHide}
           size='massive'
         >
@@ -64,14 +66,18 @@ export default class SideBarMenu extends React.Component {
             onClick={this.handleItemClick}
           >
             <Icon name='dashboard' />
-            {_.upperFirst(dashboard)}
+            <Title
+              as='h3'
+              content={_.upperFirst(dashboard)} />
           </Menu.Item>
           <Menu.Item
             name='settings'
             onClick={this.handleItemClick}
           >
             <Icon name='setting' />
-            {_.upperFirst(settings)}
+            <Title
+              as='h3'
+              content={_.upperFirst(settings)} />
           </Menu.Item>
         </Sidebar>
       </React.Fragment>
