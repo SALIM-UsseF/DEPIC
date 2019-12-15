@@ -46,7 +46,7 @@ export default class SideBarMenu extends React.Component {
     let dashboard = _.get(dictionnary, lang + '.dashboard');
     let settings = _.get(dictionnary, lang + '.settings');
     let createSurvey = _.get(dictionnary, lang + '.createSurvey');
-    let backgroundColorMenuItem = "lightgrey";
+    let backgroundColorMenuItem = 'lightgrey';
 
     return (
       <React.Fragment>
@@ -67,7 +67,7 @@ export default class SideBarMenu extends React.Component {
           <Menu.Item
             name='dashboard'
             style={{
-              backgroundColor: (this.props.title === 'dashboard')?backgroundColorMenuItem:""
+              backgroundColor: (this.props.title === 'dashboard')?backgroundColorMenuItem:''
             }}
             onClick={this.handleItemClick}
           >
@@ -79,7 +79,7 @@ export default class SideBarMenu extends React.Component {
           <Menu.Item
             name='createSurvey'
             style={{
-              backgroundColor: (this.props.title === 'createSurvey')?backgroundColorMenuItem:""
+              backgroundColor: (this.props.title === 'createSurvey')?backgroundColorMenuItem:''
             }}
             onClick={this.handleItemClick}
           >
@@ -91,7 +91,7 @@ export default class SideBarMenu extends React.Component {
           <Menu.Item
             name='settings'
             style={{
-              backgroundColor: (this.props.title === 'settings')?backgroundColorMenuItem:""
+              backgroundColor: (this.props.title === 'settings')?backgroundColorMenuItem:''
             }}
             onClick={this.handleItemClick}
           >
