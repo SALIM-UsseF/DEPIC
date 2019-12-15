@@ -16,6 +16,7 @@ export default class SideBarMenu extends React.Component {
   static propTypes = {
     lang: PropTypes.string,
     open: PropTypes.bool,
+    title: PropTypes.string,
     onHide: PropTypes.func,
     onItemClick: PropTypes.func
   }
@@ -44,6 +45,8 @@ export default class SideBarMenu extends React.Component {
     let lang = _.toUpper(this.props.lang);
     let dashboard = _.get(dictionnary, lang + '.dashboard');
     let settings = _.get(dictionnary, lang + '.settings');
+    let createSurvey = _.get(dictionnary, lang + '.createSurvey');
+    let backgroundColorMenuItem = "lightgrey";
 
     return (
       <React.Fragment>
@@ -63,6 +66,9 @@ export default class SideBarMenu extends React.Component {
           />
           <Menu.Item
             name='dashboard'
+            style={{
+              backgroundColor: (this.props.title === 'dashboard')?backgroundColorMenuItem:""
+            }}
             onClick={this.handleItemClick}
           >
             <Icon name='dashboard' />
@@ -71,7 +77,22 @@ export default class SideBarMenu extends React.Component {
               content={_.upperFirst(dashboard)} />
           </Menu.Item>
           <Menu.Item
+            name='createSurvey'
+            style={{
+              backgroundColor: (this.props.title === 'createSurvey')?backgroundColorMenuItem:""
+            }}
+            onClick={this.handleItemClick}
+          >
+            <Icon name='numbered list' />
+            <Title
+              as='h3'
+              content={_.upperFirst(createSurvey)} />
+          </Menu.Item>
+          <Menu.Item
             name='settings'
+            style={{
+              backgroundColor: (this.props.title === 'settings')?backgroundColorMenuItem:""
+            }}
             onClick={this.handleItemClick}
           >
             <Icon name='setting' />

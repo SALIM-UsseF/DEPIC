@@ -4,17 +4,20 @@ import _ from 'lodash'
 
 import { 
   Button,
-  Segment 
+  List,
+  Segment
 } from 'semantic-ui-react'
 
 import Title from './Title'
+import Survey from './Survey'
 
 import { dictionnary } from '../../Langs/langs'
 
 export default class Dashboard extends React.Component {
   static propTypes = {
     lang: PropTypes.string,
-    listSurvey: PropTypes.array
+    listSurvey: PropTypes.array,
+    onCreateSurvey: PropTypes.func
   }
 
   static defaultProps = {
@@ -24,8 +27,8 @@ export default class Dashboard extends React.Component {
   render() {
     let lang = _.toUpper(this.props.lang);
     let titleSurveyStart = _.get(dictionnary, lang + '.titleSurveyStart');
-    let btnCreateSurvey = _.get(dictionnary, lang + '.btnCreateSurvey');
-    let listSurveyEmpty = (
+    let createSurvey = _.get(dictionnary, lang + '.createSurvey');
+    let emptySurvey = (
       <React.Fragment>
         <Segment placeholder>
           <Title
@@ -34,16 +37,35 @@ export default class Dashboard extends React.Component {
             icon />
           <Button
             positive
-            content={_.upperFirst(btnCreateSurvey)} />
+            content={_.upperFirst(createSurvey)}
+            onClick={() => {
+              if (this.props.onCreateSurvey) {
+                this.props.onCreateSurvey('createSurvey');
+              }
+            }} />
         </Segment>
+      </React.Fragment>
+    );
+    let survey = (
+      <React.Fragment>
+        <List
+          divided 
+          verticalAlign='middle'
+        >
+          {_.map(this.props.listSurvey, survey => (
+            <List.Item>
+              <Survey />
+            </List.Item>
+          ))}
+        </List>
       </React.Fragment>
     );
 
     return (
       <React.Fragment>
         {(_.size(this.props.listSurvey) === 0)?
-          listSurveyEmpty
-          :''
+          emptySurvey
+          :survey
         }
       </React.Fragment>
     );

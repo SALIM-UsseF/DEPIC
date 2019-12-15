@@ -38,7 +38,7 @@ const EN = {
 
   dashboard: "dashboard",
   titleSurveyStart: "let's start creating your first survey !",
-  btnCreateSurvey: "create a survey"
+  createSurvey: "create a survey"
 };
   
   export { EN };

@@ -38,7 +38,7 @@ const FR = {
 
   dashboard: "tableau de bord",
   titleSurveyStart: "commençons à créer votre premier sondage !",
-  btnCreateSurvey: "créer un sondage"
+  createSurvey: "créer un sondage"
 };
 
 export { FR };

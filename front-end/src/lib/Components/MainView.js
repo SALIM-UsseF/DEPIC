@@ -2,10 +2,11 @@ import React from 'react'
 
 import { MainUser } from './User'
 import { View } from './View'
+// import { MainQuestion } from './Question'
 
 export default class MainView extends React.Component {
   state = {
-    page: 'connexion',
+    page: 'mainView',
     lang: 'fr'
   }
 
@@ -27,6 +28,7 @@ export default class MainView extends React.Component {
                 lang={this.state.lang} />
               :''
         }
+        {/* <MainQuestion /> */}
       </React.Fragment>
     );
   }

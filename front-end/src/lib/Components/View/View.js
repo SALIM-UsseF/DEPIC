@@ -1,12 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import _ from 'lodash'
 
 import SideBarMenu from './SideBarMenu'
 import SideBarHome from './SideBarHome'
 import Frame from './Frame'
-
-import { dictionnary } from '../../Langs/langs'
 
 const styles = {
   frame: {
@@ -57,10 +54,13 @@ export default class View extends React.Component {
     });
   }
 
-  render() {
-    let lang = _.toUpper(this.props.lang);
-    let title = _.get(dictionnary, lang + '.' + this.state.title);
+  onCreateSurvey = title => {
+    this.setState({
+      title: title
+    })
+  }
 
+  render() {
     return (
       <React.Fragment>
         {/* SideBarHome : Barre de menu d'accueil */}
@@ -71,13 +71,15 @@ export default class View extends React.Component {
         <div style={styles.frame}>
           <Frame
             lang={this.props.lang}
-            title={_.upperFirst(title)} />
+            title={this.state.title}
+            onCreateSurvey={this.onCreateSurvey} />
         </div>
 
         {/* SideBarMenu : Barre de menu de paramètres */}
         <SideBarMenu
           lang={this.props.lang}
           open={this.state.openSideBar}
+          title={this.state.title}
           onHide={this.onHideSideBar}
           onItemClick={this.onItemClickSideBarMenu}
         />
