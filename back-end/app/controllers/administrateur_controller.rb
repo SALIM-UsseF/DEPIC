@@ -19,40 +19,76 @@ class AdministrateurController < ApplicationController
 
   # Afficher un admin par ID
   def show
-    administrateur = Administrateur.find(params[:id]);
-    render json: {status: 'SUCCESS', message: 'Loaded Administrateur', data:administrateur}, status: :ok
+
+    begin
+
+      administrateur = Administrateur.find(params[:id]);
+      render json: {status: 'SUCCESS', message: 'Loaded Administrateur', data:administrateur}, status: :ok
+
+    rescue ActiveRecord::RecordNotFound => e
+      render json: {
+        status: 'ERROR',
+        error: e.to_s
+      }, status: :not_found    
+
+    end
+
   end
 
   # Creer un nouveau admin
   def create
+    
     administrateur = Administrateur.new(administrateur_params)
 
     if administrateur.save
       render json: {status: 'SUCCESS', message: 'Saved Administrateur', data:administrateur}, status: :ok
     else
-      render json: {status: 'ERROR', message: 'Administrateur not saved', data:Administrateur.errors}, status: :unprocessable_entity
+      render json: {status: 'ERROR', message: 'Administrateur not saved', data:nil}, status: :unprocessable_entity
     end
 
   end
 
   # Modifier un admin
   def update
+      
+    begin 
+
     administrateur = Administrateur.find(params[:id])
+
     if administrateur.update_attributes(administrateur_params)
       render json: {status: 'SUCCESS', message: 'Updated Administrateur', data:administrateur}, status: :ok
     else
-      render json: {status: 'ERROR', message: 'Administrateur not updated', data:Administrateur.errors}, status: :unprocessable_entity
+      render json: {status: 'ERROR', message: 'Administrateur not updated', data:nil}, status: :unprocessable_entity
+    end
+
+    rescue ActiveRecord::RecordNotFound => e
+      render json: {
+        status: 'ERROR',
+        error: e.to_s
+      }, status: :not_found    
     end
 
   end
 
   # Supprimer un admin par ID
   def delete
+
+    begin
+
     administrateur = Administrateur.find(params[:id])
+
     if administrateur.update_attributes(administrateur_param_delete)
       render json: {status: 'SUCCESS', message: 'Deleted Administrateur', data:administrateur}, status: :ok
     else
       render json: {status: 'ERROR', message: 'Administrateur not Deleted', data:Administrateur.errors}, status: :unprocessable_entity
+    end
+
+    rescue ActiveRecord::RecordNotFound => e
+      render json: {
+        status: 'ERROR',
+        error: e.to_s
+      }, status: :not_found
+
     end
 
   end
