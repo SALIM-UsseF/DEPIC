@@ -17,7 +17,7 @@ Rails.application.routes.draw do
 
 
   #routes pour l'utilisateur
-  get 'utilisateur' => 'utilisateurs#index'
+  get 'utilisateurs' => 'utilisateurs#index'
   get 'utilisateur/:id' => 'utilisateurs#show'
   post 'newUtilisateur' => 'utilisateurs#create'
   put 'updateUtilisateur/:id' => 'utilisateurs#update'
@@ -25,14 +25,14 @@ Rails.application.routes.draw do
 
 
   #routes pour participer
-  get 'participer' => 'participers#index'
-  get 'participer/:id' => 'participers#show'
-  post 'newParticiper' => 'participers#create'
-  put 'updateParticiper/:id' => 'participers#update'
-  put 'deleteParticiper/:id' => 'participers#delete'
+  get 'participations' => 'participers#index'
+  get 'participation/:id' => 'participers#show'
+  post 'newParticipation' => 'participers#create'
+  put 'updateParticipation/:id' => 'participers#update'
+  put 'deleteParticipation/:id' => 'participers#delete'
 
   #routes pour question
-  get 'question' => 'questions#index'
+  get 'questions' => 'questions#index'
   get 'question/:id' => 'questions#show'
   post 'newQuestion' => 'questions#create'
   put 'updateQuestion/:id' => 'questions#update'
@@ -40,7 +40,7 @@ Rails.application.routes.draw do
 
 
   #routes pour question ouverte
-  get 'questionOuverte' => 'questionouvertes#index'
+  get 'questionsOuvertes' => 'questionouvertes#index'
   get 'questionOuverte/:id' => 'questionouvertes#show'
   post 'newQuestionOuverte' => 'questionouvertes#create'
   put 'updateQuestionOuverte/:id' => 'questionouvertes#update'
@@ -48,7 +48,7 @@ Rails.application.routes.draw do
 
 
   #routes pour question choix
-  get 'questionChoix' => 'questionchoixes#index'
+  get 'questionsChoix' => 'questionchoixes#index'
   get 'questionChoix/:id' => 'questionchoixes#show'
   post 'newQuestionChoix' => 'questionchoixes#create'
   put 'updateQuestionChoix/:id' => 'questionchoixes#update'
@@ -56,14 +56,14 @@ Rails.application.routes.draw do
 
 
   #routes pour question points
-  get 'questionPoints' => 'questionpoints#index'
+  get 'questionsPoints' => 'questionpoints#index'
   get 'questionPoints/:id' => 'questionpoints#show'
   post 'newQuestionPoints' => 'questionpoints#create'
   put 'updateQuestionPoints/:id' => 'questionpoints#update'
   put 'deleteQuestionPoints/:id' => 'questionpoints#delete'
 
   #routes pour groupe de questions
-  get 'groupeQuestions' => 'groupequestions#index'
+  get 'groupesQuestions' => 'groupequestions#index'
   get 'groupeQuestions/:id' => 'groupequestions#show'
   post 'newGroupeQuestions' => 'groupequestions#create'
   put 'updateGroupeQuestions/:id' => 'groupequestions#update'

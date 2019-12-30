@@ -12,6 +12,6 @@ Administrateur.create({
     pseudo_administrateur: 'admin',
     email_administrateur: 'admin@test.com',
     motDePasse_administrateur: 'admin', # changer motDePasse : admin par => md5
-    supAdmin: 1,
-    etat: 0
+    supAdmin: true, # true => l'admin est l'admin principale
+    etat: false # true => l'admin est supprimé 
 })

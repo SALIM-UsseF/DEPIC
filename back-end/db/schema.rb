@@ -19,8 +19,8 @@ ActiveRecord::Schema.define(version: 2019_12_26_201324) do
     t.string "pseudo_administrateur", null: false
     t.string "email_administrateur", null: false
     t.text "motDePasse_administrateur", null: false
-    t.integer "supAdmin", default: 0, null: false
-    t.boolean "etat"
+    t.boolean "supAdmin", default: false, null: false
+    t.boolean "etat", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

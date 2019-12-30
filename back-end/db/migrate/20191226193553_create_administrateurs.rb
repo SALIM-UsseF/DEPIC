@@ -6,8 +6,8 @@ class CreateAdministrateurs < ActiveRecord::Migration[5.2]
       t.string :pseudo_administrateur, :null => false
       t.string :email_administrateur, :null => false
       t.text :motDePasse_administrateur, :null => false
-      t.integer :supAdmin, :default => 0, :null => false
-      t.boolean :etat
+      t.boolean :supAdmin, :default => false, :null => false
+      t.boolean :etat, :default => false, :null => false
       t.timestamps
       
     end
