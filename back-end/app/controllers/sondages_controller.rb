@@ -1,110 +1,91 @@
+################################
+#   Sondage Controller
+# #############################
+#
+# Expose des service REST :
+#   - Afficher la liste des sondages 
+#   - Afficher un sondage par ID
+#   - Creer une nouveau sondage
+#   - Modifier un sondage 
+#   - Supprimer un sondage par ID
 
-         ################################
-        #   Sondage Controller
-        # #############################
-        #
-        # Expose des service REST :
-        #   - Afficher la liste des sondages 
-        #   - Afficher un sondage par ID
-        #   - Creer une nouveau sondage
-        #   - Modifier un sondage 
-        #   - Supprimer un sondage par ID
+class SondagesController < ApplicationController
+  
+  # Afficher la liste des sondages 
+  def index
+    sondages = Sondage.where(etat: false).order('created_at ASC');
+    render json: {status: 'SUCCESS', message:'Loaded sondages', data:sondages},status: :ok
+  end
 
-        class SondageController < ApplicationController
-          
-          # Afficher la liste des sondages 
-          def index
-            sondages = Sondage.order('created_at ASC');
-            render json: {status: 'SUCCESS', message:'Loaded sondages', data:sondages},status: :ok
-          end
+  # Afficher un Sondage par ID
+  def show
+
+    sondages = Sondage.find_by(id_sondage: params[:id], etat: false);
+
+    if sondages != nil
+      render json: {status: 'SUCCESS', message: 'Loaded Sondage', data:sondages}, status: :ok
+    else
+      render json: {status: 'ERROR', message: 'Sondage not found'}, status: :not_found
+    end
+
+end
+
+# Creer un nouveau Sondage
+def create
   
-  
-          # Afficher un sondage par ID
-          def show
-            begin
-              
-        
-              sondage=Sondage.find(params[:id])
-              render json: {status: 'SUCCESS', message:'Loaded sondage', data:sondage},status: :ok
-              rescue ActiveRecord::RecordNotFound => e
-              render json: {
-                status: 'ERROR',
-                error: e.to_s
-              }, status: :not_found  
-  
-            end
-          end
-  
-          # Creer une nouveau sondage
-          def create  
-              sondage = Sondage.new(sondage_params)
+  sondages = Sondage.new(question_params)
+
+  if sondages.save
+    render json: {status: 'SUCCESS', message: 'Saved Sondage', data:sondages}, status: :ok
+  else
+    render json: {status: 'ERROR', message: 'Sondage not saved'}, status: :unprocessable_entity
+  end
+
+end
+
+# Modifier un Sondage
+def update
       
-              if sondage.save
-              render json: {status: 'SUCCESS', message:'Saved sondage', data:sondage},status: :ok
-              else
-              render json: {status: 'ERROR', message:'Sondage not saved', data:Sondage.errors},status: :unprocessable_entity
-              end
-          end 
+  sondages = Sondage.find_by(id_sondage: params[:id], etat: false);
+
+  if sondages != nil && sondages.update_attributes(sondage_params)
+    render json: {status: 'SUCCESS', message: 'Updated Sondage', data:sondages}, status: :ok
+  else
+    render json: {status: 'ERROR', message: 'Sondage not updated'}, status: :not_found
+  end
+
+
+end
+
+# Supprimer un Sondage par ID
+def delete
+
+  sondages = Sondage.find_by(id_sondage: params[:id], etat: false);
+
+  if sondages != nil && sondages.update_attributes(sondage_param_delete)
+    render json: {status: 'SUCCESS', message: 'Deleted Sondage', data:sondages}, status: :ok
+  else
+    render json: {status: 'ERROR', message: 'Sondage not Deleted'}, status: :not_found
+  end
+
+end
+
+  # Liste des parametres à fournir
+
+  private
   
-          # Supprimer un sondage par ID
-          def delete
+  # parametres d'ajout
+  def sondage_params
+
+      params.permit(:intituleSondage, :descriptionSondage, :etat, :id_administrateur)
+  end
+
+  # parametres de suppression
+  def sondage_param_delete
+    params.permit(:etat)
+  end
+
+
+
   
-            begin
-              
-            
-              sondage = Sondage.find(params[:id])
-              if sondage.update_attributes(sondage_param_delete)
-                render json: {status: 'SUCCESS', message: 'Deleted Sondage', data:sondage}, status: :ok
-              else
-                render json: {status: 'ERROR', message: 'Sondage not Deleted', data:Sondage.errors}, status: :unprocessable_entity
-              end
-              rescue ActiveRecord::RecordNotFound => e
-              render json: {
-                status: 'ERROR',
-                error: e.to_s
-              }, status: :not_found
-  
-            end
-          end
-  
-          # Modifier un sondage 
-          def update
-  
-            begin
-              
-              sondage = Sondage.find(params[:id])
-              if sondage.update_attributes(sondage_params)
-                render json: {status: 'SUCCESS', message:'Updated sondage', data:sondage},status: :ok
-              else
-                render json: {status: 'ERROR', message:'sondage not updated', data:Sondage.errors},status: :unprocessable_entity
-              end
-              
-              rescue ActiveRecord::RecordNotFound => e
-              render json: {
-                status: 'ERROR',
-                error: e.to_s
-              }, status: :not_found 
-  
-            end
-          end
-  
-          # Liste des parametres à fournir
-  
-          private
-          
-          # parametres d'ajout
-          def sondage_params
-  
-              params.permit(:intituleSondage, :descriptionSondage, :etat, :id_administrateur)
-          end
-  
-          # parametres de suppression
-          def sondage_param_delete
-            params.permit(:etat)
-          end
-        
-  
-  
-          
-        end
-  
+end

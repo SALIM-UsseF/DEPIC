@@ -1,5 +1,7 @@
 class Question < ApplicationRecord
 
+    self.abstract_class = true
+    
     validates :intitule, presence: true
     validates :estObligatoire, presence: true
     validates :ordre, presence: true

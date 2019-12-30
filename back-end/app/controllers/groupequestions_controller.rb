@@ -1,111 +1,92 @@
 
-         ################################
-        #   Groupequestions Controller
-        # #############################
-        #
-        # Expose des service REST :
-        #   - Afficher la liste des groupes de questions
-        #   - Afficher un groupe de question par ID
-        #   - Creer un nouveau groupe de question
-        #   - Modifier un groupe de question
-        #   - Supprimer un groupe de question par ID
+  ################################
+  #   Groupequestions Controller
+  # #############################
+  #
+  # Expose des service REST :
+  #   - Afficher la liste des groupes de questions
+  #   - Afficher un groupe de question par ID
+  #   - Creer un nouveau groupe de question
+  #   - Modifier un groupe de question
+  #   - Supprimer un groupe de question par ID
 
-        class GroupequestionsController < ApplicationController
-          
-        # Afficher la liste des groupes de questions
-        def index
-          questions = GroupeQuestion.order('created_at ASC');
-          render json: {status: 'SUCCESS', message:'Loaded questions', data:questions},status: :ok
-        end
-
-
-        # Afficher un groupe de questions par ID
-        def show
-          begin
-            
-          
-            
-          
-            question=GroupeQuestion.find(params[:id])
-            render json: {status: 'SUCCESS', message:'Loaded question', data:question},status: :ok
-            rescue ActiveRecord::RecordNotFound => e
-            render json: {
-              status: 'ERROR',
-              error: e.to_s
-            }, status: :not_found  
-
-          end
-        end
-
-        # Creer un nouveau groupe de questions
-        def create
-            question = GroupeQuestion.new(question_params)
+  class GroupequestionsController < ApplicationController
     
-            if question.save
-            render json: {status: 'SUCCESS', message:'Saved question', data:question},status: :ok
-            else
-            render json: {status: 'ERROR', message:'Question not saved', data:GroupeQuestion.errors},status: :unprocessable_entity
-            end
-        end 
+  # Afficher la liste des GroupeQuestion
+  def index
+    questions = GroupeQuestion.where(etat: false).order('created_at ASC');
+    render json: {status: 'SUCCESS', message:'Loaded questions', data:questions},status: :ok
+  end
 
-        # Supprimer un groupe de question par ID
-        def delete
 
-          begin
-            
-          
-            question = GroupeQuestion.find(params[:id])
-            if question.update_attributes(question_param_delete)
-              render json: {status: 'SUCCESS', message: 'Deleted Question', data:question}, status: :ok
-            else
-              render json: {status: 'ERROR', message: 'Question not Deleted', data:GroupeQuestion.errors}, status: :unprocessable_entity
-            end
-            rescue ActiveRecord::RecordNotFound => e
-            render json: {
-              status: 'ERROR',
-              error: e.to_s
-            }, status: :not_found
+  # Afficher un GroupeQuestion par ID
+  def show
 
-          end
-        end
+    questions = GroupeQuestion.find_by(id_question: params[:id], etat: false);
 
-        # Modifier un groupe de questions
-        def update
+    if questions != nil
+      render json: {status: 'SUCCESS', message: 'Loaded GroupeQuestion', data:questions}, status: :ok
+    else
+      render json: {status: 'ERROR', message: 'GroupeQuestion not found'}, status: :not_found
+    end
 
-          begin
-            
-            question = GroupeQuestion.find(params[:id])
-            if question.update_attributes(question_params)
-              render json: {status: 'SUCCESS', message:'Updated question', data:question},status: :ok
-            else
-              render json: {status: 'ERROR', message:'question not updated', data:GroupeQuestion.errors},status: :unprocessable_entity
-            end
-            
-            rescue ActiveRecord::RecordNotFound => e
-            render json: {
-              status: 'ERROR',
-              error: e.to_s
-            }, status: :not_found 
+end
 
-          end
-        end
+# Creer un nouveau GroupeQuestion
+def create
+  
+  questions = GroupeQuestion.new(question_params)
 
-        # Liste des parametres à fournir
+  if questions.save
+    render json: {status: 'SUCCESS', message: 'Saved GroupeQuestion', data:questions}, status: :ok
+  else
+    render json: {status: 'ERROR', message: 'GroupeQuestion not saved'}, status: :unprocessable_entity
+  end
 
-        private
-        
-        # parametres d'ajout
-        def question_params
+end
 
-            params.permit(:id_question, :intitule, :estObligatoire, :ordre, :etat, :id_sondage, :numerosDeQuestions)
-        end
-
-        # parametres de suppression
-        def question_param_delete
-          params.permit(:etat)
-        end
+# Modifier un GroupeQuestion
+def update
       
+  questions = GroupeQuestion.find_by(id_question: params[:id], etat: false);
+
+  if questions != nil && questions.update_attributes(question_params)
+    render json: {status: 'SUCCESS', message: 'Updated GroupeQuestion', data:questions}, status: :ok
+  else
+    render json: {status: 'ERROR', message: 'GroupeQuestion not updated'}, status: :not_found
+  end
 
 
-        
-      end
+end
+
+# Supprimer un GroupeQuestion par ID
+def delete
+
+  questions = GroupeQuestion.find_by(id_question: params[:id], etat: false);
+
+  if questions != nil && questions.update_attributes(question_param_delete)
+    render json: {status: 'SUCCESS', message: 'Deleted GroupeQuestion', data:questions}, status: :ok
+  else
+    render json: {status: 'ERROR', message: 'GroupeQuestion not Deleted'}, status: :not_found
+  end
+
+end
+
+  # Liste des parametres à fournir
+  private
+  
+  # parametres d'ajout
+  def question_params
+
+      params.permit(:id_question, :intitule, :estObligatoire, :ordre, :etat, :id_sondage, :numerosDeQuestions)
+  end
+
+  # parametres de suppression
+  def question_param_delete
+    params.permit(:etat)
+  end
+
+
+
+  
+end

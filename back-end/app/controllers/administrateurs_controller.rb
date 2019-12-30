@@ -11,27 +11,22 @@
 
 class AdministrateursController < ApplicationController
 
-    # Afficher la liste des admins
+    # selectionner que les admins non supprimés (etat=false)
     def index
-      administrateurs = Administrateur.order('created_at ASC');
+      administrateurs = Administrateur.where(etat: false).order('created_at ASC');
       render json: {status: 'SUCCESS', message: 'Loaded Administrateurs', data:administrateurs}, status: :ok
     end
   
     # Afficher un admin par ID
     def show
-  
-      begin
-  
-        administrateur = Administrateur.find(params[:id]);
-        render json: {status: 'SUCCESS', message: 'Loaded Administrateur', data:administrateur}, status: :ok
-  
-      rescue ActiveRecord::RecordNotFound => e
-        render json: {
-          status: 'ERROR',
-          error: e.to_s
-        }, status: :not_found    
-  
-      end
+    
+        administrateur = Administrateur.find_by(id_administrateur: params[:id], etat: false);
+
+        if administrateur != nil
+          render json: {status: 'SUCCESS', message: 'Loaded Administrateur', data:administrateur}, status: :ok
+        else
+          render json: {status: 'ERROR', message: 'Administrateur not found'}, status: :not_found
+        end
   
     end
   
@@ -43,52 +38,34 @@ class AdministrateursController < ApplicationController
       if administrateur.save
         render json: {status: 'SUCCESS', message: 'Saved Administrateur', data:administrateur}, status: :ok
       else
-        render json: {status: 'ERROR', message: 'Administrateur not saved', data:nil}, status: :unprocessable_entity
+        render json: {status: 'ERROR', message: 'Administrateur not saved'}, status: :unprocessable_entity
       end
   
     end
   
     # Modifier un admin
     def update
-        
-      begin 
+          
+      administrateur = Administrateur.find_by(id_administrateur: params[:id], etat: false);
   
-      administrateur = Administrateur.find(params[:id])
-  
-      if administrateur.update_attributes(administrateur_params)
+      if administrateur != nil && administrateur.update_attributes(administrateur_params)
         render json: {status: 'SUCCESS', message: 'Updated Administrateur', data:administrateur}, status: :ok
       else
-        render json: {status: 'ERROR', message: 'Administrateur not updated', data:nil}, status: :unprocessable_entity
+        render json: {status: 'ERROR', message: 'Administrateur not updated'}, status: :not_found
       end
-  
-      rescue ActiveRecord::RecordNotFound => e
-        render json: {
-          status: 'ERROR',
-          error: e.to_s
-        }, status: :not_found    
-      end
+
   
     end
   
     # Supprimer un admin par ID
     def delete
+    
+      administrateur = Administrateur.find_by(id_administrateur: params[:id], etat: false);
   
-      begin
-  
-      administrateur = Administrateur.find(params[:id])
-  
-      if administrateur.update_attributes(administrateur_param_delete)
+      if administrateur != nil && administrateur.update_attributes(administrateur_param_delete)
         render json: {status: 'SUCCESS', message: 'Deleted Administrateur', data:administrateur}, status: :ok
       else
-        render json: {status: 'ERROR', message: 'Administrateur not Deleted', data:Administrateur.errors}, status: :unprocessable_entity
-      end
-  
-      rescue ActiveRecord::RecordNotFound => e
-        render json: {
-          status: 'ERROR',
-          error: e.to_s
-        }, status: :not_found
-  
+        render json: {status: 'ERROR', message: 'Administrateur not Deleted'}, status: :not_found
       end
   
     end
