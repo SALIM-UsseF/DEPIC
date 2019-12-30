@@ -26,17 +26,12 @@ Rails.application.routes.draw do
 
   #routes pour participer
   get 'participations' => 'participers#index'
-  get 'participation/:id' => 'participers#show'
+  get 'participationBySondage/:id' => 'participers#showParticipationBySondage'
+  get 'participationByUserAndSondage/:idUser/:idSondage' => 'participers#showParticipationByUserAndSondage'
+  get 'participationByQuestionAndSondage/:idQuestion/:idSondage' => 'participers#showParticipationByQuestionAndSondage'
   post 'newParticipation' => 'participers#create'
-  put 'updateParticipation/:id' => 'participers#update'
-  put 'deleteParticipation/:id' => 'participers#delete'
-
-  #routes pour question
-  get 'questions' => 'questions#index'
-  get 'question/:id' => 'questions#show'
-  post 'newQuestion' => 'questions#create'
-  put 'updateQuestion/:id' => 'questions#update'
-  put 'deleteQuestion/:id' => 'questions#delete'
+  put 'updateParticipation/:idUser/:idSondage/:idQuestion' => 'participers#update'
+  put 'deleteParticipation/:idUser/:idSondage/:idQuestion' => 'participers#delete'
 
 
   #routes pour question ouverte
