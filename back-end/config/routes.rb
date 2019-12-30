@@ -64,5 +64,10 @@ Rails.application.routes.draw do
   put 'updateGroupeQuestions/:id' => 'groupequestions#update'
   put 'deleteGroupeQuestions/:id' => 'groupequestions#delete'
 
+  #route home page
+  get '/' => 'application#index'
+  #no matches route
+  get '*path' => redirect('/')
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
