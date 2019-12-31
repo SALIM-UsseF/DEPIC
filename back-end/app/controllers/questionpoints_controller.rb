@@ -2,7 +2,7 @@
 #   question points Controller
 # #############################
 #
-# Expose des service REST :
+# Expose des services REST :
 #   - Afficher la liste des questions points
 #   - Afficher une question points par ID
 #   - Creer une nouvelle question points 
@@ -14,7 +14,7 @@ class QuestionpointsController < ApplicationController
   # Afficher la liste des questions points
   def index
     questions = QuestionPoint.where(etat: false).order('created_at ASC');
-    render json: {status: 'SUCCESS', message:'Loaded questions', data:questions},status: :ok
+    render json: questions, status: :ok
   end
 
 
@@ -24,7 +24,7 @@ class QuestionpointsController < ApplicationController
   questions = QuestionPoint.find_by(id_question: params[:id], etat: false);
 
   if questions != nil
-    render json: {status: 'SUCCESS', message: 'Loaded QuestionPoint', data:questions}, status: :ok
+    render json: questions, status: :ok
   else
     render json: {status: 'ERROR', message: 'QuestionPoint not found'}, status: :not_found
   end
@@ -37,7 +37,7 @@ def create
 questions = QuestionPoint.new(question_params)
 
 if questions.save
-  render json: {status: 'SUCCESS', message: 'Saved QuestionPoint', data:questions}, status: :ok
+  render json: questions, status: :ok
 else
   render json: {status: 'ERROR', message: 'QuestionPoint not saved'}, status: :unprocessable_entity
 end
@@ -50,7 +50,7 @@ def update
 questions = QuestionPoint.find_by(id_question: params[:id], etat: false);
 
 if questions != nil && questions.update_attributes(question_params)
-  render json: {status: 'SUCCESS', message: 'Updated QuestionPoint', data:questions}, status: :ok
+  render json: questions, status: :ok
 else
   render json: {status: 'ERROR', message: 'QuestionPoint not updated'}, status: :not_found
 end
@@ -64,7 +64,7 @@ def delete
 questions = QuestionPoint.find_by(id_question: params[:id], etat: false);
 
 if questions != nil && questions.update_attributes(question_param_delete)
-  render json: {status: 'SUCCESS', message: 'Deleted QuestionPoint', data:questions}, status: :ok
+  render json: questions, status: :ok
 else
   render json: {status: 'ERROR', message: 'QuestionPoint not Deleted'}, status: :not_found
 end
