@@ -5,9 +5,8 @@ class CreateParticipers < ActiveRecord::Migration[5.2]
       t.integer :id_sondage
       t.integer :id_question
       t.text :reponse, :null => false
+      t.boolean :etat, :default => false, :null => false
       t.timestamps
-      t.boolean :etat
-      
     end
   end
 end

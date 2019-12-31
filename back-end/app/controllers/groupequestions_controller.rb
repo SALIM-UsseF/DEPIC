@@ -77,8 +77,7 @@ end
   
   # parametres d'ajout
   def question_params
-
-      params.permit(:id_question, :intitule, :estObligatoire, :ordre, :etat, :id_sondage, :numerosDeQuestions)
+      params.permit(:id_question, :intitule, :estObligatoire, :ordre, :sondage_id, :numerosDeQuestions)
   end
 
   # parametres de suppression

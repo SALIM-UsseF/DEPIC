@@ -7,11 +7,9 @@ class CreateQuestionPoints < ActiveRecord::Migration[5.2]
       t.text :intitule, :null => false
       t.boolean :estObligatoire
       t.integer :ordre, :default => 0, :null => false
-      t.timestamps
-      t.boolean :etat
+      t.boolean :etat, :default => false, :null => false
       t.references :sondage, index: true
-
-      
+      t.timestamps     
     end
     add_foreign_key :question_points, :sondages, column: :sondage_id, primary_key: "id_sondage"
   end
