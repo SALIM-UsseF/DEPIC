@@ -33,7 +33,7 @@ end
 # Creer un nouveau Sondage
 def create
   
-  sondages = Sondage.new(question_params)
+  sondages = Sondage.new(sondage_params)
 
   if sondages.save
     render json: sondages, status: :ok
@@ -76,8 +76,7 @@ end
   
   # parametres d'ajout
   def sondage_params
-
-      params.permit(:intituleSondage, :descriptionSondage, :etat, :id_administrateur)
+      params.permit(:intituleSondage, :descriptionSondage, :id_administrateur)
   end
 
   # parametres de suppression

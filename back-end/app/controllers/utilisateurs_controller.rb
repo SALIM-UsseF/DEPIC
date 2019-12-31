@@ -33,7 +33,7 @@ end
 # Creer un nouveau Utilisateur
 def create
   
-  utilisateurs = Utilisateur.new(question_params)
+  utilisateurs = Utilisateur.new(utilisateur_params)
 
   if utilisateurs.save
     render json: utilisateurs, status: :ok
@@ -76,8 +76,7 @@ end
   
   # parametres d'ajout
   def utilisateur_params
-
-      params.permit(:email, :adresseIp, :etat)
+      params.permit(:email, :adresseIp)
   end
 
   # parametres de suppression

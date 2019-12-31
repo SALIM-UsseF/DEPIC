@@ -56,7 +56,7 @@ class ParticipersController < ApplicationController
 
   end
 
-  # Creer un nouveau Participer
+  # Creer une participation
   def create
 
   participations = Participer.new(participer_params)
@@ -102,7 +102,7 @@ class ParticipersController < ApplicationController
   
   # parametres d'ajout
   def participer_params
-      params.permit(:id_utilisateur, :id_sondage, :id_question, :reponse, :etat)
+      params.permit(:id_utilisateur, :id_sondage, :id_question, :reponse)
   end
 
   # parametres de suppression

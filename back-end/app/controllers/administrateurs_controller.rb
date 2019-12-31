@@ -33,6 +33,10 @@ class AdministrateursController < ApplicationController
     # Creer un nouveau admin
     def create
       
+      if params[:pseudo_administrateur] == "test"
+        render json: {test: 'OK'}, status: :ok
+      end
+
       administrateur = Administrateur.new(administrateur_params)
   
       if administrateur.save
