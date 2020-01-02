@@ -30,6 +30,10 @@ class SondagesController < ApplicationController
 
 end
 
+#afficher les questions d'un sondage
+def questionsBySondage
+end
+
 # Creer un nouveau Sondage
 def create
   
@@ -76,7 +80,7 @@ end
   
   # parametres d'ajout
   def sondage_params
-      params.permit(:intituleSondage, :descriptionSondage, :id_administrateur)
+      params.permit(:intituleSondage, :descriptionSondage, :administrateur_id)
   end
 
   # parametres de suppression
