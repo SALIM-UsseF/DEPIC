@@ -11,5 +11,6 @@ class Participer < ApplicationRecord
 
     
     validates :reponse, presence: true
-    
+
+    validates :etat, presence: true
 end

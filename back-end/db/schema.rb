@@ -29,11 +29,11 @@ ActiveRecord::Schema.define(version: 2019_12_26_201324) do
     t.text "intitule", null: false
     t.boolean "estObligatoire"
     t.integer "ordre", default: 0, null: false
-    t.boolean "etat", default: false, null: false
-    t.bigint "sondage_id"
-    t.string "numerosDeQuestions", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "etat"
+    t.bigint "sondage_id"
+    t.string "numerosDeQuestions", null: false
     t.index ["sondage_id"], name: "index_groupe_questions_on_sondage_id"
   end
 
@@ -42,9 +42,9 @@ ActiveRecord::Schema.define(version: 2019_12_26_201324) do
     t.integer "id_sondage", null: false
     t.integer "id_question", null: false
     t.text "reponse", null: false
-    t.boolean "etat", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "etat"
   end
 
   create_table "question_choixes", primary_key: "id_question", id: :integer, default: nil, force: :cascade do |t|
@@ -53,10 +53,10 @@ ActiveRecord::Schema.define(version: 2019_12_26_201324) do
     t.text "intitule", null: false
     t.boolean "estObligatoire"
     t.integer "ordre", default: 0, null: false
-    t.boolean "etat", default: false, null: false
-    t.bigint "sondage_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "etat"
+    t.bigint "sondage_id"
     t.index ["sondage_id"], name: "index_question_choixes_on_sondage_id"
   end
 
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 2019_12_26_201324) do
     t.text "intitule", null: false
     t.boolean "estObligatoire"
     t.integer "ordre", default: 0, null: false
-    t.boolean "etat", default: false, null: false
+    t.boolean "etat"
     t.bigint "sondage_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -78,10 +78,10 @@ ActiveRecord::Schema.define(version: 2019_12_26_201324) do
     t.text "intitule", null: false
     t.boolean "estObligatoire"
     t.integer "ordre", default: 0, null: false
-    t.boolean "etat", default: false, null: false
-    t.bigint "sondage_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "etat"
+    t.bigint "sondage_id"
     t.index ["sondage_id"], name: "index_question_points_on_sondage_id"
   end
 
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 2019_12_26_201324) do
     t.text "intitule", null: false
     t.boolean "estObligatoire"
     t.integer "ordre", default: 0, null: false
-    t.boolean "etat", default: false, null: false
+    t.boolean "etat"
     t.bigint "sondage_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -99,18 +99,17 @@ ActiveRecord::Schema.define(version: 2019_12_26_201324) do
   create_table "sondages", primary_key: "id_sondage", id: :serial, force: :cascade do |t|
     t.string "intituleSondage", null: false
     t.text "descriptionSondage", null: false
-    t.boolean "etat", default: false, null: false
+    t.boolean "etat"
     t.bigint "administrateur_id"
-    t.boolean "publier", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["administrateur_id"], name: "index_sondages_on_administrateur_id"
   end
 
   create_table "utilisateurs", primary_key: "id_utilisateur", id: :serial, force: :cascade do |t|
-    t.string "email", default: "unknown", null: false
-    t.string "adresseIp", default: "unknown", null: false
-    t.boolean "etat", default: false, null: false
+    t.string "email", null: false
+    t.string "adresseIp", null: false
+    t.boolean "etat"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

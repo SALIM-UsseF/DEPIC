@@ -3,7 +3,7 @@
   #   Groupequestions Controller
   # #############################
   #
-  # Expose des services REST :
+  # Expose des service REST :
   #   - Afficher la liste des groupes de questions
   #   - Afficher un groupe de question par ID
   #   - Creer un nouveau groupe de question
@@ -15,7 +15,7 @@
   # Afficher la liste des GroupeQuestion
   def index
     questions = GroupeQuestion.where(etat: false).order('created_at ASC');
-    render json: questions, status: :ok
+    render json: {status: 'SUCCESS', message:'Loaded questions', data:questions},status: :ok
   end
 
 
@@ -25,7 +25,7 @@
     questions = GroupeQuestion.find_by(id_question: params[:id], etat: false);
 
     if questions != nil
-      render json: questions, status: :ok
+      render json: {status: 'SUCCESS', message: 'Loaded GroupeQuestion', data:questions}, status: :ok
     else
       render json: {status: 'ERROR', message: 'GroupeQuestion not found'}, status: :not_found
     end
@@ -38,7 +38,7 @@ def create
   questions = GroupeQuestion.new(question_params)
 
   if questions.save
-    render json: questions, status: :ok
+    render json: {status: 'SUCCESS', message: 'Saved GroupeQuestion', data:questions}, status: :ok
   else
     render json: {status: 'ERROR', message: 'GroupeQuestion not saved'}, status: :unprocessable_entity
   end
@@ -51,7 +51,7 @@ def update
   questions = GroupeQuestion.find_by(id_question: params[:id], etat: false);
 
   if questions != nil && questions.update_attributes(question_params)
-    render json: questions, status: :ok
+    render json: {status: 'SUCCESS', message: 'Updated GroupeQuestion', data:questions}, status: :ok
   else
     render json: {status: 'ERROR', message: 'GroupeQuestion not updated'}, status: :not_found
   end
@@ -65,7 +65,7 @@ def delete
   questions = GroupeQuestion.find_by(id_question: params[:id], etat: false);
 
   if questions != nil && questions.update_attributes(question_param_delete)
-    render json: questions, status: :ok
+    render json: {status: 'SUCCESS', message: 'Deleted GroupeQuestion', data:questions}, status: :ok
   else
     render json: {status: 'ERROR', message: 'GroupeQuestion not Deleted'}, status: :not_found
   end
@@ -77,7 +77,8 @@ end
   
   # parametres d'ajout
   def question_params
-      params.permit(:id_question, :intitule, :estObligatoire, :ordre, :sondage_id, :numerosDeQuestions)
+
+      params.permit(:id_question, :intitule, :estObligatoire, :ordre, :etat, :id_sondage, :numerosDeQuestions)
   end
 
   # parametres de suppression

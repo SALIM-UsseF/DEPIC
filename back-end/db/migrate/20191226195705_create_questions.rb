@@ -5,7 +5,7 @@ class CreateQuestions < ActiveRecord::Migration[5.2]
       t.text :intitule, :null => false
       t.boolean :estObligatoire
       t.integer :ordre, :default => 0, :null => false
-      t.boolean :etat, :default => false, :null => false
+      t.boolean :etat
       t.references :sondage, index: true
       t.timestamps
     end
