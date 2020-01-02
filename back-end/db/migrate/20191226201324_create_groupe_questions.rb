@@ -6,10 +6,14 @@ class CreateGroupeQuestions < ActiveRecord::Migration[5.2]
       t.text :intitule, :null => false
       t.boolean :estObligatoire
       t.integer :ordre, :default => 0, :null => false
-      t.boolean :etat, :default => false, :null => false
+      t.timestamps
+      t.boolean :etat
       t.references :sondage, index: true
       t.string :numerosDeQuestions, :null => false
-      t.timestamps
+
+
+
+      
     end
     add_foreign_key :groupe_questions, :sondages, column: :sondage_id, primary_key: "id_sondage"
   end

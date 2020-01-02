@@ -2,7 +2,7 @@
 #   Participer Controller
 # #############################
 #
-# Expose des services REST :
+# Expose des service REST :
 #   - Afficher la liste des participations
 #   - Afficher une participation par ID
 #   - Creer une nouvelle participation
@@ -14,7 +14,7 @@ class ParticipersController < ApplicationController
   # Afficher la liste des participations par sondage
   def index
     participations = Participer.where(etat: false).order('created_at ASC, id_sondage DESC');
-    render json: participations, status: :ok
+    render json: {status: 'SUCCESS', message:'Loaded Participations', data:participations},status: :ok
   end
 
   # Afficher les participations d'un sondage
@@ -23,7 +23,7 @@ class ParticipersController < ApplicationController
     participations = Participer.find_by(id_sondage: params[:id], etat: false);
 
     if participations != nil
-      render json: participations, status: :ok
+      render json: {status: 'SUCCESS', message: 'Loaded Participation', data:participations}, status: :ok
     else
       render json: {status: 'ERROR', message: 'Participation not found'}, status: :not_found
     end
@@ -36,7 +36,7 @@ class ParticipersController < ApplicationController
     participations = Participer.find_by(id_utilisateur: params[:idUser], id_sondage: params[:idSondage], etat: false);
 
     if participations != nil
-      render json: participations, status: :ok
+      render json: {status: 'SUCCESS', message: 'Loaded Participation', data:participations}, status: :ok
     else
       render json: {status: 'ERROR', message: 'Participation not found'}, status: :not_found
     end
@@ -49,20 +49,20 @@ class ParticipersController < ApplicationController
     participations = Participer.find_by(id_question: params[:idQuestion], id_sondage: params[:idSondage], etat: false);
 
     if participations != nil
-      render json: participations, status: :ok
+      render json: {status: 'SUCCESS', message: 'Loaded Participation', data:participations}, status: :ok
     else
       render json: {status: 'ERROR', message: 'Participation not found'}, status: :not_found
     end
 
   end
 
-  # Creer une participation
+  # Creer un nouveau Participer
   def create
 
   participations = Participer.new(participer_params)
 
   if participations.save
-    render json: participations, status: :ok
+    render json: {status: 'SUCCESS', message: 'Saved Participation', data:participations}, status: :ok
   else
     render json: {status: 'ERROR', message: 'Participation not saved'}, status: :unprocessable_entity
   end
@@ -75,7 +75,7 @@ class ParticipersController < ApplicationController
   participations = Participer.find_by(id_utilisateur: params[:idUser], id_sondage: params[:idSondage], id_question: params[:idQuestion], etat: false);
 
   if participations != nil && participations.update_attributes(participer_params)
-    render json: participations, status: :ok
+    render json: {status: 'SUCCESS', message: 'Updated Participation', data:participations}, status: :ok
   else
     render json: {status: 'ERROR', message: 'Participation not updated'}, status: :not_found
   end
@@ -89,7 +89,7 @@ class ParticipersController < ApplicationController
   participations = Participer.find_by(id_utilisateur: params[:idUser], id_sondage: params[:idSondage], id_question: params[:idQuestion], etat: false);
 
   if participations != nil && participations.update_attributes(participer_param_delete)
-    render json: participations, status: :ok
+    render json: {status: 'SUCCESS', message: 'Deleted Participation', data:participations}, status: :ok
   else
     render json: {status: 'ERROR', message: 'Participation not Deleted'}, status: :not_found
   end
@@ -102,7 +102,7 @@ class ParticipersController < ApplicationController
   
   # parametres d'ajout
   def participer_params
-      params.permit(:id_utilisateur, :id_sondage, :id_question, :reponse)
+      params.permit(:id_utilisateur, :id_sondage, :id_question, :reponse, :etat)
   end
 
   # parametres de suppression
