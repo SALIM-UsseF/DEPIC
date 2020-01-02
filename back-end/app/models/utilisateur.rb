@@ -1,8 +1,4 @@
 class Utilisateur < ApplicationRecord
-
-    validates :email, presence: true
-    validates :adresseIp, presence: true
-
-    validates :etat, presence: true
-
+    validates :email, presence: false
+    validates :adresseIp, presence: false
 end
