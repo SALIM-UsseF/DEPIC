@@ -2,7 +2,7 @@
 #   question ouverte Controller
 # #############################
 #
-# Expose des service REST :
+# Expose des services REST :
 #   - Afficher la liste des questions ouvertes
 #   - Afficher une question ouverte par ID
 #   - Creer une nouvelle question ouverte 
@@ -13,8 +13,8 @@ class QuestionouvertesController < ApplicationController
   
   # Afficher la liste des questions ouvertes
   def index
-    questions = QuestionOuverte.where(etat: false).order('created_at ASC');
-    render json: {status: 'SUCCESS', message:'Loaded questions', data:questions},status: :ok
+    questions = QuestionOuverte.where(etat: false).order('sondage_id ASC, ordre ASC');
+    render json: questions, status: :ok
   end
 
 
@@ -24,9 +24,9 @@ class QuestionouvertesController < ApplicationController
     questions = QuestionOuverte.find_by(id_question: params[:id], etat: false);
 
     if questions != nil
-      render json: {status: 'SUCCESS', message: 'Loaded QuestionOuverte', data:questions}, status: :ok
+      render json: questions, status: :ok
     else
-      render json: {status: 'ERROR', message: 'QuestionOuverte not found'}, status: :not_found
+      render json: nil, status: :not_found
     end
 
 end
@@ -37,9 +37,9 @@ def create
   questions = QuestionOuverte.new(question_params)
 
   if questions.save
-    render json: {status: 'SUCCESS', message: 'Saved QuestionOuverte', data:questions}, status: :ok
+    render json: questions, status: :ok
   else
-    render json: {status: 'ERROR', message: 'QuestionOuverte not saved'}, status: :unprocessable_entity
+    render json: nil, status: :unprocessable_entity
   end
 
 end
@@ -50,9 +50,9 @@ def update
   questions = QuestionOuverte.find_by(id_question: params[:id], etat: false);
 
   if questions != nil && questions.update_attributes(question_params)
-    render json: {status: 'SUCCESS', message: 'Updated QuestionOuverte', data:questions}, status: :ok
+    render json: questions, status: :ok
   else
-    render json: {status: 'ERROR', message: 'QuestionOuverte not updated'}, status: :not_found
+    render json: nil, status: :not_found
   end
 
 
@@ -64,21 +64,19 @@ def delete
   questions = QuestionOuverte.find_by(id_question: params[:id], etat: false);
 
   if questions != nil && questions.update_attributes(question_param_delete)
-    render json: {status: 'SUCCESS', message: 'Deleted QuestionOuverte', data:questions}, status: :ok
+    render json: questions, status: :ok
   else
-    render json: {status: 'ERROR', message: 'QuestionOuverte not Deleted'}, status: :not_found
+    render json: nil, status: :not_found
   end
 
 end
 
   # Liste des parametres à fournir
-
   private
-  
+
   # parametres d'ajout
   def question_params
-
-      params.permit(:id_question, :nombreDeCaractere, :intitule, :estObligatoire, :ordre, :etat, :id_sondage)
+      params.permit(:intitule, :estObligatoire, :nombreDeCaractere, :ordre, :sondage_id)
   end
 
   # parametres de suppression
