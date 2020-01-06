@@ -78,9 +78,10 @@ Rails.application.routes.draw do
 
 
 ##########################                    "PARTIE MOBILE"                    #####################
+  post 'newUser' => 'utilisateurs#create' # Creer un utilisateur afin de repondre aux sondages publiés => {email, adresseIp}
   get 'sondagesPublies' => 'sondages#showSondagesPublies' # Fournir la listes des sondages publies
   get 'sondagePublie/:idSondage' => 'sondages#showSondagePublie' # Fournir un sondage donné par son id => id du sondage
-  post 'repondre' => 'participers#repondreSondagePublie' # Le post contient les éléments suivants => id_utilisateur, id_sondage, id_question, reponse
+  post 'repondre' => 'participers#repondreSondagePublie' # Le post contient les éléments suivants => {utilisateur_id, sondage_id, question_id, reponse}
   get 'questionsDuSondage/:idSondage' => 'questions#questionsDuSondage' # Afficher les questions d'un sondage publié par l'id du sondage
   get 'questionDuSondage/:idSondage/:idQuestion' => 'questions#questionDuSondage' # Afficher une question d'un sondage publié par l'id du sondage et l'id question
 ##########################                    "END PARTIE MOBILE"                #####################
