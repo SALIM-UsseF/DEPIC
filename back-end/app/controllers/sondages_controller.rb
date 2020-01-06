@@ -2,13 +2,19 @@
 #   Sondage Controller
 # #############################
 #
-# Expose des services REST :
+# Expose des services REST sous format Json:
 #   - Afficher la liste des sondages 
 #   - Afficher un sondage par ID
 #   - Creer une nouveau sondage
 #   - Modifier un sondage 
 #   - Supprimer un sondage par ID
-#   - Actions pour la partie Mobile
+#   - Activer les resultats d'un Sondage
+#   - Publier un Sondage
+#   - Actions pour la partie Mobile :
+#     - Afficher les Sondages publiés
+#     - Afficher un Sondage publié
+
+# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
 class SondagesController < ApplicationController
   
@@ -49,7 +55,7 @@ def update
       
   sondages = Sondage.find_by(id_sondage: params[:id], etat: false);
 
-  if sondages != nil && sondages.update_attributes(sondage_params)
+  if sondages != nil && sondages.update_attributes(up_sondage_params)
     render json: sondages, status: :ok
   else
     render json: nil, status: :not_found
@@ -134,6 +140,11 @@ private
 # parametres d'ajout
 def sondage_params
     params.permit(:intituleSondage, :descriptionSondage, :administrateur_id)
+end
+
+# parametres de modification
+def up_sondage_params
+  params.permit(:intituleSondage, :descriptionSondage, :publier, :resultats)
 end
 
 # parametres de suppression

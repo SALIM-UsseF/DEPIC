@@ -1,3 +1,14 @@
+################################
+#   Participer Model
+# #############################
+#   integer - id_utilisateur
+#   integer - id_sondage
+#   integer - id_question
+#   text - reponse
+#   boolean - etat
+#   datetime - created_at
+#   datetime - updated_at
+
 class Participer < ApplicationRecord
 
     self.primary_key = "id_utilisateur"
