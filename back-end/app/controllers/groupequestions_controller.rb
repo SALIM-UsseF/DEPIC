@@ -1,13 +1,15 @@
-################################
+  ################################
   #   Groupequestions Controller
   # #############################
   #
-  # Expose des services REST :
+  # Expose des services REST sous format Json:
   #   - Afficher la liste des groupes de questions
   #   - Afficher un groupe de question par ID
   #   - Creer un nouveau groupe de question
   #   - Modifier un groupe de question
   #   - Supprimer un groupe de question par ID
+
+  # Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
   class GroupequestionsController < ApplicationController
     

@@ -1,13 +1,15 @@
 ################################
-#   question points Controller
+#   Question points Controller
 # #############################
 #
-# Expose des services REST :
+# Expose des services REST sous format Json:
 #   - Afficher la liste des questions points
 #   - Afficher une question points par ID
 #   - Creer une nouvelle question points 
 #   - Modifier une question points
 #   - Supprimer une question points par ID
+
+# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
 class QuestionpointsController < ApplicationController
   
@@ -18,7 +20,7 @@ class QuestionpointsController < ApplicationController
   end
 
 
- # Afficher un QuestionPoint par ID
+ # Afficher une QuestionPoint par ID
  def show
 
   questions = QuestionPoint.find_by(id_question: params[:id], etat: false);
@@ -31,7 +33,7 @@ class QuestionpointsController < ApplicationController
 
 end
 
-# Creer un nouveau QuestionPoint
+# Creer une nouvelle QuestionPoint
 def create
 
 questions = QuestionPoint.new(question_params)
@@ -44,7 +46,7 @@ end
 
 end
 
-# Modifier un QuestionPoint
+# Modifier une QuestionPoint
 def update
     
 questions = QuestionPoint.find_by(id_question: params[:id], etat: false);
@@ -58,7 +60,7 @@ end
 
 end
 
-# Supprimer un QuestionPoint par ID
+# Supprimer une QuestionPoint par ID
 def delete
 
 questions = QuestionPoint.find_by(id_question: params[:id], etat: false);
