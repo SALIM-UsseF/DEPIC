@@ -7,10 +7,10 @@ class Participer < ApplicationRecord
     belongs_to :sondage, foreign_key: "id_sondage"
 
     self.primary_key = "id_question"
-    belongs_to :sondage, foreign_key: "id_question"
+    belongs_to :question, foreign_key: "id_question"
 
-    
-    validates :reponse, presence: true
+    validates :id_utilisateur, presence: true
+    validates :id_sondage, presence: true
+    validates :id_question, presence: true
 
-    validates :etat, presence: true
 end

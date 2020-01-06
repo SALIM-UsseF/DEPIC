@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
 
+
+  ##########################                    "PARTIE FRONT-END"             #####################
+
   #routes pour l'Administrateur
   get 'admins' => 'administrateurs#index'
   get 'admin/:id' => 'administrateurs#show'
@@ -13,6 +16,8 @@ Rails.application.routes.draw do
   get 'sondage/:id' => 'sondages#show'
   post 'newSondage' => 'sondages#create'
   put 'updateSondage/:id' => 'sondages#update'
+  put 'publierSondage/:id' => 'sondages#publierSondage'
+  put 'activerResultats/:id' => 'sondages#activerResultats'
   put 'deleteSondage/:id' => 'sondages#delete'
 
 
@@ -29,9 +34,15 @@ Rails.application.routes.draw do
   get 'participationBySondage/:id' => 'participers#showParticipationBySondage'
   get 'participationByUserAndSondage/:idUser/:idSondage' => 'participers#showParticipationByUserAndSondage'
   get 'participationByQuestionAndSondage/:idQuestion/:idSondage' => 'participers#showParticipationByQuestionAndSondage'
-  post 'newParticipation' => 'participers#create'
+  #post 'newParticipation' => 'participers#create'
   put 'updateParticipation/:idUser/:idSondage/:idQuestion' => 'participers#update'
   put 'deleteParticipation/:idUser/:idSondage/:idQuestion' => 'participers#delete'
+
+
+  #routes pour question
+  get 'questions' => 'questions#index'
+  get 'question/:id' => 'questions#show'
+  get 'questionsBySondage/:id' => 'questions#showBySondage'
 
 
   #routes pour question ouverte
@@ -63,6 +74,18 @@ Rails.application.routes.draw do
   post 'newGroupeQuestions' => 'groupequestions#create'
   put 'updateGroupeQuestions/:id' => 'groupequestions#update'
   put 'deleteGroupeQuestions/:id' => 'groupequestions#delete'
+##########################                    "END PARTIE FRONT-END"             #####################
+
+
+##########################                    "PARTIE MOBILE"                    #####################
+  post 'newUser' => 'utilisateurs#create' # Creer un utilisateur afin de repondre aux sondages publiés => {email, adresseIp}
+  get 'sondagesPublies' => 'sondages#showSondagesPublies' # Fournir la listes des sondages publies
+  get 'sondagePublie/:idSondage' => 'sondages#showSondagePublie' # Fournir un sondage donné par son id => id du sondage
+  post 'repondre' => 'participers#repondreSondagePublie' # Le post contient les éléments suivants => {utilisateur_id, sondage_id, question_id, reponse}
+  get 'questionsDuSondage/:idSondage' => 'questions#questionsDuSondage' # Afficher les questions d'un sondage publié par l'id du sondage
+  get 'questionDuSondage/:idSondage/:idQuestion' => 'questions#questionDuSondage' # Afficher une question d'un sondage publié par l'id du sondage et l'id question
+##########################                    "END PARTIE MOBILE"                #####################
+
 
   #route home page
   get '/' => 'application#index'

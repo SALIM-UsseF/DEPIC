@@ -2,7 +2,7 @@
 #   question choix Controller
 # #############################
 #
-# Expose des service REST :
+# Expose des services REST :
 #   - Afficher la liste des questions choix 
 #   - Afficher une question choix par ID
 #   - Creer une nouvelle question choix 
@@ -10,11 +10,12 @@
 #   - Supprimer une question choix par ID
 
 class QuestionchoixesController < ApplicationController
+
   
   # Afficher la liste des questions choix
   def index
-    questions = QuestionChoix.where(etat: false).order('created_at ASC');
-    render json: {status: 'SUCCESS', message:'Loaded questions', data:questions},status: :ok
+    questions = QuestionChoix.where(etat: false).order('sondage_id ASC, ordre ASC');
+    render json: questions, status: :ok
   end
 
 
@@ -24,9 +25,9 @@ class QuestionchoixesController < ApplicationController
     questions = QuestionChoix.find_by(id_question: params[:id], etat: false);
 
     if questions != nil
-      render json: {status: 'SUCCESS', message: 'Loaded QuestionChoix', data:questions}, status: :ok
+      render json: questions, status: :ok
     else
-      render json: {status: 'ERROR', message: 'QuestionChoix not found'}, status: :not_found
+      render json: nil, status: :not_found
     end
 
 end
@@ -37,9 +38,9 @@ def create
   questions = QuestionChoix.new(question_params)
 
   if questions.save
-    render json: {status: 'SUCCESS', message: 'Saved QuestionChoix', data:questions}, status: :ok
+    render json: questions, status: :ok
   else
-    render json: {status: 'ERROR', message: 'QuestionChoix not saved'}, status: :unprocessable_entity
+    render json: nil, status: :unprocessable_entity
   end
 
 end
@@ -50,9 +51,9 @@ def update
   questions = QuestionChoix.find_by(id_question: params[:id], etat: false);
 
   if questions != nil && questions.update_attributes(question_params)
-    render json: {status: 'SUCCESS', message: 'Updated QuestionChoix', data:questions}, status: :ok
+    render json: questions, status: :ok
   else
-    render json: {status: 'ERROR', message: 'QuestionChoix not updated'}, status: :not_found
+    render json: nil, status: :not_found
   end
 
 
@@ -64,21 +65,19 @@ def delete
   questions = QuestionChoix.find_by(id_question: params[:id], etat: false);
 
   if questions != nil && questions.update_attributes(question_param_delete)
-    render json: {status: 'SUCCESS', message: 'Deleted QuestionChoix', data:questions}, status: :ok
+    render json: questions, status: :ok
   else
-    render json: {status: 'ERROR', message: 'QuestionChoix not Deleted'}, status: :not_found
+    render json: nil, status: :not_found
   end
 
 end
 
   # Liste des parametres à fournir
-
   private
   
   # parametres d'ajout
   def question_params
-
-      params.permit(:id_question, :estUnique, :lesChoix, :intitule, :estObligatoire, :ordre, :etat, :id_sondage)
+      params.permit(:intitule, :estObligatoire, :estUnique, :lesChoix, :ordre, :sondage_id)
   end
 
   # parametres de suppression
@@ -86,7 +85,4 @@ end
     params.permit(:etat)
   end
 
-
-
-  
 end
