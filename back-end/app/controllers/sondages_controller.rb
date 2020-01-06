@@ -8,6 +8,7 @@
 #   - Creer une nouveau sondage
 #   - Modifier un sondage 
 #   - Supprimer un sondage par ID
+#   - Actions pour la partie Mobile
 
 class SondagesController < ApplicationController
   
@@ -98,7 +99,7 @@ def delete
 end
 
 
-################################## "Actoins pour la partie Mobile" ########################################
+################################## "Actions pour la partie Mobile" ########################################
 # Afficher les Sondages publiés
 def showSondagesPublies
 

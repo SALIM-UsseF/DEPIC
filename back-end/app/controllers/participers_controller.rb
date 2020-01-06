@@ -8,6 +8,7 @@
 #   - Creer une nouvelle participation
 #   - Modifier une participation
 #   - Supprimer une participation par ID
+#   - Actions pour la partie Mobile
 
 class ParticipersController < ApplicationController
   
@@ -96,7 +97,7 @@ class ParticipersController < ApplicationController
 
   end
 
-  ########################################### "Actoins pour la partie Mobile" ############################
+  ########################################### "Actions pour la partie Mobile" ############################
     # Creer une participation pour un sondage publié
     def repondreSondagePublie
 
@@ -104,10 +105,10 @@ class ParticipersController < ApplicationController
       sondage = Sondage.find_by(id_sondage: params[:id_sondage], etat: false, publier: true);
       if sondage != nil
 
-        participations = Participer.new(participer_params)
+        participation = Participer.new(participer_params)
     
-        if participations.save
-          render json: participations, status: :ok
+        if participation.save
+          render json: participation, status: :ok
         else
           render json: nil, status: :unprocessable_entity
         end
@@ -126,7 +127,7 @@ class ParticipersController < ApplicationController
   
   # parametres d'ajout
   def participer_params
-      params.permit(:id_utilisateur, :id_sondage, :id_question, :reponse)
+    params.permit(:id_utilisateur, :id_sondage, :id_question, :reponse)
   end
 
   # parametres de suppression

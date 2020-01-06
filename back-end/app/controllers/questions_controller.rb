@@ -6,6 +6,7 @@
 #   - Afficher la liste des questions
 #   - Afficher une question par ID
 #   - Supprimer une question par ID
+#   - Actions pour la partie Mobile
 
 class QuestionsController < ApplicationController
   
@@ -43,7 +44,7 @@ class QuestionsController < ApplicationController
   end
 
 
-  ########################################### "Actoins pour la partie Mobile" ############################################
+  ########################################### "Actions pour la partie Mobile" ############################################
   # Afficher les questions d'un sondage publié
   def questionsDuSondage
 
