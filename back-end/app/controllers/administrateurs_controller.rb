@@ -2,12 +2,19 @@
 #   Administrateur Controller
 # #############################
 #
-# Expose des services REST :
+# Expose des services REST sous format Json:
 #   - Afficher la liste des admins
 #   - Afficher un admin par ID
 #   - Creer un nouveau admin
 #   - Modifier un admin
+#   - Verifier le login d'un admin
+#   - Verifier le mot de passe d'un admin
 #   - Supprimer un admin par ID
+
+# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
+
+#Pour le CRYPTAGE MD5
+require 'digest'
 
 class AdministrateursController < ApplicationController
 
@@ -33,14 +40,49 @@ class AdministrateursController < ApplicationController
   # Creer un nouveau admin
   def create
 
-    administrateur = Administrateur.new(administrateur_params)
+    psw = params[:motDePasse_administrateur]
 
-    if administrateur.save
-      render json: administrateur, status: :ok
+    if psw != ''
+      md5Psw = Digest::MD5.hexdigest(psw)
+      params[:motDePasse_administrateur] = md5Psw
+
+      administrateur = Administrateur.new(administrateur_params)
+
+      if administrateur.save
+        render json: administrateur, status: :ok
+      else
+        render json: nil, status: :unprocessable_entity
+      end
     else
       render json: nil, status: :unprocessable_entity
-    end
+    end 
 
+  end
+
+  # Verifier le login d'un admin
+  def loginAdmin
+    emailAdmin = params[:email_administrateur]
+    psw = params[:motDePasse_administrateur]
+    if psw != '' && emailAdmin != ''
+      administrateur = Administrateur.find_by(email_administrateur: emailAdmin, motDePasse_administrateur: psw, etat: false);
+      if administrateur != nil
+        render json: administrateur, status: :ok
+      else
+        render json: nil, status: :unprocessable_entity
+      end
+    else
+      render json: nil, status: :unprocessable_entity
+    end 
+  end
+
+  # Verifier le mot de passe d'un admin
+  def checkAdminPassword
+    idAdmin = params[:id_administrateur]
+    psw = params[:motDePasse_administrateur]
+    if psw != '' && idAdmin != nil
+      administrateur = Administrateur.find_by(id_administrateur: idAdmin, motDePasse_administrateur: psw, etat: false);
+      render json: (administrateur != nil), status: :ok
+    end
   end
 
   # Modifier un admin

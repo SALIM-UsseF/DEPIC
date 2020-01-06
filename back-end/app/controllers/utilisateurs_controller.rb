@@ -2,12 +2,14 @@
 #   Utilisateur Controller
 # #############################
 #
-# Expose des services REST :
+# Expose des services REST sous format Json:
 #   - Afficher la liste des utilisateurs 
 #   - Afficher un utilisateur par ID
 #   - Creer une nouveau utilisateur
 #   - Modifier un utilisateur
 #   - Supprimer un utilisateur par ID
+
+# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
 class UtilisateursController < ApplicationController
   

@@ -2,13 +2,18 @@
 #   Participer Controller
 # #############################
 #
-# Expose des services REST :
-#   - Afficher la liste des participations
-#   - Afficher une participation par ID
+# Expose des services REST sout format Json:
+#   - Afficher la liste des participations par sondage
+#   - Afficher les participations d'un sondage
+#   - Afficher les participations d'un utilisateur pour un sondage
+#   - Afficher les participations d'une question pour un sondage
 #   - Creer une nouvelle participation
 #   - Modifier une participation
 #   - Supprimer une participation par ID
-#   - Actions pour la partie Mobile
+#   - Actions pour la partie Mobile :
+#     - Creer une participation pour un sondage publié
+
+# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
 class ParticipersController < ApplicationController
   

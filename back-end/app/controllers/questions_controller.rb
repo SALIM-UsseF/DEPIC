@@ -2,11 +2,16 @@
 #   Questions Controller
 # #############################
 #
-# Expose des services REST :
+# Expose des services REST sous format Json:
 #   - Afficher la liste des questions
 #   - Afficher une question par ID
+#   - Afficher les questions d'un sondage
 #   - Supprimer une question par ID
-#   - Actions pour la partie Mobile
+#   - Actions pour la partie Mobile :
+#     - Afficher les questions d'un sondage publié
+#     - Afficher une question d'un sondage publié
+
+# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
 class QuestionsController < ApplicationController
   

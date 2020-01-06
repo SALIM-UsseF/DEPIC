@@ -1,13 +1,15 @@
 ################################
-#   question ouverte Controller
+#   Question ouverte Controller
 # #############################
 #
-# Expose des services REST :
+# Expose des services REST sous format Json:
 #   - Afficher la liste des questions ouvertes
 #   - Afficher une question ouverte par ID
 #   - Creer une nouvelle question ouverte 
 #   - Modifier une question ouverte
 #   - Supprimer une question ouverte par ID
+
+# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
 class QuestionouvertesController < ApplicationController
   
@@ -18,7 +20,7 @@ class QuestionouvertesController < ApplicationController
   end
 
 
-  # Afficher un QuestionOuverte par ID
+  # Afficher une QuestionOuverte par ID
   def show
 
     questions = QuestionOuverte.find_by(id_question: params[:id], etat: false);
@@ -31,7 +33,7 @@ class QuestionouvertesController < ApplicationController
 
 end
 
-# Creer un nouveau QuestionOuverte
+# Creer une nouvelle QuestionOuverte
 def create
   
   questions = QuestionOuverte.new(question_params)
@@ -44,7 +46,7 @@ def create
 
 end
 
-# Modifier un QuestionOuverte
+# Modifier une QuestionOuverte
 def update
       
   questions = QuestionOuverte.find_by(id_question: params[:id], etat: false);
@@ -58,7 +60,7 @@ def update
 
 end
 
-# Supprimer un QuestionOuverte par ID
+# Supprimer une QuestionOuverte par ID
 def delete
 
   questions = QuestionOuverte.find_by(id_question: params[:id], etat: false);

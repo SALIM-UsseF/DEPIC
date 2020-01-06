@@ -11,10 +11,20 @@
 Administrateur.create({
     pseudo_administrateur: 'admin',
     email_administrateur: 'admin@test.com',
-    motDePasse_administrateur: 'admin', # changer motDePasse : admin par => md5
-    supAdmin: true, # true => l'admin est l'admin principale
-    etat: false # true => l'admin est supprimé 
+    motDePasse_administrateur: '21232f297a57a5a743894a0e4a801fc3',
+    supAdmin: true, # true = admin principale
+    etat: false # true = admin est supprimé 
 })
+
+# Insertion dans la Table utilisateur
+Utilisateur.create({
+	email: "user1@user.com",
+    adresseIp: "30.171.172.52"
+})
+
+# Insertion dans la Table utilisateur => user sans email et adresseIP
+user = Utilisateur.new();
+user.save
 
 ####################################################         "SIMULATION D'UN SONDAGE"        ####################################################
 # Insertion dans la Table Sondage
@@ -24,23 +34,6 @@ Sondage.create({
     Ce bracelet sera composé d’un écran à affichage permanent, lisible en pleine lumière sans rétro-éclairage et d’une zone tactile de contrôle de 25mm de diamètre.",
 	administrateur_id: 1
 })
-
-Sondage.create({
-	intituleSondage: "Sondage Test 2",
-    descriptionSondage: "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression.
-     Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.",
-	administrateur_id: 1
-})
-
-# Insertion dans la Table utilisateur
-Utilisateur.create({
-	email: "user1@user.com",
-    adresseIp: "30.171.172.52"
-})
-
-# Insertion dans la Table utilisateur
-user = Utilisateur.new();
-user.save
 
 #Les questions du sondage N°1
 #Question choix multiple
@@ -167,4 +160,12 @@ QuestionOuverte.create({
 	nombreDeCaractere: 100,
 	ordre: 10,
 	sondage_id: 1
+})
+##############################                  "END SIMULATION SONDAGE"                           ###########################
+
+Sondage.create({
+	intituleSondage: "Sondage Test 2",
+    descriptionSondage: "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression.
+     Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.",
+	administrateur_id: 1
 })

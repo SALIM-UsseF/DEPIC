@@ -1,13 +1,15 @@
 ################################
-#   question choix Controller
+#   Question choix Controller
 # #############################
 #
-# Expose des services REST :
+# Expose des services REST sous format Json:
 #   - Afficher la liste des questions choix 
 #   - Afficher une question choix par ID
 #   - Creer une nouvelle question choix 
 #   - Modifier une question choix
 #   - Supprimer une question choix par ID
+
+# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
 class QuestionchoixesController < ApplicationController
 
@@ -19,7 +21,7 @@ class QuestionchoixesController < ApplicationController
   end
 
 
-  # Afficher un QuestionChoix par ID
+  # Afficher une QuestionChoix par ID
   def show
 
     questions = QuestionChoix.find_by(id_question: params[:id], etat: false);
@@ -32,7 +34,7 @@ class QuestionchoixesController < ApplicationController
 
 end
 
-# Creer un nouveau QuestionChoix
+# Creer une nouvelle QuestionChoix
 def create
   
   questions = QuestionChoix.new(question_params)
@@ -45,7 +47,7 @@ def create
 
 end
 
-# Modifier un QuestionChoix
+# Modifier une QuestionChoix
 def update
       
   questions = QuestionChoix.find_by(id_question: params[:id], etat: false);
@@ -59,7 +61,7 @@ def update
 
 end
 
-# Supprimer un QuestionChoix par ID
+# Supprimer une QuestionChoix par ID
 def delete
 
   questions = QuestionChoix.find_by(id_question: params[:id], etat: false);
