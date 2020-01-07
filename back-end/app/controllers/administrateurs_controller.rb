@@ -11,105 +11,53 @@
 #   - Verifier le mot de passe d'un admin
 #   - Supprimer un admin par ID
 
-# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
-
-#Pour le CRYPTAGE MD5
-require 'digest'
+require 'AdministrateurService'
 
 class AdministrateursController < ApplicationController
 
   # selectionner que les admins non supprimés (etat=false)
   def index
-    administrateurs = Administrateur.where(etat: false).order('created_at ASC');
+    administrateurs = AdministrateurService.instance.listeDesAdmins
     render json: administrateurs, status: :ok
   end
 
   # Afficher un admin par ID
   def show
-  
-      administrateur = Administrateur.find_by(id_administrateur: params[:id], etat: false);
-
-      if administrateur != nil
-        render json: administrateur, status: :ok
-      else
-        render json: nil, status: :not_found
-      end
-
+    administrateur = AdministrateurService.instance.afficherAdminParId(params[:id])
+    (administrateur != nil) ? (render json: administrateur, status: :ok) : (render json: nil, status: :not_found)
   end
 
   # Creer un nouveau admin
   def create
-
-    psw = params[:motDePasse_administrateur]
-
-    if psw != ''
-      md5Psw = Digest::MD5.hexdigest(psw)
-      params[:motDePasse_administrateur] = md5Psw
-
-      administrateur = Administrateur.new(administrateur_params)
-
-      if administrateur.save
-        render json: administrateur, status: :ok
-      else
-        render json: nil, status: :unprocessable_entity
-      end
-    else
-      render json: nil, status: :unprocessable_entity
-    end 
-
+    params.permit(:pseudo_administrateur, :email_administrateur, :motDePasse_administrateur)
+    ajout = AdministrateurService.instance.creerNouveauAdmin(params[:pseudo_administrateur], params[:email_administrateur], params[:motDePasse_administrateur])
+    (ajout != nil) ? (render json: ajout, status: :ok) : (render json: nil, status: :not_found)
   end
 
   # Verifier le login d'un admin
   def loginAdmin
-    emailAdmin = params[:email_administrateur]
-    psw = params[:motDePasse_administrateur]
-    if psw != '' && emailAdmin != ''
-      administrateur = Administrateur.find_by(email_administrateur: emailAdmin, motDePasse_administrateur: psw, etat: false);
-      if administrateur != nil
-        render json: administrateur, status: :ok
-      else
-        render json: nil, status: :unprocessable_entity
-      end
-    else
-      render json: nil, status: :unprocessable_entity
-    end 
+    params.permit(:email_administrateur, :motDePasse_administrateur)
+    login = AdministrateurService.instance.loginAdmin(params[:email_administrateur], params[:motDePasse_administrateur])
+    (login != nil) ? (render json: login, status: :ok) : (render json: nil, status: :not_found)
   end
 
   # Verifier le mot de passe d'un admin
   def checkAdminPassword
-    idAdmin = params[:id_administrateur]
-    psw = params[:motDePasse_administrateur]
-    if psw != '' && idAdmin != nil
-      administrateur = Administrateur.find_by(id_administrateur: idAdmin, motDePasse_administrateur: psw, etat: false);
-      render json: (administrateur != nil), status: :ok
-    end
+    params.permit(:id_administrateur, :motDePasse_administrateur)
+    check = AdministrateurService.instance.verifierMotDePasseAdmin(params[:id_administrateur], params[:motDePasse_administrateur])
+    (check) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 
-  # Modifier un admin
+  # Modifier un admin par ID
   def update
-        
-    administrateur = Administrateur.find_by(id_administrateur: params[:id], etat: false);
-
-    if administrateur != nil && administrateur.update_attributes(administrateur_params)
-      render json: administrateur, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-
-
+    modifier = AdministrateurService.instance.modifierAdmin(params[:id], params[:pseudo_administrateur], params[:email_administrateur], params[:motDePasse_administrateur])
+    (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found)
   end
 
   # Supprimer un admin par ID
   def delete
-  
-    administrateur = Administrateur.find_by(id_administrateur: params[:id], etat: false);
-
-    if administrateur != nil && administrateur.update_attributes(administrateur_param_delete)
-      render json: administrateur, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-
+    supprimer = AdministrateurService.instance.supprimerAdmin(params[:id], params[:etat])
+    (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 
 
