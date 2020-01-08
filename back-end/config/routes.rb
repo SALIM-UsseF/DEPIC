@@ -33,11 +33,11 @@ Rails.application.routes.draw do
 
   #routes Participer
   get 'participations' => 'participers#index' # Fournir la listes de toutes les participations
-  get 'participationBySondage/:id' => 'participers#showParticipationBySondage' # Fournir la listes des participations pour un sondage donné par son id => id_sondage
-  get 'participationByUserAndSondage/:idUser/:idSondage' => 'participers#showParticipationByUserAndSondage' # Fournir la listes des participations d'un user(id_utilisateur) pour un sondage donné par son id => id_sondage
-  get 'participationByQuestionAndSondage/:idQuestion/:idSondage' => 'participers#showParticipationByQuestionAndSondage' # Fournir la listes des participations pour une question donnée(id_question) pour un sondage donné par son id => id_sondage
+  get 'participationsBySondage/:id' => 'participers#showParticipationBySondage' # Fournir la listes des participations pour un sondage donné par son id => id_sondage
+  get 'participationsByUserAndSondage/:idUser/:idSondage' => 'participers#showParticipationByUserAndSondage' # Fournir la listes des participations d'un user(id_utilisateur) pour un sondage donné par son id => id_sondage
+  get 'participationsByQuestionAndSondage/:idQuestion/:idSondage' => 'participers#showParticipationByQuestionAndSondage' # Fournir la listes des participations pour une question donnée(id_question) pour un sondage donné par son id => id_sondage
   #post 'newParticipation' => 'participers#create' # Ajouter une participation par un admin
-  put 'updateParticipation/:idUser/:idSondage/:idQuestion' => 'participers#update' # Modifier une participation
+  #put 'updateParticipation/:idUser/:idSondage/:idQuestion' => 'participers#update' # Modifier une participation
   put 'deleteParticipation/:idUser/:idSondage/:idQuestion' => 'participers#delete' # Supprimer une participation
 
 
