@@ -9,81 +9,53 @@
   #   - Modifier un groupe de question
   #   - Supprimer un groupe de question par ID
 
-  # Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
+  require 'GroupeQuestionService'
 
   class GroupequestionsController < ApplicationController
     
-    # Afficher la liste des GroupeQuestion
-    def index
-      questions = GroupeQuestion.where(etat: false).order('sondage_id ASC, ordre ASC');
-      render json: questions, status: :ok
-    end
-  
-  
-    # Afficher un GroupeQuestion par ID
-    def show
-  
-      questions = GroupeQuestion.find_by(id_question: params[:id], etat: false);
-  
-      if questions != nil
-        render json: questions, status: :ok
-      else
-        render json: nil, status: :not_found
-      end
-  
+  # Afficher la liste des GroupeQuestion
+  def index
+    questions = GroupeQuestionService.instance.listeDesQuestions
+    render json: questions, status: :ok
+  end
+
+
+  # Afficher un GroupeQuestion par ID
+  def show
+    question = GroupeQuestionService.instance.afficherQuestionParId(params[:id])
+    (question != nil) ? (render json: question, status: :ok) : (render json: nil, status: :not_found)
   end
   
   # Creer un nouveau GroupeQuestion
   def create
-    
-    questions = GroupeQuestion.new(question_params)
-  
-    if questions.save
-      render json: questions, status: :ok
-    else
-      render json: nil, status: :unprocessable_entity
-    end
-  
+    params.permit(:intitule, :estObligatoire, :numerosDeQuestionsGroupe, :ordre, :sondage_id)
+    ajout = GroupeQuestionService.instance.creerGroupeQuestion(params[:intitule], params[:estObligatoire], params[:ordre], params[:numerosDeQuestionsGroupe], params[:sondage_id])
+    (ajout != nil) ? (render json: ajout, status: :ok) : (render json: nil, status: :not_found)
   end
   
   # Modifier un GroupeQuestion
   def update
-        
-    questions = GroupeQuestion.find_by(id_question: params[:id], etat: false);
-  
-    if questions != nil && questions.update_attributes(question_params)
-      render json: questions, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-  
-  
+    modifier = GroupeQuestionService.instance.modifierQuestion(params[:id], params[:intitule], params[:estObligatoire], params[:ordre], params[:numerosDeQuestionsGroupe])
+    (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found)  
   end
   
   # Supprimer un GroupeQuestion par ID
   def delete
-  
-    questions = GroupeQuestion.find_by(id_question: params[:id], etat: false);
-  
-    if questions != nil && questions.update_attributes(question_param_delete)
-      render json: questions, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-  
+    supprimer = GroupeQuestionService.instance.supprimerQuestion(params[:id], params[:etat])
+    (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found) 
   end
   
-    # Liste des parametres à fournir
-    private
-    
-    # parametres d'ajout
-    def question_params
-        params.permit(:intitule, :estObligatoire, :numerosDeQuestionsGroupe, :ordre, :sondage_id)
-    end
+  # Liste des parametres à fournir
+  private
   
-    # parametres de suppression
-    def question_param_delete
-      params.permit(:etat)
-    end
+  # parametres d'ajout
+  def question_params
+      params.permit(:intitule, :estObligatoire, :numerosDeQuestionsGroupe, :ordre, :sondage_id)
+  end
+
+  # parametres de suppression
+  def question_param_delete
+    params.permit(:etat)
+  end
     
   end

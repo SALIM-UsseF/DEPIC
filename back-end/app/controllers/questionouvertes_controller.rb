@@ -9,69 +9,41 @@
 #   - Modifier une question ouverte
 #   - Supprimer une question ouverte par ID
 
-# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
+require 'QuestionOuverteService'
 
 class QuestionouvertesController < ApplicationController
   
-  # Afficher la liste des questions ouvertes
+  # Afficher la liste des QuestionOuverte
   def index
-    questions = QuestionOuverte.where(etat: false).order('sondage_id ASC, ordre ASC');
+    questions = QuestionOuverteService.instance.listeDesQuestions
     render json: questions, status: :ok
   end
 
 
   # Afficher une QuestionOuverte par ID
   def show
-
-    questions = QuestionOuverte.find_by(id_question: params[:id], etat: false);
-
-    if questions != nil
-      render json: questions, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-
-end
-
-# Creer une nouvelle QuestionOuverte
-def create
-  
-  questions = QuestionOuverte.new(question_params)
-
-  if questions.save
-    render json: questions, status: :ok
-  else
-    render json: nil, status: :unprocessable_entity
+    question = QuestionOuverteService.instance.afficherQuestionParId(params[:id])
+    (question != nil) ? (render json: question, status: :ok) : (render json: nil, status: :not_found)
   end
 
-end
-
-# Modifier une QuestionOuverte
-def update
-      
-  questions = QuestionOuverte.find_by(id_question: params[:id], etat: false);
-
-  if questions != nil && questions.update_attributes(question_params)
-    render json: questions, status: :ok
-  else
-    render json: nil, status: :not_found
+  # Creer une nouvelle QuestionOuverte
+  def create
+    params.permit(:intitule, :estObligatoire, :nombreDeCaractere, :ordre, :sondage_id)
+    ajout = QuestionOuverteService.instance.creerQuestionOuverte(params[:intitule], params[:estObligatoire], params[:nombreDeCaractere], params[:ordre], params[:sondage_id])
+    (ajout != nil) ? (render json: ajout, status: :ok) : (render json: nil, status: :not_found)
   end
 
-
-end
-
-# Supprimer une QuestionOuverte par ID
-def delete
-
-  questions = QuestionOuverte.find_by(id_question: params[:id], etat: false);
-
-  if questions != nil && questions.update_attributes(question_param_delete)
-    render json: questions, status: :ok
-  else
-    render json: nil, status: :not_found
+  # Modifier une QuestionOuverte
+  def update
+    modifier = QuestionOuverteService.instance.modifierQuestion(params[:id], params[:intitule], params[:estObligatoire], params[:nombreDeCaractere], params[:ordre])
+    (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found) 
   end
 
-end
+  # Supprimer une QuestionOuverte par ID
+  def delete
+    supprimer = QuestionOuverteService.instance.supprimerQuestion(params[:id], params[:etat])
+    (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
+  end
 
   # Liste des parametres à fournir
   private
