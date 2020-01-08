@@ -8,74 +8,79 @@ class SondageService
 
     # selectionner que les sondages non supprimés (etat=false)
     def listeDesSondages
-        sondages = Administrateur.where(etat: false).order('created_at ASC');
+        sondages = Sondage.where(etat: false).order('created_at ASC');
     end
 
-    # Afficher un admin par ID
-    def afficherAdminParId(id_admin)
-        administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false);
+    # selectionner les sondages publiés (publier=true)
+    def listeDesSondagesPublies
+        sondages = Sondage.where(etat: false, publier: true).order('created_at DESC');
     end
 
-    # Creer un nouveau admin
-    def creerNouveauAdmin(pseudo_administrateur, email_administrateur, motDePasse_administrateur)
+    # Afficher un Sondage par ID
+    def afficherSondageParId(id_sondage)
+        sondage = Sondage.find_by(id_Sondage: id_sondage, etat: false);
+    end
 
-        psw = motDePasse_administrateur
+    # Afficher un Sondage publié
+    def afficherSondagePublie(id_sondage)
+        sondage = Sondage.find_by(id_Sondage: id_sondage, etat: false, publier: true);
+    end
 
-        if psw != ''
-            md5Psw = Digest::MD5.hexdigest(psw) # la partie front-end qui doit faire ce cryptage
-            motDePasse_administrateur = md5Psw
+    # Creer un nouveau Sondage
+    def creerNouveauSondage(intituleSondage, descriptionSondage, administrateur_id)
 
-            administrateur = Administrateur.new(:pseudo_administrateur => pseudo_administrateur, :email_administrateur => email_administrateur, :motDePasse_administrateur => motDePasse_administrateur)
+            sondage = Sondage.new(:intituleSondage => intituleSondage, :descriptionSondage => descriptionSondage, :administrateur_id => administrateur_id)
 
-            if administrateur.save
-                newAdmin = administrateur
+            if Sondage.save
+                newSondage = Sondage
             else
-                newAdmin = nil
+                newSondage = nil
             end
-        else
-            newAdmin = nil
-        end 
 
     end
 
-    # Verifier le login d'un admin
-    def loginAdmin(email, motDePasse)
+    # Modifier un Sondage
+    # resultats = true => les utilisateurs ont le droit de voir les resultats sondage
+    def modifierSondage(id_sondage, intituleSondage, descriptionSondage, publier, resultats)
+        sondage = Sondage.find_by(id_Sondage: id_sondage, etat: false);
 
-        if motDePasse != '' && email != ''
-            administrateur = Administrateur.find_by(email_administrateur: email, motDePasse_administrateur: motDePasse, etat: false);
-        else
-            administrateur = nil
-        end 
-
-    end
-
-    # Verifier le mot de passe d'un admin
-    def verifierMotDePasseAdmin(id_admin, psw_admin)
-        if psw_admin != '' && id_admin != nil
-            administrateur = Administrateur.find_by(id_administrateur: id_admin, motDePasse_administrateur: psw_admin, etat: false);
-            correct = (administrateur != nil)
-        else
-            correct = false
-        end
-    end
-
-    # Modifier un admin
-    def modifierAdmin(id_admin, pseudo, email, psw)
-        administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false);
-
-        if administrateur != nil && administrateur.update_attributes(:pseudo_administrateur => pseudo, :email_administrateur => email, :motDePasse_administrateur => psw)
-            modifier = administrateur
+        if sondage != nil && Sondage.update_attributes(:intituleSondage => intituleSondage, :descriptionSondage => descriptionSondage, :publier => publier, :resultats => resultats)
+            modifier = sondage
         else
             modifier = nil
         end
 
     end
 
-    # Supprimer un admin par ID
-    def supprimerAdmin(id_admin, etat)
-        administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false);
+    # Publier un Sondage
+    def publierSondage(id_sondage, publier)
+        sondage = Sondage.find_by(id_Sondage: id_sondage, etat: false);
 
-        if administrateur != nil && administrateur.update_attributes(:etat => etat)
+        if sondage != nil && Sondage.update_attributes(:publier => publier)
+            modifier = sondage
+        else
+            modifier = nil
+        end
+
+    end
+
+    # Activer les resultats d'un Sondage
+    def activerResultats(id_sondage, resultats)
+        sondage = Sondage.find_by(id_Sondage: id_sondage, etat: false, publier: true);
+
+        if sondage != nil && Sondage.update_attributes(:resultats => resultats)
+            modifier = sondage
+        else
+            modifier = nil
+        end
+
+    end
+
+    # Supprimer un Sondage par ID
+    def supprimerSondage(id_sondage, etat)
+        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false);
+
+        if sondage != nil && Sondage.update_attributes(:etat => etat)
             supprimer = true
         else
             supprimer = false
