@@ -8,20 +8,40 @@ class ResultatService
 
     include Singleton
 
-
+    require 'QuestionService'
     
+
+    def nombreQuestions(id_sondage)
+
+        nombreQuestions=QuestionService.instance.nombreQuestionParSondage(id_sondage)
+
+    end
+
+
+    def nombreUtilisateurs(id_sondage)
+    nombreUtilisateurs= ParticiperService.instance.nombreUtilisateurParSondage(id_sondage)
+
+
+    end
+
     def Resultats(id_sondage)
 
-        ############# récupérer le nombre de questions
-
-        questions=QuestionService.instance.nombreQuestionParSondage(id_sondage)
-
+        ############# récupérer le nombre de questions pour un sondage
+        
+        nbrQuestions=nombreQuestions(id_sondage)
 
         ############ récupérer le nombre de participations dans un sondage
 
-        utilisateurs= participerService.instance.nombreUtilisateurParSondage(id_sondage)
+        nbrUtilisateur=nombreUtilisateurs(id_sondage) 
+        
 
-        ###########         
+        ########### Taux de réponse pour chaque choix d'une question à choix unique
+
+        #questionsChoixUnique= QuestionChoix.instance.questionsChoixUnique(id_sondage) # en vérifiant l'atribut estUnique= true
+
+
+
+
 
 
 

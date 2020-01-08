@@ -96,4 +96,19 @@ class ParticiperService
 
     end
 
+    # nombre de participations sur un sondage
+    def nombreUtilisateurParSondage(id_sondage)
+
+        nombreUtilisateurs= Participer.where(sondage_id: id_sondage, etat: false).count
+
+    end
+
+
+    #def tauxReponseChoixUnique(id_sondage)
+
+    #questionsChoixUnique=QuestionService.afficherQuestionsParSondage(id_sondage)
+
+        
+    #end
+
 end
