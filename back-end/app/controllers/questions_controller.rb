@@ -11,82 +11,41 @@
 #     - Afficher les questions d'un sondage publié
 #     - Afficher une question d'un sondage publié
 
-# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
+require 'QuestionService'
 
 class QuestionsController < ApplicationController
   
   # Afficher la liste des questions
   def index
-    questions = Question.where(etat: false).order('sondage_id ASC, ordre ASC');
+    questions = QuestionService.instance.listeDesQuestions
     render json: questions, status: :ok
   end
 
-    # Afficher une question par id
-    def show
-
-      questions = Question.find_by(id_question: params[:id], etat: false);
-  
-      if questions != nil
-        render json: questions, status: :ok
-      else
-        render json: nil, status: :not_found
-      end
-  
-    end
+  # Afficher une question par id
+  def show
+    question = QuestionService.instance.afficherQuestionParId(params[:id])
+    (question != nil) ? (render json: question, status: :ok) : (render json: nil, status: :not_found)
+  end
 
 
   # Afficher les questions d'un sondage
   def showBySondage
-
-    questions = Question.where(sondage_id: params[:id], etat: false);
-
-    if questions != nil
-      render json: questions, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-
+    questions = QuestionService.instance.afficherQuestionsParSondage(params[:id])
+    (!questions.empty?) ? (render json: questions, status: :ok) : (render json: nil, status: :not_found)
   end
 
 
-  ########################################### "Actions pour la partie Mobile" ############################################
+  ########################################### "Actions pour la partie Mobile" ###########################
   # Afficher les questions d'un sondage publié
   def questionsDuSondage
-
-    sondage = Sondage.where(id_sondage: params[:idSondage], etat: false, publier: true)
-
-    if sondage.empty?
-      render json: nil, status: :not_found
-    else
-      questions = Question.where(sondage_id: params[:idSondage], etat: false);
-
-      if !questions.empty?
-        render json: questions, status: :ok
-      else
-        render json: nil, status: :not_found
-      end
-
-    end
-
+    questions = QuestionService.instance.afficherQuestionsParSondagePublie(params[:id])
+    (!questions.empty?) ? (render json: questions, status: :ok) : (render json: nil, status: :not_found)
   end
 
   # Afficher une question d'un sondage publié
   def questionDuSondage
-
-    sondage = Sondage.where(id_sondage: params[:idSondage], etat: false, publier: true)
-
-    if sondage.empty?
-      render json: nil, status: :not_found
-    else
-      questions = Question.find_by(id_question: params[:idQuestion], etat: false);
-  
-      if questions != nil
-        render json: questions, status: :ok
-      else
-        render json: nil, status: :not_found
-      end
-    end
-
+    question = QuestionService.instance.questionDuSondagePublie(params[:idSondage], params[:idQuestion])
+    (!question.empty?) ? (render json: question, status: :ok) : (render json: nil, status: :not_found)
   end
   #######################################################################################################
 
