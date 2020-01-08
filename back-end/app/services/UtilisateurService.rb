@@ -21,14 +21,11 @@ class UtilisateurService
 
             utilisateur = Utilisateur.new(:email => email, :adresseIp => adresseIp)
 
-            if Utilisateur.save
+            if utilisateur.save
                 newUtilisateur = utilisateur
             else
                 newUtilisateur = nil
             end
-        else
-            newUtilisateur = nil
-        end 
 
     end
 
@@ -36,7 +33,7 @@ class UtilisateurService
     def modifierUtilisateur(id_utilisateur, email, adresseIp)
         utilisateur = Utilisateur.find_by(id_utilisateur: id_utilisateur, etat: false);
 
-        if utilisateur != nil && Utilisateur.update_attributes(:email => email, :adresseIp => adresseIp)
+        if utilisateur != nil && utilisateur.update_attributes(:email => email, :adresseIp => adresseIp)
             modifier = utilisateur
         else
             modifier = nil
@@ -46,14 +43,14 @@ class UtilisateurService
 
     # Supprimer un Utilisateur par ID
     def supprimerUtilisateur(id_utilisateur, etat)
-        utilisateur = Utilisateur.find_by(id_Utilisateur: id_utilisateur, etat: false);
+        utilisateur = Utilisateur.find_by(id_utilisateur: id_utilisateur, etat: false);
 
-        if utilisateur != nil && Utilisateur.update_attributes(:etat => etat)
+        if utilisateur != nil && utilisateur.update_attributes(:etat => etat)
             supprimer = true
         else
             supprimer = false
         end
-
+        
     end
 
 end

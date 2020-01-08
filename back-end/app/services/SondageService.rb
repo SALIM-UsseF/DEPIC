@@ -18,12 +18,12 @@ class SondageService
 
     # Afficher un Sondage par ID
     def afficherSondageParId(id_sondage)
-        sondage = Sondage.find_by(id_Sondage: id_sondage, etat: false);
+        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false);
     end
 
     # Afficher un Sondage publié
     def afficherSondagePublie(id_sondage)
-        sondage = Sondage.find_by(id_Sondage: id_sondage, etat: false, publier: true);
+        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false, publier: true);
     end
 
     # Creer un nouveau Sondage
@@ -31,8 +31,8 @@ class SondageService
 
             sondage = Sondage.new(:intituleSondage => intituleSondage, :descriptionSondage => descriptionSondage, :administrateur_id => administrateur_id)
 
-            if Sondage.save
-                newSondage = Sondage
+            if sondage.save
+                newSondage = sondage
             else
                 newSondage = nil
             end
@@ -42,9 +42,9 @@ class SondageService
     # Modifier un Sondage
     # resultats = true => les utilisateurs ont le droit de voir les resultats sondage
     def modifierSondage(id_sondage, intituleSondage, descriptionSondage, publier, resultats)
-        sondage = Sondage.find_by(id_Sondage: id_sondage, etat: false);
+        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false);
 
-        if sondage != nil && Sondage.update_attributes(:intituleSondage => intituleSondage, :descriptionSondage => descriptionSondage, :publier => publier, :resultats => resultats)
+        if sondage != nil && sondage.update_attributes(:intituleSondage => intituleSondage, :descriptionSondage => descriptionSondage, :publier => publier, :resultats => resultats)
             modifier = sondage
         else
             modifier = nil
@@ -54,9 +54,9 @@ class SondageService
 
     # Publier un Sondage
     def publierSondage(id_sondage, publier)
-        sondage = Sondage.find_by(id_Sondage: id_sondage, etat: false);
+        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false);
 
-        if sondage != nil && Sondage.update_attributes(:publier => publier)
+        if sondage != nil && sondage.update_attributes(:publier => publier)
             modifier = sondage
         else
             modifier = nil
@@ -66,9 +66,9 @@ class SondageService
 
     # Activer les resultats d'un Sondage
     def activerResultats(id_sondage, resultats)
-        sondage = Sondage.find_by(id_Sondage: id_sondage, etat: false, publier: true);
+        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false, publier: true);
 
-        if sondage != nil && Sondage.update_attributes(:resultats => resultats)
+        if sondage != nil && sondage.update_attributes(:resultats => resultats)
             modifier = sondage
         else
             modifier = nil
@@ -80,7 +80,7 @@ class SondageService
     def supprimerSondage(id_sondage, etat)
         sondage = Sondage.find_by(id_sondage: id_sondage, etat: false);
 
-        if sondage != nil && Sondage.update_attributes(:etat => etat)
+        if sondage != nil && sondage.update_attributes(:etat => etat)
             supprimer = true
         else
             supprimer = false
