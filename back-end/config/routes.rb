@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   post 'newAdmin' => 'administrateurs#create' # Ajouter un nouveau admin | éléments à fournir: {pseudo_administrateur, email_administrateur, motDePasse_administrateur}
   put 'updateAdmin/:id' => 'administrateurs#update' # Modifier un admin par son id => id_admin
   put 'deleteAdmin/:id' => 'administrateurs#delete' # Supprimer un admin par son id => id_admin
-  post 'checkAdminPassword' => 'administrateurs#checkAdminPassword' # Verifier le mot de passe d'un admin par son id_administrateur. Util dans le cas de modification du mot de passe | éléments à fournir:  {d_administrateur, motDePasse_administrateur} => motDePasse_administrateur en MD5
+  post 'checkAdminPassword/:id' => 'administrateurs#checkAdminPassword' # Verifier le mot de passe d'un admin par son id_administrateur. Util dans le cas de modification du mot de passe | éléments à fournir:  {d_administrateur, motDePasse_administrateur} => motDePasse_administrateur en MD5
   post 'loginAdmin' => 'administrateurs#loginAdmin' # Verifier le login d'un admin | éléments à fournir: {email_administrateur, motDePasse_administrateur} => motDePasse_administrateur en MD5
 
   #routes Sondage
@@ -33,9 +33,9 @@ Rails.application.routes.draw do
 
   #routes Participer
   get 'participations' => 'participers#index' # Fournir la listes de toutes les participations
-  get 'participationsBySondage/:id' => 'participers#showParticipationBySondage' # Fournir la listes des participations pour un sondage donné par son id => id_sondage
-  get 'participationsByUserAndSondage/:idUser/:idSondage' => 'participers#showParticipationByUserAndSondage' # Fournir la listes des participations d'un user(id_utilisateur) pour un sondage donné par son id => id_sondage
-  get 'participationsByQuestionAndSondage/:idQuestion/:idSondage' => 'participers#showParticipationByQuestionAndSondage' # Fournir la listes des participations pour une question donnée(id_question) pour un sondage donné par son id => id_sondage
+  get 'participationsBySondage/:id' => 'participers#showParticipationsBySondage' # Fournir la listes des participations pour un sondage donné par son id => id_sondage
+  get 'participationsByUserAndSondage/:idUser/:idSondage' => 'participers#showParticipationsByUserAndSondage' # Fournir la listes des participations d'un user(id_utilisateur) pour un sondage donné par son id => id_sondage
+  get 'participationsByQuestionAndSondage/:idQuestion/:idSondage' => 'participers#showParticipationsByQuestionAndSondage' # Fournir la listes des participations pour une question donnée(id_question) pour un sondage donné par son id => id_sondage
   #post 'newParticipation' => 'participers#create' # Ajouter une participation par un admin
   #put 'updateParticipation/:idUser/:idSondage/:idQuestion' => 'participers#update' # Modifier une participation
   put 'deleteParticipation/:idUser/:idSondage/:idQuestion' => 'participers#delete' # Supprimer une participation

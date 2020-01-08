@@ -88,7 +88,7 @@ class ParticiperService
 
         participation = Participer.find_by(id_utilisateur: id_utilisateur, id_sondage: id_sondage, id_question: id_question, etat: false);
 
-        if participation != nil && Participer.update_attributes(:etat => etat)
+        if participation != nil && participation.update_attributes(:etat => etat)
             supprimer = true
         else
             supprimer = false

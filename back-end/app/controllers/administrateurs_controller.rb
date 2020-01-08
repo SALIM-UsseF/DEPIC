@@ -44,7 +44,7 @@ class AdministrateursController < ApplicationController
   # Verifier le mot de passe d'un admin
   def checkAdminPassword
     params.permit(:id_administrateur, :motDePasse_administrateur)
-    check = AdministrateurService.instance.verifierMotDePasseAdmin(params[:id_administrateur], params[:motDePasse_administrateur])
+    check = AdministrateurService.instance.verifierMotDePasseAdmin(params[:id], params[:motDePasse_administrateur])
     (check) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 

@@ -40,7 +40,7 @@ class UtilisateursController < ApplicationController
 
   # Supprimer un Utilisateur par ID
   def delete
-    supprimer = AdministrateurService.instance.supprimerUtilisateur(params[:id], params[:etat])
+    supprimer = UtilisateurService.instance.supprimerUtilisateur(params[:id], params[:etat])
     (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 

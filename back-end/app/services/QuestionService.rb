@@ -29,7 +29,8 @@ class QuestionService
         if sondage.empty?
             questions = nil
         else
-            questions = Question.where(sondage_id: id_sondage, etat: false);
+            questions = Question.where(sondage_id: id_sondage, etat: false)
+        end
 
     end
 
@@ -40,7 +41,8 @@ class QuestionService
         if sondage.empty?
           question = nil
         else
-          question = Question.find_by(id_question: id_question, etat: false);
+          question = Question.find_by(id_question: id_question, etat: false)
+        end
 
     end
 

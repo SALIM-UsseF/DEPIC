@@ -39,13 +39,13 @@ class QuestionsController < ApplicationController
   # Afficher les questions d'un sondage publié
   def questionsDuSondage
     questions = QuestionService.instance.afficherQuestionsParSondagePublie(params[:id])
-    (!questions.empty?) ? (render json: questions, status: :ok) : (render json: nil, status: :not_found)
+    (questions != nil) ? (render json: questions, status: :ok) : (render json: nil, status: :not_found)
   end
 
   # Afficher une question d'un sondage publié
   def questionDuSondage
     question = QuestionService.instance.questionDuSondagePublie(params[:idSondage], params[:idQuestion])
-    (!question.empty?) ? (render json: question, status: :ok) : (render json: nil, status: :not_found)
+    (question != nil) ? (render json: question, status: :ok) : (render json: nil, status: :not_found)
   end
   #######################################################################################################
 
