@@ -14,7 +14,7 @@
 #     - Afficher les Sondages publiés
 #     - Afficher un Sondage publié
 
-# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
+require 'SondageService'
 
 class SondagesController < ApplicationController
   
