@@ -62,4 +62,13 @@ class QuestionChoixService
 
     end
 
+
+    def questionsChoixUnique(id_sondage)
+
+        questionsChoixUnique=QuestionChoix.where(sondage_id: id_sondage, estUnique: true, etat: false)
+
+
+    end
+
+
 end

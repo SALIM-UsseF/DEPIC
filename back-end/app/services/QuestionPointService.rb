@@ -1,4 +1,5 @@
 require 'singleton'
+require 'ParticiperService'
 
 # Si l'attribut 'etat' égale 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
@@ -59,6 +60,20 @@ class QuestionPointService
         else
             supprimer = false
         end
+
+    end
+
+
+    def questionsPoints(id_sondage)
+
+        questionsPoints=QuestionPoint.where(sondage_id: id_sondage, etat: false)
+        questionsPoints.each do |question|
+
+        moyenne=ParticiperService.instance.afficherParticipationsParQuestionEtParSondage(question.id_question, id_sondage)
+
+
+        end
+
 
     end
 
