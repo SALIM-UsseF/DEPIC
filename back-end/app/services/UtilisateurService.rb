@@ -44,13 +44,7 @@ class UtilisateurService
     # Supprimer un Utilisateur par ID
     def supprimerUtilisateur(id_utilisateur, etat)
         utilisateur = Utilisateur.find_by(id_utilisateur: id_utilisateur, etat: false)
-
-        if utilisateur != nil && utilisateur.update_attributes(:etat => etat)
-            supprimer = true
-        else
-            supprimer = false
-        end
-        
+        supprimer = (utilisateur != nil && utilisateur.update_attributes(:etat => etat))
     end
 
 end

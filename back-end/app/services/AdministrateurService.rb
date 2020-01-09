@@ -83,13 +83,7 @@ class AdministrateurService
     # Supprimer un admin par ID
     def supprimerAdmin(id_admin, etat)
         administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false)
-
-        if administrateur != nil && administrateur.update_attributes(:etat => etat)
-            supprimer = true
-        else
-            supprimer = false
-        end
-
+        supprimer = (administrateur != nil && administrateur.update_attributes(:etat => etat))
     end
 
 end

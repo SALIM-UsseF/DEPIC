@@ -51,13 +51,7 @@ class QuestionOuverteService
     # Supprimer une QuestionOuverte par ID
     def supprimerQuestion(id_question, etat)
         question = QuestionOuverte.find_by(id_question: id_question, etat: false)
-
-        if question != nil && question.update_attributes(:etat => etat)
-            supprimer = true
-        else
-            supprimer = false
-        end
-
+        supprimer = (question != nil && question.update_attributes(:etat => etat))
     end
 
 end
