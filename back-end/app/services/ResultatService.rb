@@ -1,5 +1,6 @@
 require 'singleton'
-
+require 'QuestionService'
+require 'QuestionPointService'
 
 
 # Si l'attribut 'etat' égale 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
@@ -8,7 +9,7 @@ class ResultatService
 
     include Singleton
 
-    require 'QuestionService'
+    
     
 
     def nombreQuestions(id_sondage)
@@ -38,6 +39,11 @@ class ResultatService
         ########### Taux de réponse pour chaque choix d'une question à choix unique
 
         #questionsChoixUnique= QuestionChoix.instance.questionsChoixUnique(id_sondage) # en vérifiant l'atribut estUnique= true
+
+
+        ########### Moyennes des questions à point
+
+        arrayMoy= QuestionPointService.instance.questionsPointsMoyennes(id_sondage)
 
 
 

@@ -111,4 +111,31 @@ class ParticiperService
         
     #end
 
+
+    # Calculer la moyenne des participations pour une question 
+    def moyenneParticipationsParQuestionAPointsEtParSondage(id_question, id_sondage)
+        participations = Participer.where(id_question: id_question, id_sondage: id_sondage, etat: false)
+        compteur=0
+        participations.each do |participation|
+
+            reponseString=participation.reponse
+            reponseInt=reponseString.to_i
+            compteur=compteur + reponseInt
+            
+        end
+
+        nbrParticipations=countParticipationsParQuestionAPointsEtParSondage(id_question,id_sondage)
+
+        moyenne=compteur / nbrParticipations
+        
+
+    end
+
+    def countParticipationsParQuestionAPointsEtParSondage(id_question,id_sondage)
+        nombreParticipations = Participer.where(id_question: id_question, id_sondage: id_sondage, etat: false).count
+        
+
+    end
+
+
 end
