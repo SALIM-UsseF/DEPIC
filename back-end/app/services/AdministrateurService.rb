@@ -58,6 +58,16 @@ class AdministrateurService
         end
     end
 
+    # Verifier l'email' d'un admin
+    def verifierEmailAdmin(email_admin)
+        if email_admin != ''
+            administrateur = Administrateur.find_by(email_administrateur: email_admin, etat: false)
+            correct = (administrateur != nil)
+        else
+            correct = false
+        end
+    end
+
     # Modifier un admin
     def modifierAdmin(id_admin, pseudo, email, psw)
         administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false)

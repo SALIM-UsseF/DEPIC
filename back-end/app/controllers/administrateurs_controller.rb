@@ -48,6 +48,13 @@ class AdministrateursController < ApplicationController
     (check) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 
+  # Verifier l'email d'un admin
+  def checkAdminEmail
+    params.permit(:email_administrateur)
+    check = AdministrateurService.instance.verifierEmailAdmin(params[:email_administrateur])
+    (check) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
+  end
+
   # Modifier un admin par ID
   def update
     modifier = AdministrateurService.instance.modifierAdmin(params[:id], params[:pseudo_administrateur], params[:email_administrateur], params[:motDePasse_administrateur])

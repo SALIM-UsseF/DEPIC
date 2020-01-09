@@ -39,7 +39,9 @@ class ChoixService
                    FROM choixes
                    INNER JOIN questions ON (choixes.question_id = questions.id_question)
                    INNER JOIN sondages ON (questions.sondage_id = sondages.id_sondage)
-                   WHERE questions.sondage_id = '"#{id_sondage}"';'
+                   WHERE questions.sondage_id = '"#{id_sondage}"'
+                   AND choixes.etat = false
+                   AND questions.etat = false;'
                    
             choix = ActiveRecord::Base.connection.execute(sql)
 
