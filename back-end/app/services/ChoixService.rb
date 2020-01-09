@@ -78,13 +78,7 @@ class ChoixService
     # Supprimer un Choix par ID
     def supprimerChoix(id_choix, etat)
         choix = Choix.find_by(id_choix: id_choix, etat: false)
-
-        if choix != nil && choix.update_attributes(:etat => etat)
-            supprimer = true
-        else
-            supprimer = false
-        end
-        
+        supprimer = (choix != nil && choix.update_attributes(:etat => etat)) 
     end
 
 end

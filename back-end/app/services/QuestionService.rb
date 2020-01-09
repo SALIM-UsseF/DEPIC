@@ -47,12 +47,8 @@ class QuestionService
     end
 
     # Nombre de questions que contient un sondage
-
     def nombreQuestionParSondage(id_sondage)
-
         nombreQuestions= Question.where(sondage_id: id_sondage, etat: false).count
-
-
     end
 
 end

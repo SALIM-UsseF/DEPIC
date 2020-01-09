@@ -84,13 +84,7 @@ class SondageService
     # Supprimer un Sondage par ID
     def supprimerSondage(id_sondage, etat)
         sondage = Sondage.find_by(id_sondage: id_sondage, etat: false)
-
-        if sondage != nil && sondage.update_attributes(:etat => etat)
-            supprimer = true
-        else
-            supprimer = false
-        end
-
+        supprimer = (sondage != nil && sondage.update_attributes(:etat => etat))
     end
 
 end

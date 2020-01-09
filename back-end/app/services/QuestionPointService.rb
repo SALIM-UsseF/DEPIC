@@ -55,11 +55,7 @@ class QuestionPointService
     def supprimerQuestion(id_question, etat)
         question = QuestionPoint.find_by(id_question: id_question, etat: false)
 
-        if question != nil && question.update_attributes(:etat => etat)
-            supprimer = true
-        else
-            supprimer = false
-        end
+        supprimer = (question != nil && question.update_attributes(:etat => etat))
 
     end
 
