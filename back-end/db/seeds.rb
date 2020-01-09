@@ -276,32 +276,32 @@ QuestionChoix.create({
 
 Choix.create({
 	intituleChoix: "Moins de 50€",
-	question_id: 8
+	question_id: 11
 })
 
 Choix.create({
 	intituleChoix: "Entre 50 et 74€",
-	question_id: 8
+	question_id: 11
 })
 
 Choix.create({
 	intituleChoix: "Entre 75 et 99€",
-	question_id: 8
+	question_id: 11
 })
 
 Choix.create({
 	intituleChoix: "Entre 100 et 124€",
-	question_id: 8
+	question_id: 11
 })
 
 Choix.create({
 	intituleChoix: "Entre 175 et 199€",
-	question_id: 8
+	question_id: 11
 })
 
 Choix.create({
 	intituleChoix: "200€ et plus",
-	question_id: 8
+	question_id: 11
 })
 
 #Question choix unique
@@ -316,22 +316,22 @@ QuestionChoix.create({
 
 Choix.create({
 	intituleChoix: "Oui, certainement",
-	question_id: 9
+	question_id: 12
 })
 
 Choix.create({
 	intituleChoix: "Oui, probablement",
-	question_id: 9
+	question_id: 12
 })
 
 Choix.create({
 	intituleChoix: "Non, probablement pas",
-	question_id: 9
+	question_id: 12
 })
 
 Choix.create({
 	intituleChoix: "Non, certainement pas",
-	question_id: 9
+	question_id: 12
 })
 
 #Question ouverte
