@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   put 'updateAdmin/:id' => 'administrateurs#update' # Modifier un admin par son id => id_admin
   put 'deleteAdmin/:id' => 'administrateurs#delete' # Supprimer un admin par son id => id_admin
   post 'checkAdminPassword/:id' => 'administrateurs#checkAdminPassword' # Verifier le mot de passe d'un admin par son id_administrateur. Util dans le cas de modification du mot de passe | éléments à fournir:  {d_administrateur, motDePasse_administrateur} => motDePasse_administrateur en MD5
+  post 'checkAdminEmail' => 'administrateurs#checkAdminEmail' # Verifier l'email d'un admin | éléments à fournir:  {email_administrateur}
   post 'loginAdmin' => 'administrateurs#loginAdmin' # Verifier le login d'un admin | éléments à fournir: {email_administrateur, motDePasse_administrateur} => motDePasse_administrateur en MD5
 
   #routes Sondage
