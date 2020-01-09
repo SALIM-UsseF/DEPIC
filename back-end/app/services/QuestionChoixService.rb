@@ -1,4 +1,5 @@
 require 'singleton'
+require 'ParticiperService'
 
 # Si l'attribut 'etat' égale 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
@@ -69,7 +70,7 @@ class QuestionChoixService
 
         questionsChoixUnique.each do |question|
 
-        =ParticiperService.instance.moyenneParticipationsParQuestionEtParSondage(question.id_question, id_sondage)
+        =ParticiperService.instance.ParticipationsParQuestionEtParSondage(question.id_question, id_sondage)
 
         end
 

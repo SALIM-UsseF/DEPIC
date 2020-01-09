@@ -1,4 +1,5 @@
 require 'singleton'
+require 'ChoixService'
 
 # Si l'attribut 'etat' égale 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
@@ -139,6 +140,9 @@ class ParticiperService
 
     def ParticipationsParQuestionChoixUniqueEtParSondage(id_question, id_sondage)
         participations=Participer.where(id_question: id_question, id_sondage: id_sondage, etat: false)
+
+        choixQuestion= ChoixService.afficherLesChoixParQuestion(id_question)
+
 
         participations.each do |participation|
 
