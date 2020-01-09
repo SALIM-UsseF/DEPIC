@@ -38,7 +38,7 @@ class QuestionsController < ApplicationController
   ########################################### "Actions pour la partie Mobile" ###########################
   # Afficher les questions d'un sondage publié
   def questionsDuSondage
-    questions = QuestionService.instance.afficherQuestionsParSondagePublie(params[:id])
+    questions = QuestionService.instance.afficherQuestionsParSondagePublie(params[:idSondage])
     (questions != nil) ? (render json: questions, status: :ok) : (render json: nil, status: :not_found)
   end
 
