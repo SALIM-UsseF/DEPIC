@@ -31,6 +31,23 @@ class ChoixService
         end
     end
 
+    # Afficher les Choix d'un sondage publié
+    def afficherLesChoixParSondagePublie(id_sondage)
+        if SondageService.instance.estPublie(id_sondage)
+
+            sql = 'SELECT id_choix, "intituleChoix"
+                   FROM choixes
+                   INNER JOIN questions ON (choixes.question_id = questions.id_question)
+                   INNER JOIN sondages ON (questions.sondage_id = sondages.id_sondage)
+                   WHERE questions.sondage_id = '"#{id_sondage}"';'
+                   
+            choix = ActiveRecord::Base.connection.execute(sql)
+
+        else
+            choix = nil
+        end
+    end
+
     # Creer un nouveau Choix
     def creerNouveauChoix(intituleChoix, question_id)
 

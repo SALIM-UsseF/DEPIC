@@ -360,3 +360,23 @@ Sondage.create({
      Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.",
 	administrateur_id: 1
 })
+
+#Question choix multiple
+QuestionChoix.create({
+	intitule: "Test de quoi ?",
+    estObligatoire: true,
+    nombreChoix: 2,
+    estUnique: false,
+	ordre: 1,
+	sondage_id: 2
+})
+
+Choix.create({
+	intituleChoix: "Test choix 1",
+	question_id: 15
+})
+
+Choix.create({
+	intituleChoix: "Test choix 2",
+	question_id: 15
+})
