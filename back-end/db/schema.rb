@@ -69,8 +69,8 @@ ActiveRecord::Schema.define(version: 2020_01_08_235420) do
     t.boolean "estObligatoire", null: false
     t.string "type", null: false
     t.integer "nombreDeCaractere"
-    t.integer "minPoints"
-    t.integer "maxPoints"
+    t.float "minPoints"
+    t.float "maxPoints"
     t.boolean "estUnique"
     t.integer "nombreChoix"
     t.text "lesChoix"
