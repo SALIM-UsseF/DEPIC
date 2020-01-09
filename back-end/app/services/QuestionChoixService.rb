@@ -8,12 +8,12 @@ class QuestionChoixService
 
     # selectionner que les QuestionChoix non supprimés (etat=false)
     def listeDesQuestions
-        questions = QuestionChoix.where(etat: false).order('sondage_id ASC, ordre ASC');
+        questions = QuestionChoix.where(etat: false).order('sondage_id ASC, ordre ASC')
     end
 
     # Afficher une QuestionChoix par ID
     def afficherQuestionParId(id_question)
-        questions = QuestionChoix.find_by(id_question: id_question, etat: false);
+        questions = QuestionChoix.find_by(id_question: id_question, etat: false)
     end
 
     # Creer une QuestionChoix
@@ -52,7 +52,7 @@ class QuestionChoixService
 
     # Supprimer une QuestionChoix par ID
     def supprimerQuestion(id_question, etat)
-        question = QuestionChoix.find_by(id_question: id_question, etat: false);
+        question = QuestionChoix.find_by(id_question: id_question, etat: false)
 
         if question != nil && question.update_attributes(:etat => etat)
             supprimer = true

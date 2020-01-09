@@ -1,4 +1,5 @@
 require 'singleton'
+require 'SondageService'
 
 # Si l'attribut 'etat' égale 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
@@ -8,17 +9,26 @@ class ChoixService
 
     # selectionner que les Choix non supprimés (etat=false)
     def listeDesChoix
-        choix = Choix.where(etat: false).order('created_at ASC');
+        choix = Choix.where(etat: false).order('created_at ASC')
     end
 
     # Afficher un Choix par ID
     def afficherChoixParId(id_choix)
-        choix = Choix.find_by(id_choix: id_choix, etat: false);
+        choix = Choix.find_by(id_choix: id_choix, etat: false)
     end
 
     # Afficher les Choix pour une Question donnée
     def afficherLesChoixParQuestion(id_question)
-        choix = Choix.where(question_id: id_question, etat: false).order('id_choix ASC');
+        choix = Choix.where(question_id: id_question, etat: false).order('id_choix ASC')
+    end
+
+    # Afficher les Choix pour une Question donnée d'un sondage publié
+    def afficherLesChoixParQuestionPublie(id_sondage, id_question)
+        if SondageService.instance.estPublie(id_sondage)
+            choix = Choix.where(question_id: id_question, etat: false).order('id_choix ASC')
+        else
+            choix = nil
+        end
     end
 
     # Creer un nouveau Choix
@@ -48,7 +58,7 @@ class ChoixService
 
     # Supprimer un Choix par ID
     def supprimerChoix(id_choix, etat)
-        choix = Choix.find_by(id_choix: id_choix, etat: false);
+        choix = Choix.find_by(id_choix: id_choix, etat: false)
 
         if choix != nil && choix.update_attributes(:etat => etat)
             supprimer = true

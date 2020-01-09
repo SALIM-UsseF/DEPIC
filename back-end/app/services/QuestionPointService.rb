@@ -9,12 +9,12 @@ class QuestionPointService
 
     # selectionner que les QuestionPoint non supprimés (etat=false)
     def listeDesQuestions
-        questions = QuestionPoint.where(etat: false).order('sondage_id ASC, ordre ASC');
+        questions = QuestionPoint.where(etat: false).order('sondage_id ASC, ordre ASC')
     end
 
     # Afficher une QuestionPoint par ID
     def afficherQuestionParId(id_question)
-        questions = QuestionPoint.find_by(id_question: id_question, etat: false);
+        questions = QuestionPoint.find_by(id_question: id_question, etat: false)
     end
 
     # Creer une QuestionPoint
@@ -53,7 +53,7 @@ class QuestionPointService
 
     # Supprimer une QuestionPoint par ID
     def supprimerQuestion(id_question, etat)
-        question = QuestionPoint.find_by(id_question: id_question, etat: false);
+        question = QuestionPoint.find_by(id_question: id_question, etat: false)
 
         if question != nil && question.update_attributes(:etat => etat)
             supprimer = true
