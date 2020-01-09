@@ -1,3 +1,3 @@
 class QuestionOuverteSerializer < ActiveModel::Serializer
-  attributes :id_question, :intitule, :estObligatoire, :nombreDeCaractere, :ordre, :type
+  attributes :id_question, :sondage_id, :intitule, :estObligatoire, :nombreDeCaractere, :ordre, :type
 end

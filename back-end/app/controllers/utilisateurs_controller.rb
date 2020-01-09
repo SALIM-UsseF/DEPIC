@@ -5,72 +5,44 @@
 # Expose des services REST sous format Json:
 #   - Afficher la liste des utilisateurs 
 #   - Afficher un utilisateur par ID
-#   - Creer une nouveau utilisateur
+#   - Creer un nouveau utilisateur
 #   - Modifier un utilisateur
 #   - Supprimer un utilisateur par ID
 
-# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
+require 'UtilisateurService'
 
 class UtilisateursController < ApplicationController
   
   # Afficher la liste des utilisateurs 
   def index
-    utilisateurs = Utilisateur.where(etat: false).order('created_at ASC');
-    render json: utilisateurs,status: :ok
+    utilisateurs = UtilisateurService.instance.listeDesUtilisateurs
+    render json: utilisateurs, status: :ok
   end
 
   # Afficher un Utilisateur par ID
   def show
-
-    utilisateurs = Utilisateur.find_by(id_utilisateur: params[:id], etat: false);
-
-    if utilisateurs != nil
-      render json: utilisateurs, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-
-end
-
-# Creer un nouveau Utilisateur
-def create
-  
-  utilisateurs = Utilisateur.new(utilisateur_params)
-
-  if utilisateurs.save
-    render json: utilisateurs, status: :ok
-  else
-    render json: nil, status: :unprocessable_entity
+    utilisateur = UtilisateurService.instance.afficherUtilisateurParId(params[:id])
+    (utilisateur != nil) ? (render json: utilisateur, status: :ok) : (render json: nil, status: :not_found)
   end
 
-end
-
-# Modifier un Utilisateur
-def update
-      
-  utilisateurs = Utilisateur.find_by(id_utilisateur: params[:id], etat: false);
-
-  if utilisateurs != nil && utilisateurs.update_attributes(utilisateur_params)
-    render json: utilisateurs, status: :ok
-  else
-    render json: nil, status: :not_found
+  # Creer un nouveau Utilisateur
+  def create
+    params.permit(:email, :adresseIp)
+    ajout = UtilisateurService.instance.creerNouveauUtilisateur(params[:email], params[:adresseIp])
+    (ajout != nil) ? (render json: ajout, status: :ok) : (render json: nil, status: :not_found)
   end
 
-
-end
-
-# Supprimer un Utilisateur par ID
-def delete
-
-  utilisateurs = Utilisateur.find_by(id_utilisateur: params[:id], etat: false);
-
-  if utilisateurs != nil && utilisateurs.update_attributes(utilisateur_param_delete)
-    render json: utilisateurs, status: :ok
-  else
-    render json: nil, status: :not_found
+  # Modifier un Utilisateur
+  def update
+    modifier = UtilisateurService.instance.modifierUtilisateur(params[:id], params[:email], params[:adresseIp])
+    (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found)
   end
 
-end
+  # Supprimer un Utilisateur par ID
+  def delete
+    supprimer = UtilisateurService.instance.supprimerUtilisateur(params[:id], params[:etat])
+    (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
+  end
 
   # Liste des parametres à fournir
 

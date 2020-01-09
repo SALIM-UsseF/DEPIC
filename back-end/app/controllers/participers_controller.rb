@@ -8,124 +8,59 @@
 #   - Afficher les participations d'un utilisateur pour un sondage
 #   - Afficher les participations d'une question pour un sondage
 #   - Creer une nouvelle participation
-#   - Modifier une participation
 #   - Supprimer une participation par ID
 #   - Actions pour la partie Mobile :
 #     - Creer une participation pour un sondage publié
 
-# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
+require 'ParticiperService'
 
 class ParticipersController < ApplicationController
   
   # Afficher la liste des participations par sondage
   def index
-    participations = Participer.where(etat: false).order('created_at ASC, id_sondage DESC');
+    participations = ParticiperService.instance.listeDesParticipations
     render json: participations, status: :ok
   end
 
   # Afficher les participations d'un sondage
-  def showParticipationBySondage
-
-    participations = Participer.find_by(id_sondage: params[:id], etat: false);
-
-    if participations != nil
-      render json: participations, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-
+  def showParticipationsBySondage
+    participations = ParticiperService.instance.afficherParticipationsParSondage(params[:id])
+    (participations != nil) ? (render json: participations, status: :ok) : (render json: nil, status: :not_found)
   end
 
   # Afficher les participations d'un utilisateur pour un sondage
-  def showParticipationByUserAndSondage
-
-    participations = Participer.find_by(id_utilisateur: params[:idUser], id_sondage: params[:idSondage], etat: false);
-
-    if participations != nil
-      render json: participations, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-
+  def showParticipationsByUserAndSondage
+    participations = ParticiperService.instance.afficherParticipationsParUtilisateurEtParSondage(params[:idUser], params[:idSondage])
+    (participations != nil) ? (render json: participations, status: :ok) : (render json: nil, status: :not_found)
   end
 
   # Afficher les participations d'une question pour un sondage
-  def showParticipationByQuestionAndSondage
-
-    participations = Participer.find_by(id_question: params[:idQuestion], id_sondage: params[:idSondage], etat: false);
-
-    if participations != nil
-      render json: participations, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-
+  def showParticipationsByQuestionAndSondage
+    participations = ParticiperService.instance.afficherParticipationsParQuestionEtParSondage(params[:idQuestion], params[:idSondage])
+    (participations != nil) ? (render json: participations, status: :ok) : (render json: nil, status: :not_found)
   end
 
   # Creer une participation
   def create
-
-  participations = Participer.new(participer_params)
-
-  if participations.save
-    render json: participations, status: :ok
-  else
-    render json: nil, status: :unprocessable_entity
-  end
-
-  end
-
-  # Modifier une Participation
-  def update
-      
-  participations = Participer.find_by(id_utilisateur: params[:idUser], id_sondage: params[:idSondage], id_question: params[:idQuestion], etat: false);
-
-  if participations != nil && participations.update_attributes(participer_params)
-    render json: participations, status: :ok
-  else
-    render json: nil, status: :not_found
-  end
-
-
+    params.permit(:id_utilisateur, :id_sondage, :id_question, :reponse)
+    ajout = ParticiperService.instance.creerParticipation(params[:id_utilisateur], params[:id_sondage], params[:id_question], params[:reponse])
+    (ajout != nil) ? (render json: ajout, status: :ok) : (render json: nil, status: :not_found)
   end
 
   # Supprimer une participation
   def delete
-
-  participations = Participer.find_by(id_utilisateur: params[:idUser], id_sondage: params[:idSondage], id_question: params[:idQuestion], etat: false);
-
-  if participations != nil && participations.update_attributes(participer_param_delete)
-    render json: participations, status: :ok
-  else
-    render json: nil, status: :not_found
-  end
-
+    supprimer = ParticiperService.instance.supprimerParticipation(params[:idUser], params[:idSondage], params[:idQuestion], etat: false)
+    (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 
   ########################################### "Actions pour la partie Mobile" ############################
-    # Creer une participation pour un sondage publié
-    def repondreSondagePublie
-
-      #verifier si le sondage est encore en publication
-      sondage = Sondage.find_by(id_sondage: params[:id_sondage], etat: false, publier: true);
-      if sondage != nil
-
-        participation = Participer.new(participer_params)
-    
-        if participation.save
-          render json: participation, status: :ok
-        else
-          render json: nil, status: :unprocessable_entity
-        end
-
-      else
-        render json: nil, status: :not_found
-      end
-    
-    end
+  # Creer une participation pour un sondage publié
+  def repondreSondagePublie
+    params.permit(:id_utilisateur, :id_sondage, :id_question, :reponse)
+    ajout = ParticiperService.instance.reponseUtilisateurPourSondagePublie(params[:id_utilisateur], params[:id_sondage], params[:id_question], params[:reponse])
+    (ajout != nil) ? (render json: ajout, status: :ok) : (render json: nil, status: :not_found)
+  end
   #######################################################################################################
-
-
 
   # Liste des parametres à fournir
   private

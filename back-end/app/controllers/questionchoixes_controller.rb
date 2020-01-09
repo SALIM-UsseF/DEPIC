@@ -9,77 +9,49 @@
 #   - Modifier une question choix
 #   - Supprimer une question choix par ID
 
-# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
+require 'QuestionChoixService'
 
 class QuestionchoixesController < ApplicationController
 
   
   # Afficher la liste des questions choix
   def index
-    questions = QuestionChoix.where(etat: false).order('sondage_id ASC, ordre ASC');
+    questions = QuestionChoixService.instance.listeDesQuestions
     render json: questions, status: :ok
   end
 
 
   # Afficher une QuestionChoix par ID
   def show
-
-    questions = QuestionChoix.find_by(id_question: params[:id], etat: false);
-
-    if questions != nil
-      render json: questions, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-
-end
-
-# Creer une nouvelle QuestionChoix
-def create
-  
-  questions = QuestionChoix.new(question_params)
-
-  if questions.save
-    render json: questions, status: :ok
-  else
-    render json: nil, status: :unprocessable_entity
+    question = QuestionChoixService.instance.afficherQuestionParId(params[:id])
+    (question != nil) ? (render json: question, status: :ok) : (render json: nil, status: :not_found)
   end
 
-end
-
-# Modifier une QuestionChoix
-def update
-      
-  questions = QuestionChoix.find_by(id_question: params[:id], etat: false);
-
-  if questions != nil && questions.update_attributes(question_params)
-    render json: questions, status: :ok
-  else
-    render json: nil, status: :not_found
+  # Creer une nouvelle QuestionChoix
+  def create
+    params.permit(:intitule, :estObligatoire, :estUnique, :nombreChoix, :ordre, :sondage_id)
+    ajout = QuestionChoixService.instance.creerQuestionChoix(params[:intitule], params[:estObligatoire], params[:estUnique], params[:nombreChoix], params[:ordre], params[:sondage_id])
+    (ajout != nil) ? (render json: ajout, status: :ok) : (render json: nil, status: :not_found)
   end
 
-
-end
-
-# Supprimer une QuestionChoix par ID
-def delete
-
-  questions = QuestionChoix.find_by(id_question: params[:id], etat: false);
-
-  if questions != nil && questions.update_attributes(question_param_delete)
-    render json: questions, status: :ok
-  else
-    render json: nil, status: :not_found
+  # Modifier une QuestionChoix
+  def update
+    modifier = QuestionChoixService.instance.modifierQuestion(params[:id], params[:intitule], params[:estObligatoire], params[:estUnique], params[:nombreChoix], params[:ordre])
+    (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found) 
   end
 
-end
+  # Supprimer une QuestionChoix par ID
+  def delete
+    supprimer = QuestionChoixService.instance.supprimerQuestion(params[:id], params[:etat])
+    (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
+  end
 
   # Liste des parametres à fournir
   private
-  
+
   # parametres d'ajout
   def question_params
-      params.permit(:intitule, :estObligatoire, :estUnique, :lesChoix, :ordre, :sondage_id)
+      params.permit(:intitule, :estObligatoire, :estUnique, :nombreChoix, :ordre, :sondage_id)
   end
 
   # parametres de suppression

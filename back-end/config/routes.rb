@@ -10,7 +10,8 @@ Rails.application.routes.draw do
   post 'newAdmin' => 'administrateurs#create' # Ajouter un nouveau admin | éléments à fournir: {pseudo_administrateur, email_administrateur, motDePasse_administrateur}
   put 'updateAdmin/:id' => 'administrateurs#update' # Modifier un admin par son id => id_admin
   put 'deleteAdmin/:id' => 'administrateurs#delete' # Supprimer un admin par son id => id_admin
-  post 'checkAdminPassword' => 'administrateurs#checkAdminPassword' # Verifier le mot de passe d'un admin par son id_administrateur. Util dans le cas de modification du mot de passe | éléments à fournir:  {d_administrateur, motDePasse_administrateur} => motDePasse_administrateur en MD5
+  post 'checkAdminPassword/:id' => 'administrateurs#checkAdminPassword' # Verifier le mot de passe d'un admin par son id_administrateur. Util dans le cas de modification du mot de passe | éléments à fournir:  {d_administrateur, motDePasse_administrateur} => motDePasse_administrateur en MD5
+  post 'checkAdminEmail' => 'administrateurs#checkAdminEmail' # Verifier l'email d'un admin | éléments à fournir:  {email_administrateur}
   post 'loginAdmin' => 'administrateurs#loginAdmin' # Verifier le login d'un admin | éléments à fournir: {email_administrateur, motDePasse_administrateur} => motDePasse_administrateur en MD5
 
   #routes Sondage
@@ -33,11 +34,11 @@ Rails.application.routes.draw do
 
   #routes Participer
   get 'participations' => 'participers#index' # Fournir la listes de toutes les participations
-  get 'participationBySondage/:id' => 'participers#showParticipationBySondage' # Fournir la listes des participations pour un sondage donné par son id => id_sondage
-  get 'participationByUserAndSondage/:idUser/:idSondage' => 'participers#showParticipationByUserAndSondage' # Fournir la listes des participations d'un user(id_utilisateur) pour un sondage donné par son id => id_sondage
-  get 'participationByQuestionAndSondage/:idQuestion/:idSondage' => 'participers#showParticipationByQuestionAndSondage' # Fournir la listes des participations pour une question donnée(id_question) pour un sondage donné par son id => id_sondage
+  get 'participationsBySondage/:id' => 'participers#showParticipationsBySondage' # Fournir la listes des participations pour un sondage donné par son id => id_sondage
+  get 'participationsByUserAndSondage/:idUser/:idSondage' => 'participers#showParticipationsByUserAndSondage' # Fournir la listes des participations d'un user(id_utilisateur) pour un sondage donné par son id => id_sondage
+  get 'participationsByQuestionAndSondage/:idQuestion/:idSondage' => 'participers#showParticipationsByQuestionAndSondage' # Fournir la listes des participations pour une question donnée(id_question) pour un sondage donné par son id => id_sondage
   #post 'newParticipation' => 'participers#create' # Ajouter une participation par un admin
-  put 'updateParticipation/:idUser/:idSondage/:idQuestion' => 'participers#update' # Modifier une participation
+  #put 'updateParticipation/:idUser/:idSondage/:idQuestion' => 'participers#update' # Modifier une participation
   put 'deleteParticipation/:idUser/:idSondage/:idQuestion' => 'participers#delete' # Supprimer une participation
 
 
@@ -76,6 +77,15 @@ Rails.application.routes.draw do
   post 'newGroupeQuestions' => 'groupequestions#create' # éléments à fournir: {intitule, estObligatoire, numerosDeQuestionsGroupe, ordre, sondage_id}
   put 'updateGroupeQuestions/:id' => 'groupequestions#update'
   put 'deleteGroupeQuestions/:id' => 'groupequestions#delete'
+
+  #routes Choix
+  get 'choix' => 'choixes#index' # Fournir la liste des choix
+  get 'choix/:id' => 'choixes#show' # Fournir un choix par son id => id_choix
+  get 'choixByQuestion/:id' => 'choixes#afficherLesChoixParQuestion' # Fournir la liste des choix pour une question donnée par son id => id_question
+  post 'newChoix' => 'choixes#create' # éléments à fournir: {intituleChoix, question_id}
+  put 'updateChoix/:id' => 'choixes#update' # Modifier un choix par son id => id_choix
+  put 'deleteChoix/:id' => 'choixes#delete' # Supprimer un choix par son id => id_choix
+
 ##########################                    "END PARTIE FRONT-END"             #####################
 
 
@@ -86,6 +96,8 @@ Rails.application.routes.draw do
   post 'repondre' => 'participers#repondreSondagePublie' # Le post contient les éléments suivants: {utilisateur_id, sondage_id, question_id, reponse}
   get 'questionsDuSondage/:idSondage' => 'questions#questionsDuSondage' # Afficher les questions d'un sondage publié par l'id du sondage
   get 'questionDuSondage/:idSondage/:idQuestion' => 'questions#questionDuSondage' # Afficher une question d'un sondage publié par l'id du sondage et l'id question
+  get 'lesChoixParQuestion/:idSondage/:idQuestion' => 'choixes#afficherLesChoixParQuestionPublie' # Fournir la liste des choix pour une question donnée par son idQuestion => id_question | et idSondage => id_sondage
+  get 'lesChoixParSondage/:idSondage' => 'choixes#afficherLesChoixParSondagePublie' # Fournir la liste des choix d'un sondage par son idSondage => id_sondage
 ##########################                    "END ROUTES PARTIE MOBILE"                #####################
 
 

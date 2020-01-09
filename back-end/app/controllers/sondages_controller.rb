@@ -14,122 +14,66 @@
 #     - Afficher les Sondages publiés
 #     - Afficher un Sondage publié
 
-# Si l'attribut 'etat' a la valeur 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
+require 'SondageService'
 
 class SondagesController < ApplicationController
   
   # Afficher la liste des sondages 
   def index
-    sondages = Sondage.where(etat: false).order('created_at ASC');
+    sondages = SondageService.instance.listeDesSondages
     render json: sondages, status: :ok
   end
 
   # Afficher un Sondage par ID
   def show
-
-    sondages = Sondage.find_by(id_sondage: params[:id], etat: false);
-
-    if sondages != nil
-      render json: sondages, status: :ok
-    else
-      render json: nil, status: :not_found
-    end
-
+    sondage = SondageService.instance.afficherSondageParId(params[:id])
+    (sondage != nil) ? (render json: sondage, status: :ok) : (render json: nil, status: :not_found)
   end
 
 # Creer un nouveau Sondage
 def create
-  
-  sondages = Sondage.new(sondage_params)
-
-  if sondages.save
-    render json: sondages, status: :ok
-  else
-    render json: nil, status: :unprocessable_entity
-  end
-
+  params.permit(:intituleSondage, :descriptionSondage, :administrateur_id)
+  ajout = SondageService.instance.creerNouveauSondage(params[:intituleSondage], params[:descriptionSondage], params[:administrateur_id])
+  (ajout != nil) ? (render json: ajout, status: :ok) : (render json: nil, status: :not_found)
 end
 
 # Modifier un Sondage
 def update
-      
-  sondages = Sondage.find_by(id_sondage: params[:id], etat: false);
-
-  if sondages != nil && sondages.update_attributes(up_sondage_params)
-    render json: sondages, status: :ok
-  else
-    render json: nil, status: :not_found
-  end
-
-
+  modifier = SondageService.instance.modifierSondage(params[:id], params[:intituleSondage], params[:descriptionSondage], params[:publier], params[:resultats])
+  (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found)      
 end
 
 
 # Publier un Sondage
 def publierSondage
-      
-  sondages = Sondage.find_by(id_sondage: params[:id], etat: false);
-
-  if sondages != nil && sondages.update_attributes(publier_params)
-    render json: sondages, status: :ok
-  else
-    render json: nil, status: :not_found
-  end
-
+  modifier = SondageService.instance.publierSondage(params[:id], params[:publier])
+  (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found)
 end
 
 # Activer les resultats d'un Sondage
 def activerResultats
-      
-  sondages = Sondage.find_by(id_sondage: params[:id], etat: false, publier:true);
-
-  if sondages != nil && sondages.update_attributes(resultats_params)
-    render json: sondages, status: :ok
-  else
-    render json: nil, status: :not_found
-  end
-
+  modifier = SondageService.instance.activerResultats(params[:id], params[:resultats])
+  (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found)
 end
 
 # Supprimer un Sondage par ID
 def delete
-
-  sondages = Sondage.find_by(id_sondage: params[:id], etat: false);
-
-  if sondages != nil && sondages.update_attributes(sondage_param_delete)
-    render json: sondages, status: :ok
-  else
-    render json: nil, status: :not_found
-  end
-
+  supprimer = SondageService.instance.supprimerSondage(params[:id], params[:etat])
+  (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
 end
 
 
 ################################## "Actions pour la partie Mobile" ########################################
 # Afficher les Sondages publiés
 def showSondagesPublies
-
-  sondages = Sondage.where(etat: false, publier: true).order('created_at DESC');
-
-  if !sondages.empty?
-    render json: sondages, status: :ok
-  else
-    render json: nil, status: :not_found
-  end
-
+  sondages = SondageService.instance.listeDesSondagesPublies
+  (!sondages.empty?) ? (render json: sondages, status: :ok) : (render json: nil, status: :not_found)
 end
 
 # Afficher un Sondage publié
 def showSondagePublie
-
-  sondages = Sondage.find_by(id_sondage: params[:idSondage], etat: false, publier: true);
-
-  if sondages != nil
-    render json: sondages, status: :ok
-  else
-    render json: nil, status: :not_found
-  end
-
+  sondage = SondageService.instance.afficherSondagePublie(params[:idSondage])
+  (sondage != nil) ? (render json: sondage, status: :ok) : (render json: nil, status: :not_found)
 end
 ###########################################################################################################
 
