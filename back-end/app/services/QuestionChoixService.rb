@@ -17,12 +17,12 @@ class QuestionChoixService
     end
 
     # Creer une QuestionChoix
-    def creerQuestionChoix(intitule, estObligatoire, estUnique, lesChoix, ordre, sondage_id)
+    def creerQuestionChoix(intitule, estObligatoire, estUnique, nombreChoix, ordre, sondage_id)
 
         question = QuestionChoix.new(:intitule => intitule,
                                         :estObligatoire => estObligatoire,
                                         :estUnique => estUnique,
-                                        :lesChoix => lesChoix,
+                                        :nombreChoix => nombreChoix,
                                         :ordre => ordre,
                                         :sondage_id => sondage_id)
 
@@ -35,13 +35,13 @@ class QuestionChoixService
     end
 
     # Modifier une QuestionChoix
-    def modifierQuestion(id_question, intitule, estObligatoire, estUnique, lesChoix, ordre)
+    def modifierQuestion(id_question, intitule, estObligatoire, estUnique, nombreChoix, ordre)
         question = QuestionChoix.find_by(id_question: id_question, etat: false);
 
         if question != nil && question.update_attributes(:intitule => intitule,
                                                         :estObligatoire => estObligatoire,
                                                         :estUnique => estUnique,
-                                                        :lesChoix => lesChoix,
+                                                        :lesChoix => nombreChoix,
                                                         :ordre => ordre)
             modifier = question
         else

@@ -10,6 +10,7 @@ class CreateQuestions < ActiveRecord::Migration[5.2]
       t.integer :minPoints, :default => nil
       t.integer :maxPoints, :default => nil
       t.boolean :estUnique, :default => nil
+      t.integer :nombreChoix, :default => nil
       t.text :lesChoix, :default => nil
       t.string :numerosDeQuestionsGroupe, :default => nil
       t.integer :ordre, :default => 0

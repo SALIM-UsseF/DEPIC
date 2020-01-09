@@ -5,7 +5,7 @@
 # Expose des services REST sous format Json:
 #   - Afficher la liste des utilisateurs 
 #   - Afficher un utilisateur par ID
-#   - Creer une nouveau utilisateur
+#   - Creer un nouveau utilisateur
 #   - Modifier un utilisateur
 #   - Supprimer un utilisateur par ID
 
