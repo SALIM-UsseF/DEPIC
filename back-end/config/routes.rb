@@ -76,6 +76,15 @@ Rails.application.routes.draw do
   post 'newGroupeQuestions' => 'groupequestions#create' # éléments à fournir: {intitule, estObligatoire, numerosDeQuestionsGroupe, ordre, sondage_id}
   put 'updateGroupeQuestions/:id' => 'groupequestions#update'
   put 'deleteGroupeQuestions/:id' => 'groupequestions#delete'
+
+  #routes Choix
+  get 'choix' => 'choixes#index' # Fournir la liste des choix
+  get 'choix/:id' => 'choixes#show' # Fournir un choix par son id => id_choix
+  get 'choixByQuestion/:id' => 'choixes#afficherLesChoixParQuestion' # Fournir la liste des choix pour une question donnée par son id => id_question
+  post 'newChoix' => 'choixes#create' # éléments à fournir: {intituleChoix, question_id}
+  put 'updateChoix/:id' => 'choixes#update' # Modifier un choix par son id => id_choix
+  put 'deleteChoix/:id' => 'choixes#delete' # Supprimer un choix par son id => id_choix
+
 ##########################                    "END PARTIE FRONT-END"             #####################
 
 
@@ -86,6 +95,7 @@ Rails.application.routes.draw do
   post 'repondre' => 'participers#repondreSondagePublie' # Le post contient les éléments suivants: {utilisateur_id, sondage_id, question_id, reponse}
   get 'questionsDuSondage/:idSondage' => 'questions#questionsDuSondage' # Afficher les questions d'un sondage publié par l'id du sondage
   get 'questionDuSondage/:idSondage/:idQuestion' => 'questions#questionDuSondage' # Afficher une question d'un sondage publié par l'id du sondage et l'id question
+  get 'lesChoixParQuestion/:id' => 'choixes#afficherLesChoixParQuestion' # Fournir la liste des choix pour une question donnée par son id => id_question
 ##########################                    "END ROUTES PARTIE MOBILE"                #####################
 
 

@@ -29,14 +29,14 @@ class QuestionchoixesController < ApplicationController
 
   # Creer une nouvelle QuestionChoix
   def create
-    params.permit(:intitule, :estObligatoire, :estUnique, :lesChoix, :ordre, :sondage_id)
-    ajout = QuestionChoixService.instance.creerQuestionChoix(params[:intitule], params[:estObligatoire], params[:estUnique], params[:lesChoix], params[:ordre], params[:sondage_id])
+    params.permit(:intitule, :estObligatoire, :estUnique, :nombreChoix, :ordre, :sondage_id)
+    ajout = QuestionChoixService.instance.creerQuestionChoix(params[:intitule], params[:estObligatoire], params[:estUnique], params[:nombreChoix], params[:ordre], params[:sondage_id])
     (ajout != nil) ? (render json: ajout, status: :ok) : (render json: nil, status: :not_found)
   end
 
   # Modifier une QuestionChoix
   def update
-    modifier = QuestionChoixService.instance.modifierQuestion(params[:id], params[:intitule], params[:estObligatoire], params[:estUnique], params[:lesChoix], params[:ordre])
+    modifier = QuestionChoixService.instance.modifierQuestion(params[:id], params[:intitule], params[:estObligatoire], params[:estUnique], params[:nombreChoix], params[:ordre])
     (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found) 
   end
 
@@ -51,7 +51,7 @@ class QuestionchoixesController < ApplicationController
 
   # parametres d'ajout
   def question_params
-      params.permit(:intitule, :estObligatoire, :estUnique, :lesChoix, :ordre, :sondage_id)
+      params.permit(:intitule, :estObligatoire, :estUnique, :nombreChoix, :ordre, :sondage_id)
   end
 
   # parametres de suppression

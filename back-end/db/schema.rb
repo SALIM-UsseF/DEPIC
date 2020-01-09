@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_04_200600) do
+ActiveRecord::Schema.define(version: 2020_01_08_235420) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,15 @@ ActiveRecord::Schema.define(version: 2020_01_04_200600) do
     t.boolean "etat", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "choixes", primary_key: "id_choix", id: :serial, force: :cascade do |t|
+    t.text "intituleChoix", null: false
+    t.boolean "etat", default: false
+    t.bigint "question_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_id"], name: "index_choixes_on_question_id"
   end
 
   create_table "groupe_questions", force: :cascade do |t|
@@ -63,6 +72,7 @@ ActiveRecord::Schema.define(version: 2020_01_04_200600) do
     t.integer "minPoints"
     t.integer "maxPoints"
     t.boolean "estUnique"
+    t.integer "nombreChoix"
     t.text "lesChoix"
     t.string "numerosDeQuestionsGroupe"
     t.integer "ordre", default: 0
@@ -93,6 +103,7 @@ ActiveRecord::Schema.define(version: 2020_01_04_200600) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "choixes", "questions", primary_key: "id_question"
   add_foreign_key "questions", "sondages", primary_key: "id_sondage"
   add_foreign_key "sondages", "administrateurs", primary_key: "id_administrateur"
 end
