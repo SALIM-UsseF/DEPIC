@@ -8,7 +8,7 @@ class GroupeQuestionService
 
     # selectionner que les GroupeQuestion non supprimés (etat=false)
     def listeDesQuestions
-        questions = GroupeQuestion.where(etat: false).order('sondage_id ASC, ordre ASC');
+        questions = GroupeQuestion.where(etat: false).order('sondage_id ASC, ordre ASC')
     end
 
     # Afficher un GroupeQuestion par ID
@@ -50,7 +50,7 @@ class GroupeQuestionService
 
     # Supprimer un GroupeQuestion par ID
     def supprimerQuestion(id_question, etat)
-        question = GroupeQuestion.find_by(id_question: id_question, etat: false);
+        question = GroupeQuestion.find_by(id_question: id_question, etat: false)
 
         if question != nil && question.update_attributes(:etat => etat)
             supprimer = true

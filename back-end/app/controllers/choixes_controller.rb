@@ -50,6 +50,14 @@ class ChoixesController < ApplicationController
     (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 
+  ########################################### "Actions pour la partie Mobile" ###########################
+  # Afficher les Choix pour une Question donnée d'un sondage publié
+  def afficherLesChoixParQuestionPublie
+    choix = ChoixService.instance.afficherLesChoixParQuestionPublie(params[:idSondage], params[:idQuestion])
+    (choix != nil) ? (render json: choix, status: :ok) : (render json: nil, status: :not_found)
+  end
+  #######################################################################################################
+
   # Liste des parametres à fournir
 
   private

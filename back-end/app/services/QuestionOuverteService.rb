@@ -8,12 +8,12 @@ class QuestionOuverteService
 
     # selectionner que les QuestionOuverte non supprimés (etat=false)
     def listeDesQuestions
-        questions = QuestionOuverte.where(etat: false).order('sondage_id ASC, ordre ASC');
+        questions = QuestionOuverte.where(etat: false).order('sondage_id ASC, ordre ASC')
     end
 
     # Afficher une QuestionOuverte par ID
     def afficherQuestionParId(id_question)
-        questions = QuestionOuverte.find_by(id_question: id_question, etat: false);
+        questions = QuestionOuverte.find_by(id_question: id_question, etat: false)
     end
 
     # Creer une QuestionOuverte
@@ -50,7 +50,7 @@ class QuestionOuverteService
 
     # Supprimer une QuestionOuverte par ID
     def supprimerQuestion(id_question, etat)
-        question = QuestionOuverte.find_by(id_question: id_question, etat: false);
+        question = QuestionOuverte.find_by(id_question: id_question, etat: false)
 
         if question != nil && question.update_attributes(:etat => etat)
             supprimer = true

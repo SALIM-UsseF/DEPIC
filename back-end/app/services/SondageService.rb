@@ -8,22 +8,22 @@ class SondageService
 
     # selectionner que les sondages non supprimés (etat=false)
     def listeDesSondages
-        sondages = Sondage.where(etat: false).order('created_at ASC');
+        sondages = Sondage.where(etat: false).order('created_at ASC')
     end
 
     # selectionner les sondages publiés (publier=true)
     def listeDesSondagesPublies
-        sondages = Sondage.where(etat: false, publier: true).order('created_at DESC');
+        sondages = Sondage.where(etat: false, publier: true).order('created_at DESC')
     end
 
     # Afficher un Sondage par ID
     def afficherSondageParId(id_sondage)
-        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false);
+        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false)
     end
 
     # Afficher un Sondage publié
     def afficherSondagePublie(id_sondage)
-        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false, publier: true);
+        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false, publier: true)
     end
 
     # Creer un nouveau Sondage
@@ -54,7 +54,7 @@ class SondageService
 
     # Publier un Sondage
     def publierSondage(id_sondage, publier)
-        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false);
+        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false)
 
         if sondage != nil && sondage.update_attributes(:publier => publier)
             modifier = sondage
@@ -66,7 +66,7 @@ class SondageService
 
     # Activer les resultats d'un Sondage
     def activerResultats(id_sondage, resultats)
-        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false, publier: true);
+        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false, publier: true)
 
         if sondage != nil && sondage.update_attributes(:resultats => resultats)
             modifier = sondage
@@ -76,9 +76,14 @@ class SondageService
 
     end
 
+    # Verifier si le sondage est publié
+    def estPublie(id_sondage)
+        ((Sondage.find_by(id_sondage: id_sondage, etat: false, publier: true)) != nil) ? (publie = true) : (publie = false)
+    end
+
     # Supprimer un Sondage par ID
     def supprimerSondage(id_sondage, etat)
-        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false);
+        sondage = Sondage.find_by(id_sondage: id_sondage, etat: false)
 
         if sondage != nil && sondage.update_attributes(:etat => etat)
             supprimer = true

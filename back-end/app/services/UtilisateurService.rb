@@ -8,12 +8,12 @@ class UtilisateurService
 
     # selectionner que les Utilisateurs non supprimés (etat=false)
     def listeDesUtilisateurs
-        utilisateurs = Utilisateur.where(etat: false).order('created_at ASC');
+        utilisateurs = Utilisateur.where(etat: false).order('created_at ASC')
     end
 
     # Afficher un Utilisateur par ID
     def afficherUtilisateurParId(id_utilisateur)
-        utilisateur = Utilisateur.find_by(id_utilisateur: id_utilisateur, etat: false);
+        utilisateur = Utilisateur.find_by(id_utilisateur: id_utilisateur, etat: false)
     end
 
     # Creer un nouveau Utilisateur
@@ -31,7 +31,7 @@ class UtilisateurService
 
     # Modifier un Utilisateur
     def modifierUtilisateur(id_utilisateur, email, adresseIp)
-        utilisateur = Utilisateur.find_by(id_utilisateur: id_utilisateur, etat: false);
+        utilisateur = Utilisateur.find_by(id_utilisateur: id_utilisateur, etat: false)
 
         if utilisateur != nil && utilisateur.update_attributes(:email => email, :adresseIp => adresseIp)
             modifier = utilisateur
@@ -43,7 +43,7 @@ class UtilisateurService
 
     # Supprimer un Utilisateur par ID
     def supprimerUtilisateur(id_utilisateur, etat)
-        utilisateur = Utilisateur.find_by(id_utilisateur: id_utilisateur, etat: false);
+        utilisateur = Utilisateur.find_by(id_utilisateur: id_utilisateur, etat: false)
 
         if utilisateur != nil && utilisateur.update_attributes(:etat => etat)
             supprimer = true

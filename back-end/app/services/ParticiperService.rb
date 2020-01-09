@@ -8,7 +8,7 @@ class ParticiperService
 
     # Afficher la liste des participations
     def listeDesParticipations
-        participations = Participer.where(etat: false).order('created_at ASC, id_sondage DESC');
+        participations = Participer.where(etat: false).order('created_at ASC, id_sondage DESC')
 
         if participations.empty?
             liste = nil
@@ -20,7 +20,7 @@ class ParticiperService
 
     # Afficher les participations d'un sondage
     def afficherParticipationsParSondage(id_sondage)
-        participations = Participer.where(id_sondage: id_sondage, etat: false);
+        participations = Participer.where(id_sondage: id_sondage, etat: false)
 
         if participations.empty?
             liste = nil
@@ -32,7 +32,7 @@ class ParticiperService
 
     # Afficher les participations d'un utilisateur pour un sondage
     def afficherParticipationsParUtilisateurEtParSondage(id_utilisateur, id_sondage)
-        participations = Participer.where(id_utilisateur: id_utilisateur, id_sondage: id_sondage, etat: false);
+        participations = Participer.where(id_utilisateur: id_utilisateur, id_sondage: id_sondage, etat: false)
 
         if participations.empty?
             liste = nil
@@ -44,7 +44,7 @@ class ParticiperService
 
     # Afficher les participations d'une question pour un sondage
     def afficherParticipationsParQuestionEtParSondage(id_question, id_sondage)
-        participations = Participer.where(id_question: id_question, id_sondage: id_sondage, etat: false);
+        participations = Participer.where(id_question: id_question, id_sondage: id_sondage, etat: false)
 
         if participations.empty?
             liste = nil
@@ -75,7 +75,7 @@ class ParticiperService
     def reponseUtilisateurPourSondagePublie(id_utilisateur, id_sondage, id_question, reponse)
 
       #verifier si le sondage est encore en publication
-      sondage = Sondage.find_by(id_sondage: id_sondage, etat: false, publier: true);
+      sondage = Sondage.find_by(id_sondage: id_sondage, etat: false, publier: true)
       
       if sondage != nil
         creerParticipation(id_utilisateur, id_sondage, id_question, reponse)
@@ -86,7 +86,7 @@ class ParticiperService
     # Supprimer une Participation
     def supprimerParticipation(id_utilisateur, id_sondage, id_question, etat)
 
-        participation = Participer.find_by(id_utilisateur: id_utilisateur, id_sondage: id_sondage, id_question: id_question, etat: false);
+        participation = Participer.find_by(id_utilisateur: id_utilisateur, id_sondage: id_sondage, id_question: id_question, etat: false)
 
         if participation != nil && participation.update_attributes(:etat => etat)
             supprimer = true

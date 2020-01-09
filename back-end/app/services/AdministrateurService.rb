@@ -11,12 +11,12 @@ class AdministrateurService
 
     # selectionner que les admins non supprimés (etat=false)
     def listeDesAdmins
-        administrateurs = Administrateur.where(etat: false).order('created_at ASC');
+        administrateurs = Administrateur.where(etat: false).order('created_at ASC')
     end
 
     # Afficher un admin par ID
     def afficherAdminParId(id_admin)
-        administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false);
+        administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false)
     end
 
     # Creer un nouveau admin
@@ -45,7 +45,7 @@ class AdministrateurService
     def loginAdmin(email, motDePasse)
 
         if motDePasse != '' && email != ''
-            administrateur = Administrateur.find_by(email_administrateur: email, motDePasse_administrateur: motDePasse, etat: false);
+            administrateur = Administrateur.find_by(email_administrateur: email, motDePasse_administrateur: motDePasse, etat: false)
         else
             administrateur = nil
         end 
@@ -55,7 +55,7 @@ class AdministrateurService
     # Verifier le mot de passe d'un admin
     def verifierMotDePasseAdmin(id_admin, psw_admin)
         if psw_admin != '' && id_admin != nil
-            administrateur = Administrateur.find_by(id_administrateur: id_admin, motDePasse_administrateur: psw_admin, etat: false);
+            administrateur = Administrateur.find_by(id_administrateur: id_admin, motDePasse_administrateur: psw_admin, etat: false)
             correct = (administrateur != nil)
         else
             correct = false
@@ -64,7 +64,7 @@ class AdministrateurService
 
     # Modifier un admin
     def modifierAdmin(id_admin, pseudo, email, psw)
-        administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false);
+        administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false)
 
         if administrateur != nil && administrateur.update_attributes(:pseudo_administrateur => pseudo, :email_administrateur => email, :motDePasse_administrateur => psw)
             modifier = administrateur
@@ -76,7 +76,7 @@ class AdministrateurService
 
     # Supprimer un admin par ID
     def supprimerAdmin(id_admin, etat)
-        administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false);
+        administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false)
 
         if administrateur != nil && administrateur.update_attributes(:etat => etat)
             supprimer = true

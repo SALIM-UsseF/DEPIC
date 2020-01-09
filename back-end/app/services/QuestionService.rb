@@ -8,17 +8,17 @@ class QuestionService
 
     # selectionner que les Questions non supprimés (etat=false)
     def listeDesQuestions
-        questions = Question.where(etat: false).order('sondage_id ASC, ordre ASC');
+        questions = Question.where(etat: false).order('sondage_id ASC, ordre ASC')
     end
 
     # Afficher une Question par ID
     def afficherQuestionParId(id_question)
-        questions = Question.find_by(id_question: id_question, etat: false);
+        questions = Question.find_by(id_question: id_question, etat: false)
     end
 
     # Afficher les questions d'un sondage
     def afficherQuestionsParSondage(id_sondage)
-        questions = Question.where(sondage_id: id_sondage, etat: false);
+        questions = Question.where(sondage_id: id_sondage, etat: false)
     end
 
     # Afficher les questions d'un sondage publié
