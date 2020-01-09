@@ -65,12 +65,12 @@ class QuestionPointService
 
 
     def questionsPoints(id_sondage)
-
+        arry = Array.new
         questionsPoints=QuestionPoint.where(sondage_id: id_sondage, etat: false)
         questionsPoints.each do |question|
 
-        moyenne=ParticiperService.instance.afficherParticipationsParQuestionEtParSondage(question.id_question, id_sondage)
-
+        moy=ParticiperService.instance.moyenneParticipationsParQuestionEtParSondage(question.id_question, id_sondage)
+        arry << moy   
 
         end
 

@@ -67,6 +67,12 @@ class QuestionChoixService
 
         questionsChoixUnique=QuestionChoix.where(sondage_id: id_sondage, estUnique: true, etat: false)
 
+        questionsChoixUnique.each do |question|
+
+        =ParticiperService.instance.moyenneParticipationsParQuestionEtParSondage(question.id_question, id_sondage)
+
+        end
+
 
     end
 
