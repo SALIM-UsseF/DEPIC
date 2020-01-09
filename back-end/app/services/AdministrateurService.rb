@@ -1,13 +1,11 @@
 require 'singleton'
 
-#Pour le CRYPTAGE MD5
-require 'digest'
-
 # Si l'attribut 'etat' égale 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
 class AdministrateurService
 
     include Singleton
+    include UtilsHelper
 
     # selectionner que les admins non supprimés (etat=false)
     def listeDesAdmins
@@ -22,11 +20,9 @@ class AdministrateurService
     # Creer un nouveau admin
     def creerNouveauAdmin(pseudo_administrateur, email_administrateur, motDePasse_administrateur)
 
-        psw = motDePasse_administrateur
+        if motDePasse_administrateur != ''
 
-        if psw != ''
-            md5Psw = Digest::MD5.hexdigest(psw) # la partie front-end qui doit faire ce cryptage
-            motDePasse_administrateur = md5Psw
+            motDePasse_administrateur = format_string_to_md5(motDePasse_administrateur) # la partie front-end qui doit faire ce cryptage
 
             administrateur = Administrateur.new(:pseudo_administrateur => pseudo_administrateur, :email_administrateur => email_administrateur, :motDePasse_administrateur => motDePasse_administrateur)
 
