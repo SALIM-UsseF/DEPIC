@@ -95,7 +95,7 @@ Rails.application.routes.draw do
   post 'repondre' => 'participers#repondreSondagePublie' # Le post contient les éléments suivants: {utilisateur_id, sondage_id, question_id, reponse}
   get 'questionsDuSondage/:idSondage' => 'questions#questionsDuSondage' # Afficher les questions d'un sondage publié par l'id du sondage
   get 'questionDuSondage/:idSondage/:idQuestion' => 'questions#questionDuSondage' # Afficher une question d'un sondage publié par l'id du sondage et l'id question
-  get 'lesChoixParQuestion/:idSondage/:idQuestion' => 'choixes#afficherLesChoixParQuestionPublie' # Fournir la liste des choix pour une question donnée par son id => id_question
+  get 'lesChoixParQuestion/:idSondage/:idQuestion' => 'choixes#afficherLesChoixParQuestionPublie' # Fournir la liste des choix pour une question donnée par son idQuestion => id_question | et idSondage => id_sondage
 ##########################                    "END ROUTES PARTIE MOBILE"                #####################
 
 

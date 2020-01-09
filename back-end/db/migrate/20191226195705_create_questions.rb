@@ -7,8 +7,8 @@ class CreateQuestions < ActiveRecord::Migration[5.2]
       # STI required field => type
       t.string :type, :null => false
       t.integer :nombreDeCaractere, :default => nil
-      t.integer :minPoints, :default => nil
-      t.integer :maxPoints, :default => nil
+      t.float :minPoints, :default => nil
+      t.float :maxPoints, :default => nil
       t.boolean :estUnique, :default => nil
       t.integer :nombreChoix, :default => nil
       t.text :lesChoix, :default => nil
