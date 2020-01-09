@@ -20,7 +20,7 @@ class AdministrateurService
     # Creer un nouveau admin
     def creerNouveauAdmin(pseudo_administrateur, email_administrateur, motDePasse_administrateur)
 
-        if motDePasse_administrateur != ''
+        if !motDePasse_administrateur.strip.empty?
 
             motDePasse_administrateur = format_string_to_md5(motDePasse_administrateur) # la partie front-end qui doit faire ce cryptage
 
@@ -40,7 +40,7 @@ class AdministrateurService
     # Verifier le login d'un admin
     def loginAdmin(email, motDePasse)
 
-        if motDePasse != '' && email != ''
+        if !motDePasse.strip.empty? && !email.strip.empty?
             administrateur = Administrateur.find_by(email_administrateur: email, motDePasse_administrateur: motDePasse, etat: false)
         else
             administrateur = nil
@@ -50,7 +50,7 @@ class AdministrateurService
 
     # Verifier le mot de passe d'un admin
     def verifierMotDePasseAdmin(id_admin, psw_admin)
-        if psw_admin != '' && id_admin != nil
+        if !psw_admin.strip.empty? && id_admin != nil
             administrateur = Administrateur.find_by(id_administrateur: id_admin, motDePasse_administrateur: psw_admin, etat: false)
             correct = (administrateur != nil)
         else
@@ -60,7 +60,7 @@ class AdministrateurService
 
     # Verifier l'email' d'un admin
     def verifierEmailAdmin(email_admin)
-        if email_admin != ''
+        if !email_admin.strip.empty?
             administrateur = Administrateur.find_by(email_administrateur: email_admin, etat: false)
             correct = (administrateur != nil)
         else
