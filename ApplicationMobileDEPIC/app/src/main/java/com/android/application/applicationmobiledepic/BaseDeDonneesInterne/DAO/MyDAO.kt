@@ -2,10 +2,7 @@ package com.android.application.applicationmobiledepic.BaseDeDonneesInterne.DAO
 
 //import android.arch.persistence.room.*
 import androidx.room.*
-import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.Question
-import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.Reponse
-import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.Sondage
-import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.SondageAvecQuestions
+import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.*
 
 @Dao
 interface MyDAO {
@@ -17,6 +14,21 @@ interface MyDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertReponses(vararg reponses: Reponse)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertChoix(vararg choix: Choix)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllSondages(sondages: ArrayList<Sondage>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllQuestions(questions: ArrayList<Question>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllReponses(reponses: ArrayList<Reponse>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllChoix(choix: ArrayList<Choix>)
 
 
     @Update
@@ -52,6 +64,10 @@ interface MyDAO {
     @Query("Delete FROM Reponses")
     suspend fun deleteAllReponses()
 
+    @Query("Delete FROM Choix")
+    suspend fun deleteAllchoix()
+
+
 
 
 
@@ -65,19 +81,19 @@ interface MyDAO {
     @Query("SELECT * FROM Questions")
     suspend fun loadAllQuestions(): Array<Question>
 
-    @Query("Select * FROM Questions WHERE Questions.sondageId = :sondageId")
+    @Query("Select * FROM Questions WHERE Questions.sondage_id = :sondageId")
     suspend fun loadOneQuestionFromSondageID(sondageId: Int): Array<Question>
 
-    @Query("Select * FROM Questions WHERE Questions.questionId = :questionID")
+    @Query("Select * FROM Questions WHERE Questions.id_question = :questionID")
     suspend fun loadOneQuestionFromQuestionId(questionID: Int): Array<Question>
 
     @Query("SELECT * FROM Sondages")
     suspend fun loadAllSondages(): Array<Sondage>
 
-    @Query("Select * FROM Sondages WHERE Sondages.sondageId = :sondageId")
+    @Query("Select * FROM Sondages WHERE Sondages.id_sondage = :sondageId")
     suspend fun loadOneSondageFromSondageId(sondageId: Int): Array<Sondage>
 
-    @Query("SELECT Sondages.sondageNom FROM Sondages")
+    @Query("SELECT Sondages.intituleSondage FROM Sondages")
     suspend fun loadAllNomsSondages(): Array<String>
 
     @Query("Select * FROM Reponses")

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ApplicationTestKotlin</string>
+    <string name="app_name">ApplicationMobileDEPIC</string>
     <string name="IntitulerQuestionChoixUnique">La question à choix unique</string>
     <string name="TexteRadioButton1ChoixUnique">RadioButton</string>
     <string name="TexteRadioButton2ChoixUnique">RadioButton</string>
@@ -12,6 +12,10 @@
     <string name="texte_cliquage_qcu">Cliquage QCU</string>
     <string name="texte_cliquage_qcm">Cliquage QCM</string>
     <string name="TitreFormulaire">Formulaire :</string>
+
+    // Textes pour les bouttons
     <string name="Texte_Button_Valider_Enregistrer">Valider</string>
     <string name="Texte_Button_Reinitialisation">Réinitialiser</string>
+    <string name="Texte_Button_Precedent">Précédent</string>
+    <string name="Texte_Button_Suivant">Suivant</string>
 </resources>

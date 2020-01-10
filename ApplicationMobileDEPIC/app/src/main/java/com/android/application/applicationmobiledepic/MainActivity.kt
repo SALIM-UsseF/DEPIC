@@ -1,15 +1,10 @@
 package com.android.application.applicationmobiledepic
 
-import android.app.ProgressDialog.show
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.net.ConnectivityManager
-import android.net.Network
-import android.nfc.Tag
-import android.os.AsyncTask
 import android.os.Bundle
-import android.os.PersistableBundle
 //import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Gravity
@@ -18,14 +13,9 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
-import androidx.room.CoroutinesRoom
-import androidx.room.Database
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.AppDatabase
+import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.*
 
 //import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.DAO.ParametreDAO
 //import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.DAO.QuestionDAO
@@ -34,21 +24,14 @@ import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.AppDa
 //import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.DAO.SondageDAO
 //import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.DatabaseHandler
 //import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.Parametre
-import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.Question
-import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.Reponse
-import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.Sondage
-import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Retrofit.ReponseRequete
 import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Retrofit.ServerApiService
 import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Retrofit.ServiceGenerator
-import kotlinx.android.synthetic.main.activity_main.view.*
-import kotlinx.android.synthetic.main.layout_conteneur_base.*
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 import java.util.ArrayList
-import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSelectedListener {
 
@@ -98,7 +81,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
     private var sondage : Sondage? = null
 
     //L'arraylist de questions actuellement affichés
-    private var questions : Array<Question>? = null
+    private var listeQuestions : ArrayList<Question> = ArrayList()
 
     //Le nom du sondage actuellement utilise
     private var nomSondage = "Choissisez un sondage"
@@ -117,76 +100,180 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
     //String keys for bundle
     private val TAG_LISTE_REPONSES = "listeReponses"
     private val TAG_ID_SONDAGE = "sondageId"
+    private val TAG_REPONSES = "reponses"
+    private val TAG_INDICE_QUESTION_MAX = "indiceQuestionMax"
 
+    private var savedInstanceState: Bundle? = Bundle()
+
+    private var testConnexion = false
+
+    private var indiceQuestionMax = 0
+    private var indiceQuestionAfficher = 0
+
+//    var networkChangeReceiver = NetworkChangeReceiver()
+
+    private var listeReponsesTemporaires = ArrayList<String>()
+
+    private var listeSousQuestions = ArrayList<Int>()
+
+    private var listeChoix = ArrayList<Choix>()
+
+    private var linearLayoutPourQuestionGroup: LinearLayout? = null
+    private var linearLayoutPourQuestionPoint: LinearLayout? = null
+    private var linearLayoutPourQuestionTexteLibre: LinearLayout? = null
+    private var linearLayoutPourQuestionChoixMultiples: LinearLayout? = null
+    private var radioGroupPourQuestionChoixUnique: RadioGroup? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
+
+        // Initialise les différentes valeurs nécessaires.
+        initialisationValeurs(savedInstanceState)
+        // Initialise la BDD.
+        initialisationBDD()
+        // Test de la connexion.
+        TestConnexion()
+    }
+
+
+
+
+
+
+
+    fun initialisationValeurs(savedInstanceState: Bundle?){
+
+        if(savedInstanceState != null && savedInstanceState.javaClass == Bundle::class.java) {
+            // On récupère l'id du dernier sondage utilisé et non envoyé
+            val sondageId = savedInstanceState.getInt(TAG_ID_SONDAGE)
+            // sondageId == 0 s'il n'y avait pas de sondage précédemment utilisé
+            if (sondageId != -1) {
+                listeReponsesTemporaires = savedInstanceState.getStringArrayList(TAG_LISTE_REPONSES)!!
+                indiceQuestionMax = savedInstanceState.getInt(TAG_INDICE_QUESTION_MAX)
+            }
+        }
+
+
         //On sauvegarde le context
         context = this
-
         //On sauvegarde le linearLayout où les questions doivent être placés
         linearLayout = findViewById(R.id.layout_general)
 
-        //Build de la base de données interne
-
-        db = Room.databaseBuilder(
-            this,
-            AppDatabase::class.java, "database-name"
-        ).build()
 
         //Ajout de l'option annulatrice pour le choix du sondage
         nomSondagesDisponibles.add("Choissisez un sondage")
 
         //Recherche du spinner pour choix de sondages
         spinner = findViewById<View>(R.id.spinner) as Spinner
-//         Create an ArrayAdapter using the string array and a default spinner layout
+        //Create an ArrayAdapter using the string array and a default spinner layout
         this.spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, nomSondagesDisponibles)
 
 
-//                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        //                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
 //                        R.array.planets_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // Apply the adapter to the spinner
         spinner!!.adapter = spinnerAdapter
 
-        initialisationListeSondagesDisponibles(savedInstanceState)
 
         spinner!!.onItemSelectedListener = this
 
-        if(isInternetConnected()){
-            Toast.makeText(this, "Il y a une connexion", Toast.LENGTH_LONG).show()
+        this.savedInstanceState = savedInstanceState
+    }
+
+
+    fun initialisationBDD(){
+        //Build de la base de données interne
+        db = Room.databaseBuilder(
+            this,
+            AppDatabase::class.java, "database-name"
+        ).build()
+
+    }
+
+
+
+
+    fun TestConnexion(){
+        val connectivityManager =
+            context!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//            val networks = connectivityManager.allNetworks
+        val networkInfo = connectivityManager.activeNetworkInfo
+        // On test si le network est connecté
+        if(networkInfo != null && networkInfo.isConnected){
+            Log.e("Test connexion", "Il y a une connexion.")
+            // Il y a une connexion mais on ne sait pas s'il y a accès à Internet.
+
+            LancementRequeteTestConnexion()
+            RechargementbaseDeDonnees()
         } else {
-            Toast.makeText(this, "Il n'y a pas une connexion", Toast.LENGTH_LONG).show()
+            // Pas de connexion.
+            Log.e("Test connexion", "Il n'y a pas de connexion.")
+            initialisationListeSondagesDisponibles()
+            testConnexion = false
         }
     }
 
 
-    fun isInternetConnected(): Boolean {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connectivityManager.activeNetworkInfo
-        return networkInfo != null && networkInfo.isConnected
+    fun ResultatTestConnexion(resultat : Boolean){
+        if(resultat){
+            Log.e("Resultat Test Connexion","On à accès à Internet")
+            testConnexion = true
+            ReceptionSondagesPublics()
+            if(savedInstanceState != null && savedInstanceState!!.javaClass == Bundle::class.java) {
+                val sondageId = savedInstanceState!!.getInt(TAG_ID_SONDAGE)
+                RequeteSondageVoulu(sondageId)
+                RecuperationQuestionsDuSondage(sondageId.toString())
+            }
+        } else {
+            Log.e("Resultat Test Connexion","On n'à pas accès à Internet")
+            testConnexion = false
+            initialisationListeSondagesDisponibles()
+        }
     }
 
+
+
+    fun RechargementbaseDeDonnees(){
+        //Remet à jour la BDD
+        launch {
+            db.myDAO().deleteAllQuestions()
+            db.myDAO().deleteAllReponses()
+            db.myDAO().deleteAllSondages()
+            db.myDAO().deleteAllchoix()
+            
+        }
+    }
+
+
+
+
     //Ajoute au spinner tous les noms de sondages disponibles dans la base de données.
-    fun initialisationListeSondagesDisponibles(savedInstanceState: Bundle?){
+    fun initialisationListeSondagesDisponibles(){
         launch{
 //            var listeNomsSondagesDisponibles = db.myDAO().loadAllNomsSondages()
             var listeSondagesDisponibles = db.myDAO().loadAllSondages()
             listeSondagesDisponibles.forEach {
-                nomSondagesDisponibles.add(it.sondageNom)
+                nomSondagesDisponibles.add(it.intituleSondage)
                 sondagesDisponibles.add(it)
             }
-            if(savedInstanceState != null) {
+            if(savedInstanceState != null && savedInstanceState!!.javaClass == Bundle::class.java) {
                 // On récupère l'id du dernier sondage utilisé et non envoyé
-                val sondageId = savedInstanceState.getInt(TAG_ID_SONDAGE)
-                // sondageId == -1 s'il n'y avait pas de sondage précédemment utilisé
+                val sondageId = savedInstanceState!!.getInt(TAG_ID_SONDAGE)
+                // sondageId == 0 s'il n'y avait pas de sondage précédemment utilisé
                 if (sondageId != -1) {
+                    listeReponsesTemporaires = savedInstanceState!!.getStringArrayList(TAG_LISTE_REPONSES)!!
+                    indiceQuestionMax = savedInstanceState!!.getInt(TAG_INDICE_QUESTION_MAX)
+                    /*
                     linearLayout!!.getChildAt(0).visibility = View.VISIBLE
                     Log.e("uhdiudzdhi", "odjsdoicjdscojsd    " + sondageId)
-                    gettingSondageFromBDDWithSavedInstanceState(sondageId, savedInstanceState)
+                    gettingSondageFromBDDWithSavedInstanceState(sondageId)
+                     */
                 }
             }
             getReponses()
@@ -201,15 +288,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         coroutineScope.launch {
             when(requete){
                 "testDestroy" -> testDestroy()
-                "getAllSondages" -> getAllSondages()
-                "getAllQuestions" -> getAllQuestions()
-                "putSondages" -> putSondages()
-                "putQuestions" -> putQuestions()
+//                "getAllSondages" -> getAllSondages()
+//                "getAllQuestions" -> getAllQuestions()
+//                "putSondages" -> putSondages()
+//                "putQuestions" -> putQuestions()
 //                "getSondageFromSondageId" -> getSondageFromSondageID()
 //                "getQuestionFromSondageId" -> getQuestionFromSondageID()
-                "getQuestionFromQuestionId" -> getQuestionFromQuestionID()
-                "deleteAllSondages" -> deleteAllSondages()
-                "deleteAllQuestions" -> deleteAllQuestions()
+//                "getQuestionFromQuestionId" -> getQuestionFromQuestionID()
+//                "deleteAllSondages" -> deleteAllSondages()
+//                "deleteAllQuestions" -> deleteAllQuestions()
             }
 
         }
@@ -222,11 +309,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
     suspend fun getSondageFromSondageID(sondageId: Int): Sondage?{
         val sondages = db.myDAO().loadOneSondageFromSondageId(sondageId)
         for (sond in sondages) {
-            Log.e(
-                "testestSFS",
-                "Attention normalement que un resultat   :   " + sond.sondageId + "  " + sond.sondageIdWeb + "  " + sond.sondageNom
-            )
-            if(sond.sondageId == sondageId){
+//            Log.e(
+//                "testestSFS",
+//                "Attention normalement que un resultat   :   " + sond.id_sondage + "  " + sond.intituleSondage + "  " + sond.descriptionSondage + "  " + sond.administrateur_id
+//            )
+            if(sond.id_sondage == sondageId){
                 return sond
             }
         }
@@ -234,25 +321,22 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
     }
 
 
-    fun gettingSondageFromBDDWithSavedInstanceState(sondageId: Int, savedInstanceState: Bundle?){
+    fun gettingSondageFromBDDWithSavedInstanceState(sondageId: Int){
         launch {
             sondage = getSondageFromSondageID(sondageId)
             if(sondage != null){
-                Log.e("test sondage", "test " + sondage!!.sondageId + "  " + sondage!!.sondageIdWeb + "  " + sondage!!.sondageNom)
-                Log.e("gettingSondageFromBDD", "On a reçu le sondage de la BDD : " + sondage!!.sondageId)
-                questions = getQuestionFromSondageID(sondage!!.sondageId)
-                if(questions != null){
-                    Log.e("gettingSondageFromBDD", "On a reçu les questions du sondage : " + questions!!.size)
-                    affichageQuestions()
+//                Log.e("test sondage", "test " + sondage!!.sondageId + "  " + sondage!!.sondageIdWeb + "  " + sondage!!.sondageNom)
+//                Log.e("gettingSondageFromBDD", "On a reçu le sondage de la BDD : " + sondage!!.sondageId)
+                var questions = getQuestionFromSondageID(sondage!!.id_sondage)
+                listeQuestions.addAll(questions)
 
-                } else {
-                    Log.e("test questions", "NULL NULL NULL NULL NULL")
-                }
+                Log.e("gettingSondageFromBDD", "On a reçu les questions du sondage : " + questions.size)
+//                affichageQuestions()
             } else {
                 Log.e("test sondage", "NULL NULL NULL   : " + sondageId)
             }
-            if(savedInstanceState != null) {
-                val listeReponses = savedInstanceState.getStringArrayList(TAG_LISTE_REPONSES)
+            if(savedInstanceState != null && savedInstanceState!!.javaClass == Bundle::class.java) {
+                val listeReponses = savedInstanceState!!.getStringArrayList(TAG_LISTE_REPONSES)
                 if (listeReponses != null) {
                     for (i in 0 until test) {
                         val view = linearLayout!!.findViewWithTag<View>("Reponse" + i)
@@ -277,12 +361,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         launch {
             sondage = getSondageFromSondageID(sondageId)
             if(sondage != null){
-                 questions = getQuestionFromSondageID(sondage!!.sondageId)
-                if(questions != null){
-                    affichageQuestions()
-                } else {
-                    Log.e("test questions", "NULL NULL NULL NULL NULL")
-                }
+                 var questions = getQuestionFromSondageID(sondage!!.id_sondage)
+                listeQuestions.addAll(questions)
+//                affichageQuestions()
             } else {
                 Log.e("test sondage", "NULL NULL NULL   : " + sondageId)
             }
@@ -291,44 +372,101 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
 
 
 
+    fun affichageQuestion(){
 
-    suspend fun affichageQuestions(){
-        if(questions != null) {
-            Log.e("affichageQuestions", "Il y a des question : " + questions!!.size)
-            for (question in questions!!) {
-                var questionItem : QuestionItem?
-                questionItem = convertisseurQuestion(question)
-                if(questionItem != null){
-                    Log.e("affichageQuestion", "On essaye d'afficher une question")
-                    when(questionItem.typeQuestion){
-                        TypeQuestion.QUESTION_REPONSE_LIBRE -> LancementQuestionTexteLibre(questionItem)
-                        TypeQuestion.QUESTION_A_POINTS -> LancementQuestionAPoints(questionItem)
-                        TypeQuestion.QUESTION_CHOIX_UNIQUE -> LancementQuestionChoixUnique(questionItem)
-                        TypeQuestion.QUESTION_CHOIX_MULTIPLE -> LancementQuestionChoixMultiple(questionItem)
-                        else -> Log.e("affichageQuestions", "Le type du questionItem n'est pas répertorié.")
-                    }
-                } else {
-                    Log.e("affichageQuestions", "Attention, un questionItem null est reçu de ConvertisseurQuestion")
-                }
+        var question = listeQuestions.get(indiceQuestionAfficher)
 
-            }
-        } else {
-            Log.e("affichageQuestions", "il n'y a pas de question, c'est null")
+        if(question.questionType.equals("GroupeQuestion")){
+            LancementQuestionGroupe(question)
+
+        } else if(question.questionType.equals("QuestionOuverte")){
+            LancementQuestionTexteLibre(question, linearLayout!!, null)
+
+        } else if(question.questionType.equals("QuestionChoix")){
+            LancementChoix(question, linearLayout!!)
+//                RequeteChoixPourQuestionEtSondage(question, linearLayout!!, 0)
+
+
+        } else if(question.questionType.equals("QuestionPoint")){
+            LancementQuestionAPoints(question, linearLayout!!, null)
         }
     }
 
 
 
+    /*
+    fun affichageQuestions(){
+        Log.e("affichageQuestions", "Il y a des question : " + listeQuestions.size)
+        for (question in listeQuestions) {
+            Log.e("affichageQuestion", "On essaye d'afficher une question")
+            if(question.questionType.equals("GroupeQuestion")){
+                Log.e("affichageQuestion", "groupe question")
+
+            } else if (question.questionType.equals("QuestionOuverte")){
+                Log.e("affichageQuestion", "groupe ouverte")
+                LancementQuestionTexteLibre(question)
+
+            } else if (question.questionType.equals("QuestionChoix") && question.lesChoix != null){
+                val listeReponsesPossibles = ArrayList<String>()
+                listeReponsesPossibles.addAll(question.lesChoix.split(";"))
+                if(question.estUnique != null && question.estUnique){
+                    Log.e("affichageQuestion", "groupe choix unique")
+                    LancementQuestionChoixUnique(question, listeReponsesPossibles)
+                } else if (question.estUnique != null) {
+                    listeReponsesPossibles.addAll(question.lesChoix.split(";"))
+                    LancementQuestionChoixMultiple(question, listeReponsesPossibles)
+                }
+            }
+        }
+*/
+
+
+
+
+            /*
+               for (question in listeQuestions) {
+                   var questionItem: QuestionItem?
+                   questionItem = convertisseurQuestion(question)
+                   if (questionItem != null) {
+                       Log.e("affichageQuestion", "On essaye d'afficher une question")
+                       when (questionItem.typeQuestion) {
+                           TypeQuestion.QUESTION_REPONSE_LIBRE -> LancementQuestionTexteLibre(
+                               questionItem
+                           )
+                           TypeQuestion.QUESTION_A_POINTS -> LancementQuestionAPoints(questionItem)
+                           TypeQuestion.QUESTION_CHOIX_UNIQUE -> LancementQuestionChoixUnique(
+                               questionItem
+                           )
+                           TypeQuestion.QUESTION_CHOIX_MULTIPLE -> LancementQuestionChoixMultiple(
+                               questionItem
+                           )
+                           else -> Log.e(
+                               "affichageQuestions",
+                               "Le type du questionItem n'est pas répertorié."
+                           )
+                       }
+                   } else {
+                       Log.e(
+                           "affichageQuestions",
+                           "Attention, un questionItem null est reçu de ConvertisseurQuestion"
+                       )
+                   }
+
+               }
+    }*/
+
+
+
     private fun convertisseurQuestion(question: Question): QuestionItem?{
-        var listParametres = question.questionIntitule.split(";")
-        var intitule = listParametres.get(0)
-        var arrayListParametres = ArrayList<String>()
+        val listParametres = question.intitule.split(";")
+        val intitule = listParametres.get(0)
+        val arrayListParametres = ArrayList<String>()
         for(i in 1 until (listParametres.size-1)){
             arrayListParametres.add(listParametres.get(i))
         }
-        var typeQuestion = getTypeQuestion(question.questionType)
+        val typeQuestion = getTypeQuestion(question.questionType)
         if(typeQuestion != null){
-            var questionItem = QuestionItem(this, intitule, question.questionNumero, typeQuestion, arrayListParametres)
+            val questionItem = QuestionItem(this, intitule, question.ordre, typeQuestion, arrayListParametres)
             return questionItem
         } else {
             Log.e("convertisseurQuestion", "Attention, une tentative de convertissement de typeQuestion à renvoyé null.")
@@ -341,10 +479,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
     suspend fun getReponses(){
         val reponses = db.myDAO().loadAllReponses()
         for (reponse in reponses) {
-            Log.e(
-                "getReponses",
-                "Réponse  :   " + reponse.reponseId + "  " + reponse.sondageId + "  " + reponse.sondageIdWeb + "  " + reponse.listeReponses
-            )
+//            Log.e(
+//                "getReponses",
+//                "Réponse  :   " + reponse.reponseId + "  " + reponse.sondageId + "  " + reponse.sondageIdWeb + "  " + reponse.listeReponses
+//            )
         }
     }
 
@@ -357,7 +495,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         for (quest in questions) {
             Log.e(
                 "testestQFS",
-                "Attention normalement que un resultat 1  :   " + quest.questionId + "  " + quest.questionIdWeb + "  " + quest.sondageId + "  " + quest.sondageIdWeb + "  " + quest.questionIntitule + "  " + quest.questionNumero + "  " + quest.questionType
+                "Attention normalement que un resultat 1  :   " + quest.id_question + "  " + quest.sondage_id + "  " + quest.intitule + "  " + quest.questionType + "  " + quest.ordre
             )
         }
         return questions
@@ -368,9 +506,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         val coroutineScope = CoroutineScope(Dispatchers.Default)
         lateinit var questions : Array<Question>
         coroutineScope.launch {
-            questions = getQuestionFromSondageID(sondage.sondageId)
+            questions = getQuestionFromSondageID(sondage.id_sondage)
         }
-        Log.e("test get questions", "" + questions.size);
     }
 
 
@@ -389,28 +526,28 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
 
 
     suspend fun testDestroy(){
-//        deleteAllQuestions()
-//        deleteAllSondages()
+        deleteAllQuestions()
+        deleteAllSondages()
 //        putQuestions()
 //        putSondages()
-        getAllSondages()
-        getAllQuestions()
+//        getAllSondages()
+//        getAllQuestions()
 //        AffichageSondageFromBDD()
 //        gettingSondageFromBDD(7)
     }
 
     suspend fun putSondages(){
-        val sondage = Sondage(sondageIdWeb = 2, sondageNom = "sondage num 2")
+        val sondage = Sondage(id_sondage = 2, intituleSondage = "sondage num 2", descriptionSondage = "description", administrateur_id = 1)
         db.myDAO().insertSondages(sondage)
     }
 
     suspend fun putQuestions(){
-        val question1 = Question(questionIdWeb = 2, sondageId = 9, sondageIdWeb = 9, questionNumero = 1, questionType = "Question à choix multiple", questionIntitule =  "intitule de la pifitude;test reponse 1;test reponse 2; test reponse 3")
-        val question2 = Question(questionIdWeb = 3, sondageId = 9, sondageIdWeb = 9, questionNumero = 2, questionType = "Question à choix unique", questionIntitule =  "intitule de la pifitude version 2;test reponse 11; test reponse 222;test reponse 333")
-        val question3 = Question(questionIdWeb = 4, sondageId = 9, sondageIdWeb = 9, questionNumero = 3, questionType = "Question à points", questionIntitule =  "intitule de la pifitude version 2;test reponse 11; test reponse 222;test reponse 333")
-        val question4 = Question(questionIdWeb = 5, sondageId = 9, sondageIdWeb = 9, questionNumero = 4, questionType = "Question à réponse libre", questionIntitule =  "intitule de la pifitude version 2;test reponse 11; test reponse 222;test reponse 333")
+//        val question1 = Question(id_question = 2, id_sondage = 9, sondageIdWeb = 9, questionNumero = 1, questionType = "Question à choix multiple", questionIntitule =  "intitule de la pifitude;test reponse 1;test reponse 2; test reponse 3")
+//        val question2 = Question(questionIdWeb = 3, sondageId = 9, sondageIdWeb = 9, questionNumero = 2, questionType = "Question à choix unique", questionIntitule =  "intitule de la pifitude version 2;test reponse 11; test reponse 222;test reponse 333")
+//        val question3 = Question(questionIdWeb = 4, sondageId = 9, sondageIdWeb = 9, questionNumero = 3, questionType = "Question à points", questionIntitule =  "intitule de la pifitude version 2;test reponse 11; test reponse 222;test reponse 333")
+//        val question4 = Question(questionIdWeb = 5, sondageId = 9, sondageIdWeb = 9, questionNumero = 4, questionType = "Question à réponse libre", questionIntitule =  "intitule de la pifitude version 2;test reponse 11; test reponse 222;test reponse 333")
 
-        db.myDAO().insertQuestions(question1, question2, question3, question4)
+//        db.myDAO().insertQuestions(question1, question2, question3, question4)
     }
 
     suspend fun getAllSondages(){
@@ -418,7 +555,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         for (sond in sondages) {
             Log.e(
                 "testest",
-                "" + sond.sondageId + "  " + sond.sondageIdWeb + "  " + sond.sondageNom
+                "" + sond.id_sondage + "  " + sond.intituleSondage + "  " + sond.descriptionSondage
             )
         }
     }
@@ -428,7 +565,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         for (quest in questions) {
             Log.e(
                 "testest",
-                "" + quest.questionId + "  " + quest.questionIdWeb + "  " + quest.sondageId + "  " + quest.sondageIdWeb + "  " + quest.questionIntitule + "  " + quest.questionNumero + "  " + quest.questionType
+                "" + quest.id_question + "  " + quest.sondage_id + "  " + quest.intitule + "  " + quest.ordre + "  " + quest.questionType
             )
         }
     }
@@ -441,7 +578,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         for (quest in questions) {
             Log.e(
                 "testestQFQ",
-                "Attention normalement que un resultat 2  :   " + quest.questionId + "  " + quest.questionIdWeb + "  " + quest.sondageId + "  " + quest.sondageIdWeb + "  " + quest.questionIntitule + "  " + quest.questionNumero + "  " + quest.questionType
+                "Attention normalement que un resultat 2  :   " + quest.id_question + "  " + quest.sondage_id + "  " + quest.intitule + "  " + quest.ordre + "  " + quest.questionType
             )
         }
     }
@@ -449,150 +586,139 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
     suspend fun deleteAllQuestions(){
         db.myDAO().deleteAllQuestions()
 //        db.myDAO().deleteQuestions()
-        Log.e("testest", "Delete questions")
     }
 
     suspend fun  deleteAllSondages(){
         db.myDAO().deleteAllSondages()
 //        db.myDAO().deleteSondages()
-        Log.e("testest", "Delete sondages")
     }
 
 
 
     fun findSondageforNom(nomSondage : String): Sondage?{
         sondagesDisponibles.forEach {
-            if(it.sondageNom.equals(nomSondage)){
-                Log.e("ijiojijijoj", "nijnniubibuijno " + it.sondageId)
+            if(it.intituleSondage.equals(nomSondage)){
                 return it
             }
         }
         return null
     }
 
-//
-//
-//    class AccessDBBTask() : AsyncTask<Void, Void, String>() {
-//        override fun doInBackground(vararg params: Void?): String? {
-//            val count = 0
-//                publishProgress((int) ((i / (float) count) * 100));
-//                // Escape early if cancel() is called
-//            return count;
-//        }
-//
-//        override fun onPreExecute() {
-//            super.onPreExecute()
-//            // ...
-//        }
-//
-//        override fun onPostExecute(result: String?) {
-//            super.onPostExecute(result)
-////            showDialog("Downloaded " + result + " bytes");
-//        }
-//    }
 
 
-    fun CliquageQCU(view: View) {
-        Toast.makeText(this, "Attention, cliquage du QCU.", Toast.LENGTH_SHORT).show()
-        val question = "Quelle est la bonne réponse ?"
-        val numero = test
-        val reponses = ArrayList<String>()
-        reponses.add("La réponse 2$test")
-        reponses.add("La réponse 1 --------------------------------------")
-        reponses.add("La réponse 2 et 3")
-
-        test++
-
-        //        LinearLayout linearLayout = findViewById(R.id.LayoutLigne);
-        val item = QuestionItem(this, question,
-                numero, TypeQuestion.QUESTION_CHOIX_UNIQUE, reponses)
-
-        // Créé le LinearLayout qui contiendra la question et les réponses.
-        val linearLayoutHorizontal = Ajout_LinearLayout_Question_Reponse()
-
-        // Créé le TextView de la question.
-        Ajout_TextView_Question(linearLayoutHorizontal, question, numero)
-
-        // Créé ce qu'i lfaut pour la réponse.
-        Ajout_QCU_reponses(linearLayoutHorizontal, item.parametresQuestion!!)
+    fun RechercheQuestionIdDansListeReponsesTemporairePourIndice(question: Question): Int{
+        for(ligneReponses in listeReponsesTemporaires){
+            if(ligneReponses.contains(";") && ligneReponses.substring(0, ligneReponses.indexOf(";")).toInt() == question.id_question){
+                return listeReponsesTemporaires.indexOf(ligneReponses)
+            }
+        }
+        return -1
     }
 
 
-    fun CliquageQCM(view: View) {
-        Toast.makeText(this, "Attention, cliquage du QCM.", Toast.LENGTH_SHORT).show()
-        val question = "Combien y a t'il de repas par jour ?-------------------------------------------"
-        val numero = 2
-        val reponses = ArrayList<String>()
-        reponses.add("1 ---------------------------")
-        reponses.add("2")
-        reponses.add("3")
-        reponses.add("8 ?")
 
-        val linearLayout = findViewById<LinearLayout>(R.id.LayoutLigne)
-
-        val item = QuestionItem(this, question,
-                numero, TypeQuestion.QUESTION_CHOIX_MULTIPLE, reponses)
-
-        // Créé le LinearLayout qui contiendra la question et les réponses.
-        val linearLayoutHorizontal = Ajout_LinearLayout_Question_Reponse()
-
-        // Créé le TextView de la question.
-        Ajout_TextView_Question(linearLayoutHorizontal, question, numero)
-
-        // Créé ce qu'i lfaut pour la réponse.
-        Ajout_QCM_reponses(linearLayoutHorizontal, item.parametresQuestion!!)
+    fun RechercheQuestionIdDansListeReponsesTemporaire(question: Question): String{
+        for(ligneReponses in listeReponsesTemporaires){
+            if(ligneReponses.contains(";") && ligneReponses.substring(0, ligneReponses.indexOf(";")).toInt() == question.id_question){
+                return ligneReponses.substring(ligneReponses.indexOf(";")+1, ligneReponses.length)
+            }
+        }
+        return ""
     }
 
-
-    private fun LancementQuestionChoixMultiple(questionItem: QuestionItem) {
-
+    private fun LancementGenerique(question: Question, linearLayoutBase: LinearLayout) : LinearLayout{
         val linearLayout = findViewById<LinearLayout>(R.id.LayoutLigne)
 
         listLayoutQuestion.add(linearLayout)
 
         // Créé le LinearLayout qui contiendra la question et les réponses.
-        val linearLayoutHorizontal = Ajout_LinearLayout_Question_Reponse()
+        val linearLayoutHorizontal = Ajout_LinearLayout_Question_Reponse(linearLayoutBase)
 
         // Créé le TextView de la question.
-        Ajout_TextView_Question(linearLayoutHorizontal, questionItem.intitulerQuestion,
-                questionItem.numeroQuestion)
+        Ajout_TextView_Question(linearLayoutHorizontal, question.intitule,
+            question.ordre)
+
+        return linearLayoutHorizontal
+    }
+
+
+    fun LancementChoix(question: Question, linearLayoutBase: LinearLayout){
+        Log.e("Passage lanc choix", "On y pase")
+        var listeStringTexteChoix = ArrayList<String>()
+        for(choix in listeChoix){
+            if(choix.question_id == question.id_question){
+                listeStringTexteChoix.add(choix.intituleChoix)
+            }
+        }
+
+        if(question.questionType.equals("QuestionChoix") && question.estUnique != null && question.estUnique){
+            LancementQuestionChoixUnique(question, listeStringTexteChoix, linearLayoutBase)
+        } else if(question.questionType.equals("QuestionChoix") && question.estUnique != null){
+            LancementQuestionChoixMultiple(question, listeStringTexteChoix, linearLayoutBase)
+        }
+    }
+
+    private fun LancementQuestionChoixMultiple(question: Question, listeReponsesPossibles : ArrayList<String>, linearLayoutBase: LinearLayout) {
+
+        val linearLayoutHorizontal = LancementGenerique(question, linearLayoutBase)
+
 
         // Créé ce qu'il faut pour la réponse.
-        Ajout_QCM_reponses(linearLayoutHorizontal, questionItem.parametresQuestion!!)
+        Ajout_QCM_reponses(question, linearLayoutHorizontal, listeReponsesPossibles)
     }
 
 
-    private fun LancementQuestionChoixUnique(questionItem: QuestionItem) {
+    private fun LancementQuestionChoixUnique(question : Question, listeReponsesPossibles : ArrayList<String>, linearLayoutBase: LinearLayout) {
 
-        // Créé le LinearLayout qui contiendra la question et les réponses.
-        val linearLayoutHorizontal = Ajout_LinearLayout_Question_Reponse()
+        val linearLayoutHorizontal = LancementGenerique(question, linearLayoutBase)
 
-        listLayoutQuestion.add(linearLayoutHorizontal)
-
-        // Créé le TextView de la question.
-        Ajout_TextView_Question(linearLayoutHorizontal, questionItem.intitulerQuestion,
-                questionItem.numeroQuestion)
-
-        // Créé ce qu'i lfaut pour la réponse.
-        Ajout_QCU_reponses(linearLayoutHorizontal, questionItem.parametresQuestion!!)
+        // Créé ce qu'il faut pour la réponse.
+        Ajout_QCU_reponses(question, linearLayoutHorizontal, listeReponsesPossibles)
     }
 
 
-    private fun LancementQuestionAPoints(questionItem: QuestionItem) {
+    private fun LancementQuestionAPoints(question: Question, linearLayoutBase: LinearLayout, reponseGroupe : String?) {
 
-        // Créé le LinearLayout qui contiendra la question et la réponse.
-        val linearLayoutHorizontal = Ajout_LinearLayout_Question_Reponse()
-
-        listLayoutQuestion.add(linearLayoutHorizontal)
-
-        // Créé le TextView de la question.
-        Ajout_TextView_Question(linearLayoutHorizontal, questionItem.intitulerQuestion,
-                questionItem.numeroQuestion)
-
+        val linearLayoutHorizontal = LancementGenerique(question, linearLayoutBase)
 
         val editText = EditText(this)
         editText.id = View.generateViewId()
-        editText.setTag("Reponse" + this.test)
+        editText.setTag("Reponse_" + indiceQuestionAfficher + "_" + 0)
+        test++
+
+        val reponse = RechercheQuestionIdDansListeReponsesTemporaire(question)
+        if(!reponse.equals("")){
+            editText.setText(reponse)
+        } else if(reponseGroupe != null){
+            editText.setText(reponseGroupe)
+        }
+
+        // On ajoute le radioGroup à la nouvelle ligne du listView.
+        val params = LinearLayout.LayoutParams(param)
+        params.gravity = Gravity.CENTER_HORIZONTAL
+        linearLayoutHorizontal.addView(editText, 1, LinearLayout.LayoutParams(params))
+
+        linearLayoutPourQuestionPoint = linearLayoutHorizontal
+
+        //        editText.setInputType();
+    }
+
+
+    private fun LancementQuestionTexteLibre(question : Question, linearLayoutBase: LinearLayout, reponseGroupe: String?) {
+
+        val linearLayoutHorizontal = LancementGenerique(question, linearLayoutBase)
+
+        val editText = EditText(this)
+        editText.id = View.generateViewId()
+        editText.setTag("Reponse_" + indiceQuestionAfficher + "_" + 0)
+
+        val reponse = RechercheQuestionIdDansListeReponsesTemporaire(question)
+        if(!reponse.equals("")){
+            editText.setText(reponse)
+        } else if(reponseGroupe != null){
+            editText.setText(reponseGroupe)
+        }
+
         test++
 
         // On ajoute le radioGroup à la nouvelle ligne du listView.
@@ -600,44 +726,152 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         params.gravity = Gravity.CENTER_HORIZONTAL
         linearLayoutHorizontal.addView(editText, 1, LinearLayout.LayoutParams(params))
 
+        linearLayoutPourQuestionTexteLibre = linearLayoutHorizontal
+
         //        editText.setInputType();
     }
 
 
-    private fun LancementQuestionTexteLibre(questionItem: QuestionItem) {
-
+    fun LancementQuestionGroupe(question: Question){
         // Créé le LinearLayout qui contiendra la question et la réponse.
-        val linearLayoutHorizontal = Ajout_LinearLayout_Question_Reponse()
+        val linearLayoutVertical = Ajout_LinearLayout_Question_Groupe()
 
-        listLayoutQuestion.add(linearLayoutHorizontal)
+        listLayoutQuestion.add(linearLayoutVertical)
 
         // Créé le TextView de la question.
-        Ajout_TextView_Question(linearLayoutHorizontal, questionItem.intitulerQuestion,
-                questionItem.numeroQuestion)
+        Ajout_TextView_Question(linearLayoutVertical, question.intitule,
+            question.ordre)
+
+        linearLayoutPourQuestionGroup = linearLayoutVertical
 
 
-        val editText = EditText(this)
-        editText.id = View.generateViewId()
-        editText.setTag("Reponse" + this.test)
-        test++
+//        val reponse = RechercheQuestionIdDansListeReponsesTemporaire(question)
+//        var listeReponsesTemporaires: List<String>? = null
+//        var indiceReponse = 0
+//        if(!reponse.equals("")){
+//            listeReponsesTemporaires = reponse.split(";")
+//        }
 
-        // On ajoute le radioGroup à la nouvelle ligne du listView.
-        val params = LinearLayout.LayoutParams(param)
-        params.gravity = Gravity.CENTER_HORIZONTAL
-        linearLayoutHorizontal.addView(editText, 1, LinearLayout.LayoutParams(params))
+        if(question.questionType == "GroupeQuestion" && question.numerosDeQuestionsGroupe != null){
+            val listeSousQuestionsIdTemporaire = question.numerosDeQuestionsGroupe.split(";")
+            for (sousQuestionId in listeSousQuestionsIdTemporaire){
+                val sousQuestion = RechercheSousQuestionParId(sousQuestionId.toInt())
+                if(sousQuestion != null) {
+                    var reponse = RechercheQuestionIdDansListeReponsesTemporaire(sousQuestion)
+                    if(reponse != "") {
+                        if (sousQuestion.questionType.equals("QuestionOuverte")) {
+                            LancementQuestionTexteLibre(
+                                sousQuestion,
+                                linearLayoutVertical,
+                                reponse
+                            )
+                        } else if(sousQuestion.questionType.equals("QuestionChoix")) {
 
-        //        editText.setInputType();
+                        } else if(sousQuestion.questionType.equals("QuestionPoint")) {
+                            LancementQuestionAPoints(
+                                sousQuestion,
+                                linearLayoutVertical,
+                                reponse
+                            )
+                        }
+                    } else {
+                        if (sousQuestion.questionType.equals("QuestionOuverte")) {
+                            LancementQuestionTexteLibre(
+                                sousQuestion,
+                                linearLayoutVertical,
+                                null
+                            )
+                        } else if(sousQuestion.questionType.equals("QuestionChoix")) {
+
+                        } else if(sousQuestion.questionType.equals("QuestionPoint")) {
+                            LancementQuestionAPoints(
+                                sousQuestion,
+                                linearLayoutVertical,
+                                null
+                            )
+                        }
+                    }
+                }
+
+                /*
+                for(question in listeQuestions){
+                    if(question.id_question == sousQuestionId.toInt()) {
+                        if(question.questionType.equals("QuestionOuverte")){
+                            Log.e("affichageQuestion", "groupe ouverte")
+                            if(listeReponsesTemporaires != null && indiceReponse < listeReponsesTemporaires.size) {
+                                Log.e("test test test test","                                " + indiceReponse)
+                                LancementQuestionTexteLibre(
+                                    question,
+                                    linearLayoutVertical,
+                                    listeReponsesTemporaires.get(indiceReponse)
+                                )
+                                indiceReponse++
+                            } else {
+                                LancementQuestionTexteLibre(
+                                    question,
+                                    linearLayoutVertical,
+                                    null
+                                )
+                            }
+                        } else if(question.questionType.equals("QuestionChoix")){
+//                            RequeteChoixPourQuestionEtSondage(question, linearLayoutVertical, 0)
+
+                        } else if(question.questionType.equals("QuestionPoint")){
+                            Log.e("test test test test","                                " + indiceReponse)
+                            if(listeReponsesTemporaires != null && indiceReponse < listeReponsesTemporaires.size) {
+                                LancementQuestionAPoints(
+                                    question,
+                                    linearLayoutVertical,
+                                    listeReponsesTemporaires.get(indiceReponse)
+                                )
+                                indiceReponse++
+                            } else {
+                                LancementQuestionAPoints(
+                                    question,
+                                    linearLayoutVertical,
+                                    null
+                                )
+                            }
+                        }
+                    }
+                }*/
+            }
+        }
+
+
+
     }
 
-
-    fun Ajout_LinearLayout_Question_Reponse(): LinearLayout {
+    fun Ajout_LinearLayout_Question_Reponse(linearLayoutBase: LinearLayout): LinearLayout {
         val linearLayoutHorizontal = LinearLayout(this)
         linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
         linearLayoutHorizontal.id = View.generateViewId()
         linearLayoutHorizontal.setPadding(0, 50, 0, 50)
-        linearLayout!!.addView(linearLayoutHorizontal, linearLayout!!.childCount, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        linearLayoutBase.addView(linearLayoutHorizontal, linearLayoutBase.childCount, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         return linearLayoutHorizontal
     }
+
+
+
+    fun Ajout_LinearLayout_Question_Reponse_Dans_Question_Groupe(linearLayoutParent: LinearLayout): LinearLayout {
+        val linearLayoutHorizontal = LinearLayout(this)
+        linearLayoutHorizontal.orientation = LinearLayout.HORIZONTAL
+        linearLayoutHorizontal.id = View.generateViewId()
+        linearLayoutHorizontal.setPadding(0, 50, 0, 50)
+        linearLayoutParent.addView(linearLayoutHorizontal, linearLayoutParent.childCount, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        return linearLayoutHorizontal
+    }
+
+
+    fun Ajout_LinearLayout_Question_Groupe(): LinearLayout {
+        val linearLayoutVertical = LinearLayout(this)
+        linearLayoutVertical.orientation = LinearLayout.VERTICAL
+        linearLayoutVertical.id = View.generateViewId()
+        linearLayoutVertical.setPadding(0, 50, 0, 50)
+        linearLayout!!.addView(linearLayoutVertical, linearLayout!!.childCount, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT))
+        return linearLayoutVertical
+    }
+
 
 
     fun Ajout_TextView_Question(linearLayoutParent: LinearLayout, question: String?, numero: Int) {
@@ -656,7 +890,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
     }
 
 
-    fun Ajout_QCU_reponses(linearLayoutParent: LinearLayout, reponsesPossibles: ArrayList<String>) {
+    fun Ajout_QCU_reponses(question: Question, linearLayoutParent: LinearLayout, reponsesPossibles: ArrayList<String>) {
         // On créé le radioGroup qui contiendra les différentes réponses possibles.
         val radioGroup = RadioGroup(this)
         // On donne une ID au radioGroup.
@@ -665,6 +899,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         val params = LinearLayout.LayoutParams(param)
         params.gravity = Gravity.CENTER_HORIZONTAL
         linearLayoutParent.addView(radioGroup, 1, LinearLayout.LayoutParams(params))
+        radioGroupPourQuestionChoixUnique = radioGroup
+
+
+        val reponseGlobal = RechercheQuestionIdDansListeReponsesTemporaire(question)
+        val listReponses = reponseGlobal.split(";")
 
         // Pour chaque réponse possible.
         for (i in reponsesPossibles.indices) {
@@ -673,7 +912,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
             // On donne une ID au radioButton.
             radioButton.id = View.generateViewId()
             radioButton.text = reponsesPossibles[i]
-            radioButton.tag = "Reponse" + this.test
+            radioButton.tag = "Reponse_" + indiceQuestionAfficher + "_" + i
+
+            if(listReponses.size > i){
+                radioButton.isChecked = listReponses[i].toBoolean()
+            }
+
             test++
             //On ajoute le radioButton au radiogroup précédant.
             var indice = linearLayoutParent.childCount - 1
@@ -681,7 +925,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         }
     }
 
-    fun Ajout_QCM_reponses(linearLayoutParent: LinearLayout, reponsesPossibles: ArrayList<String>) {
+    fun Ajout_QCM_reponses(question: Question, linearLayoutParent: LinearLayout, reponsesPossibles: ArrayList<String>) {
         // On créé le linearLayout qui contiendra les différentes réponses possibles.
         val linearLayout = LinearLayout(this)
         // On donne une ID au radioGroup.
@@ -695,6 +939,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         )
         params.gravity = Gravity.CENTER
         linearLayoutParent.addView(linearLayout, 1, LinearLayout.LayoutParams(params))
+        linearLayoutPourQuestionChoixMultiples = linearLayout
+
+        val reponseGlobal = RechercheQuestionIdDansListeReponsesTemporaire(question)
+        val listReponses = reponseGlobal.split(";")
 
         // Pour chaque réponse possible.
         for (i in reponsesPossibles.indices) {
@@ -703,7 +951,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
             // On donne une ID au radioButton.
             checkBox.id = View.generateViewId()
             checkBox.text = reponsesPossibles[i]
-            checkBox.tag = "Reponse" + this.test
+            checkBox.tag = "Reponse_" + indiceQuestionAfficher + "_" + i
+
+            if(listReponses.size > i){
+                checkBox.isChecked = listReponses[i].toBoolean()
+            }
+
             test++
             //On ajoute le radioButton au radiogroup précédant.
             linearLayout.addView(checkBox, linearLayout.childCount, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
@@ -737,18 +990,29 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
     override fun onItemSelected(parent: AdapterView<*>, view: View?,
                                 pos: Int, id: Long) {
         val nom = parent.getItemAtPosition(pos) as String
+        sondage = SelectionSondageVoulueParNom(nom)
         nomSondage = nom
         for (i in linearLayout!!.childCount downTo 2) {
             linearLayout!!.removeViewAt(i - 1)
         }
         if (nom != "Choissisez un sondage") {
+            Log.e("ijoijoij", "     pas choissisez")
             linearLayout!!.getChildAt(0).visibility = View.VISIBLE
-            sondage = findSondageforNom(nom)
-            if(sondage != null){
+            if(testConnexion){
+                Log.e("uhiuhihu", "iojoijoijoij")
+                RequeteSondageVoulu(sondage!!.id_sondage)
+                RecuperationQuestionsDuSondage("1")
+//                RequeteChoixPourQuestions()
+
+            } else {
                 Log.e("onItemSelected", "On a séléctionner un item")
-                gettingSondageFromBDD(sondage!!.sondageId)
+                sondage = findSondageforNom(nom)
+                if(sondage != null){
+                    gettingSondageFromBDD(sondage!!.id_sondage)
+                }
             }
         } else {
+            Log.e("ijoijoij", "     choissisez")
             linearLayout!!.getChildAt(0).visibility = View.INVISIBLE
         }
     }
@@ -774,6 +1038,117 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
 
 
     fun validationSondage(view : View){
+
+
+        var testReponseComplete = true
+        for(question in listeQuestions){
+            if(question.estObligatoire && !listeSousQuestions.contains(question.id_question) && RechercheQuestionIdDansListeReponsesTemporaire(question) == ""){
+                testReponseComplete = false
+            }
+        }
+
+        if(testReponseComplete) {
+            for(question in listeQuestions){
+//                Log.e("validationSondage", "Etape 1       " + listeQuestions.size)
+//                if(!listeSousQuestions.contains(question.id_question)){
+//                    Log.e("validationSondage", "Etape 2       " + listeQuestions.size)
+                    if(question.questionType == "QuestionGroupe") {
+//                        Log.e("validationSondage", "Etape 3       " + listeQuestions.size)
+                        val listeSousQuestionsId = question.numerosDeQuestionsGroupe!!.split(";")
+                        for(sousQuestionId in listeSousQuestionsId){
+//                            Log.e("validationSondage", "Etape 4       " + listeQuestions.size)
+                            val sousQuestion = RechercheSousQuestionParId(sousQuestionId.toInt())
+                            val reponseTemporaire = Reponse(
+                                id_utilisateur = 1,
+                                id_sondage = sousQuestion!!.sondage_id,
+                                question_id = sousQuestion.id_question,
+                                reponse = RechercheQuestionIdDansListeReponsesTemporaire(sousQuestion!!)
+                            )
+//                            Log.e("validationSondage", "Reponse à question groupe envoyé")
+                            RequeteEnvoieReponse(reponseTemporaire)
+                        }
+                    } else {
+                        var reponseTemporaire : Reponse? = null
+                        if(question.questionType == "QuestionChoix"){
+                            val listeStringReponses = RechercheQuestionIdDansListeReponsesTemporaire(question)
+                            var listeBooleanReponses = listeStringReponses.split(";")
+                            var listeIndiceReponses = ArrayList<Int>()
+                            var indice = 0
+                            for(bool in listeBooleanReponses){
+                                if(bool.toBoolean()){
+                                  listeIndiceReponses.add(indice)
+                                }
+                                indice++
+                            }
+                            var listeChoixPourQuestion = ArrayList<Choix>()
+                            for(choix in listeChoix){
+                                if(choix.question_id == question.id_question){
+                                    listeChoixPourQuestion.add(choix)
+                                }
+                            }
+                            var reponseString = ""
+                            for(indiceTempo in listeIndiceReponses){
+                                if(listeIndiceReponses.get(listeIndiceReponses.size-1) == indiceTempo){
+                                    reponseString = reponseString + listeChoixPourQuestion.get(indiceTempo).id_choix
+                                } else {
+                                    reponseString = reponseString + listeChoixPourQuestion.get(indiceTempo).id_choix + ";"
+                                }
+                            }
+                            reponseTemporaire = Reponse(
+                                id_utilisateur = 1,
+                                id_sondage = question.sondage_id,
+                                question_id = question.id_question,
+                                reponse = reponseString
+                            )
+                        } else {
+                            reponseTemporaire = Reponse(
+                                id_utilisateur = 1,
+                                id_sondage = question.sondage_id,
+                                question_id = question.id_question,
+                                reponse = RechercheQuestionIdDansListeReponsesTemporaire(question)
+                            )
+                        }
+                        RequeteEnvoieReponse(reponseTemporaire)
+                    }
+//                }
+            }
+/*
+            for(question in listeQuestions){
+                if(!listeSousQuestions.contains(question.id_question)){
+                    if(question.questionType == "QuestionGroupe") {
+                        val listeSousQuestionsId = question.numerosDeQuestionsGroupe!!.split(";")
+                        for(sousQuestionId in listeSousQuestionsId){
+                            val sousQuestion = RechercheSousQuestionParId(sousQuestionId.toInt())
+                            val reponseTemporaire = Reponse(
+                                id_utilisateur = 1,
+                                id_sondage = sousQuestion!!.id_sondage,
+                                question_id = sousQuestion!!.id_question,
+                                reponse = RechercheQuestionIdDansListeReponsesTemporaire(sousQuestion!!)
+                            )
+                            Log.e("validationSondage", "Reponse à question groupe envoyé")
+                        }
+                    } else {
+                        val reponseTemporaire = Reponse(
+                            id_utilisateur = 1,
+                            id_sondage = question.id_sondage,
+                            question_id = question.id_question,
+                            reponse = RechercheQuestionIdDansListeReponsesTemporaire(question)
+                        )
+                        Log.e("validationSondage", "Reponse à question non groupe envoyé")
+                    }
+                }
+            }*/
+        } else {
+            Log.e("validationSondage", "Toutes les questions n'ont pas étés répondus.")
+            Toast.makeText(
+                this,
+                "Vous n'avez pas répondu à toute sles questions.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+//        RequeteEnvoieReponse()
+        /*
         var listeReponses = ArrayList<String>()
         for(i in 0 until test){
             var view = linearLayout!!.findViewWithTag<View>("Reponse" + i)
@@ -789,55 +1164,83 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
             message = message.plus(it)
         }
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        */
+
+        /*
         launch{
             if(sondage != null) {
                 val reponse = Reponse(
-                    sondageId = sondage!!.sondageId,
-                    sondageIdWeb = sondage!!.sondageIdWeb,
+                    sondageId = sondage!!.id_sondage,
+                    sondageIdWeb = sondage!!.id_sondage,
                     listeReponses = message
                 )
                 db.myDAO().insertReponses(reponse)
             }
-        }
+        }*/
 
-
-        var serverApiService = ServiceGenerator().createService(ServerApiService::class.java)
-        val call_Post = serverApiService.getTestConnexion()
-
-        Log.e("tets", "ted-tddt")
-
-        call_Post.enqueue(object : Callback<ReponseRequete> {
-            @Override
-            override fun onResponse(call : Call<ReponseRequete>, response : Response<ReponseRequete>) {
-                //Test si la requête a réussi ( code http allant de 200 à 299).
-                if (response.isSuccessful()) {
-                    Log.e("TAG", "La personne a été enlevée")
-                    //Met à jour l'affichage.
-                } else {
-                    //Affiche le code de la reponse, soit le code http de la requête.
-                    Log.e("blah", "Status code : " /*+ response.code()*/)
-                }
-            }
-            @Override
-            override fun onFailure(call : Call<ReponseRequete>, t : Throwable ) {
-                //Méthode affichant les messages pour l'utilisateur en cas de onFailure, voir ServiceFenerator pour plus de précision.
-                Log.e("yhuygutcy", "pfkspfkdspckpkpsd :        " + t.localizedMessage)
-//                ServiceGenerator.Message(this, "blah", t)
-            }
-        })
+//
+//        var serverApiService = ServiceGenerator().createService(ServerApiService::class.java)
+//        val call_Post = serverApiService.getTestConnexion()
+//
+//        Log.e("tets", "ted-tddt")
+//
+//        call_Post.enqueue(object : Callback<ReponseRequete> {
+//            @Override
+//            override fun onResponse(call : Call<ReponseRequete>, response : Response<ReponseRequete>) {
+//                //Test si la requête a réussi ( code http allant de 200 à 299).
+//                if (response.isSuccessful()) {
+//                    Log.e("TAG", "La personne a été enlevée")
+//                    //Met à jour l'affichage.
+//                } else {
+//                    //Affiche le code de la reponse, soit le code http de la requête.
+//                    Log.e("blah", "Status code : " /*+ response.code()*/)
+//                }
+//            }
+//            @Override
+//            override fun onFailure(call : Call<ReponseRequete>, t : Throwable ) {
+//                //Méthode affichant les messages pour l'utilisateur en cas de onFailure, voir ServiceFenerator pour plus de précision.
+//                Log.e("yhuygutcy", "pfkspfkdspckpkpsd :        " + t.localizedMessage)
+////                ServiceGenerator.Message(this, "blah", t)
+//            }
+//        })
     }
+
+
+
+
+    object Foo{
+        fun GestionVersionAvecConnexion(){
+            Log.e("eeeeee","Test ultima.")
+
+        }
+    }
+
+    fun GestionVersionSansConnexion(){
+
+    }
+
 
 
 
     override fun onDestroy() {
         super.onDestroy()
         coroutineContext[Job]!!.cancel()
+//        unregisterReceiver(networkChangeReceiver)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         if(sondage != null){
-            outState.putInt(TAG_ID_SONDAGE,sondage!!.sondageId)
+            outState.putInt(TAG_ID_SONDAGE,sondage!!.id_sondage)
+            outState.putStringArrayList(TAG_LISTE_REPONSES, listeReponsesTemporaires)
+            outState.putInt(TAG_INDICE_QUESTION_MAX, indiceQuestionMax)
+        } else {
+            outState.putInt(TAG_ID_SONDAGE, -1)
+
+        }
+        /*
+        if(sondage != null){
+            outState.putInt(TAG_ID_SONDAGE,sondage!!.id_sondage)
             val listReponses = ArrayList<String>()
             for(i in 0 until test){
                 val view = linearLayout!!.findViewWithTag<View>("Reponse" + i)
@@ -860,8 +1263,583 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         } else {
             outState.putInt(TAG_ID_SONDAGE, -1)
         }
+        */
     }
+
+
+
+
+
+    fun RecuperationQuestionsDuSondage(id_sondage : String){
+
+        listeQuestions = ArrayList()
+
+        var serverApiService = ServiceGenerator().createService(ServerApiService::class.java)
+        val call_Post = serverApiService.getQuestionsDuSondage(id_sondage)
+
+        call_Post.enqueue(object : Callback<List<ModeleQuestion>> {
+            override fun onResponse(call : Call<List<ModeleQuestion>>, response : Response<List<ModeleQuestion>>) {
+                if (response.isSuccessful()) {
+                    var arrayList : ArrayList<ModeleQuestion> = ArrayList()
+                    val allQuestions = response.body()
+                    if (allQuestions != null){
+                        for(question in allQuestions)
+                            arrayList.add(question)
+                    }
+                    for(question in arrayList) {
+                        Log.e(
+                            "La question  :  ",
+                            "id_question " + question.id_question + "\n"
+                                    + "id_sondage " + question.sondage_id + "\n"
+                                    + "intitule " + question.intitule + "\n"
+                                    + "est_obligatoire " + question.estObligatoire + "\n"
+                                    + "nombreChoix " + question.nombreChoix + "\n"
+                                    + "estUnique " + question.estUnique + "\n"
+                                    + "nombreDeCaractere " + question.nombreDeCaractere + "\n"
+                                    + "ordre " + question.ordre + "\n"
+                                    + "type " + question.type + "\n"
+
+                        )
+                    }
+                    for(question in arrayList) {
+                        listeQuestions.add(Transformation_ModeleQuestion_Question(question))
+                        if(question.type == "GroupeQuestion"){
+                            val listeSousQuestionsTemporaire = question.numerosDeQuestionsGroupe.split(";")
+                            for (sousQuestion in listeSousQuestionsTemporaire){
+                                listeSousQuestions.add(sousQuestion.toInt())
+                            }
+                        }
+                    }
+                    RequeteChoixParQuestionsPourSondage()
+//                    affichageQuestions()
+                    //Met à jour l'affichage.
+                } else {
+                    //Affiche le code de la reponse, soit le code http de la requête.
+                    Log.e("blah", "Status code : " + response.raw() + "  " + response.code()/*+ response.code()*/)
+                }
+            }
+            @Override
+            override fun onFailure(call : Call<List<ModeleQuestion>>, t : Throwable ) {
+                //Méthode affichant les messages pour l'utilisateur en cas de onFailure, voir ServiceFenerator pour plus de précision.
+                Log.e("yhuygutcy", "pfkspfkdspckpkpsd :        " + t.localizedMessage)
+//                ServiceGenerator.Message(this, "blah", t)
+            }
+        })
+    }
+
+
+
+
+    fun Transformation_ModeleQuestion_Question(modeleQuestion : ModeleQuestion): Question{
+        return Question(modeleQuestion.id_question, modeleQuestion.sondage_id, modeleQuestion.intitule, modeleQuestion.estObligatoire, modeleQuestion.nombreChoix, modeleQuestion.estUnique, modeleQuestion.nombreDeCaractere, modeleQuestion.numerosDeQuestionsGroupe, modeleQuestion.ordre, modeleQuestion.type)
+    }
+
+
+    fun Transformation_ModeleChoix_Choix(modeleChoix: ModeleChoix): Choix{
+        return Choix(modeleChoix.id_choix, modeleChoix.intituleChoix, modeleChoix.question_id)
+    }
+
+
+    fun LancementRequeteTestConnexion(){
+
+        var serverApiService = ServiceGenerator().createService(ServerApiService::class.java)
+        val call_Post = serverApiService.getTestConnexion()
+
+        call_Post.enqueue(object : Callback<ModeleSuccessConnexion> {
+            override fun onResponse(call : Call<ModeleSuccessConnexion>, response : Response<ModeleSuccessConnexion>){
+                if (response.isSuccessful()) {
+                    val successConnexion = response.body() as ModeleSuccessConnexion
+                    Toast.makeText(context, "Résultat du test de connexion : " + successConnexion.message + "  " + successConnexion.status, Toast.LENGTH_SHORT).show()
+                    Log.e("oujoijoij", "Résultat du test de connexion :  " + successConnexion.message + "  " + successConnexion.status)
+                } else {
+                    //Affiche le code de la reponse, soit le code http de la requête.
+                    Log.e("blah", "Status code : " + response.raw() + response.code()/*+ response.code()*/)
+                }
+                ResultatTestConnexion(true)
+            }
+            @Override
+            override fun onFailure(call : Call<ModeleSuccessConnexion>, t : Throwable ) {
+                //Méthode affichant les messages pour l'utilisateur en cas de onFailure, voir ServiceFenerator pour plus de précision.
+                Log.e("yhuygutcy", "pfkspfkdspckpkpsd :        " + t.localizedMessage)
+//                ServiceGenerator.Message(this, "blah", t)
+                ResultatTestConnexion(false)
+            }
+        })
+    }
+
+
+    fun ReceptionSondagesPublics(){
+
+//        sondagesDisponibles = ArrayList()
+//        nomSondagesDisponibles = ArrayList()
+//        nomSondagesDisponibles.add("Choissisez un sondage")
+        var serverApiService = ServiceGenerator().createService(ServerApiService::class.java)
+        val call_Post = serverApiService.getSondagesPublics()
+
+//        Log.e("tets", "ted-tddt")
+
+        call_Post.enqueue(object : Callback<List<ModeleSondagePossible>> {
+            override fun onResponse(call : Call<List<ModeleSondagePossible>>, response : Response<List<ModeleSondagePossible>>) {
+                //Test si la requête a réussi ( code http allant de 200 à 299).
+                if (response.isSuccessful()) {
+//                    Log.e("TAG", "La personne a été enlevée")
+                    val allSondages = response.body()
+                    if (allSondages != null) {
+                        for (sondage in allSondages) {
+                            sondagesDisponibles.add(Transformation_ModeleSondage_Sondage(sondage))
+                            nomSondagesDisponibles.add(sondage.intituleSondage)
+                        }
+                    }
+                    //Met à jour l'affichage.
+                } else {
+                    //Affiche le code de la reponse, soit le code http de la requête.
+                    Log.e("blah", "Status code : " + response.raw() + response.code()/*+ response.code()*/)
+                }
+            }
+            @Override
+            override fun onFailure(call : Call<List<ModeleSondagePossible>>, t : Throwable ) {
+                //Méthode affichant les messages pour l'utilisateur en cas de onFailure, voir ServiceFenerator pour plus de précision.
+                Log.e("yhuygutcy", "pfkspfkdspckpkpsd :        " + t.localizedMessage)
+//                ServiceGenerator.Message(this, "blah", t)
+            }
+        })
+    }
+
+    fun PassageQuestionPrecedente(view: View) {
+        affichageListeReponsesTemporaires()
+        Log.e("PassageQuestPrec","test indice : " + indiceQuestionAfficher.toString())
+        if(indiceQuestionAfficher > 0) {
+            var deplacement = 1
+            for (i in linearLayout!!.childCount downTo 2) {
+                linearLayout!!.removeViewAt(i - 1)
+            }
+
+            while (listeSousQuestions.contains(indiceQuestionAfficher - deplacement + 1)) {
+                deplacement++
+            }
+
+            sauvegardeReponsesAvantPassage()
+
+            indiceQuestionAfficher = indiceQuestionAfficher - deplacement
+            affichageQuestion()
+        }
+    }
+
+
+    fun PassageQuestionSuivante(view: View) {
+        affichageListeReponsesTemporaires()
+        Log.e("PassageQuestSuiv","test indice : " + indiceQuestionAfficher.toString())
+        Log.e("PassageQuestSuiv","test indice fin : " + listeQuestions.size.toString())
+        if(indiceQuestionAfficher < listeQuestions.size-1) {
+            var deplacement = 1
+            for (i in linearLayout!!.childCount downTo 2) {
+                linearLayout!!.removeViewAt(i - 1)
+            }
+
+            while (listeSousQuestions.contains(indiceQuestionAfficher + deplacement + 1)) {
+                deplacement++
+            }
+
+            sauvegardeReponsesAvantPassage()
+
+            if(deplacement > 0 && indiceQuestionAfficher == indiceQuestionMax){
+                for(indice in 1 .. deplacement){
+//                    listeReponsesTemporaires.add("")
+                }
+                indiceQuestionMax = indiceQuestionMax + deplacement
+            }
+
+            indiceQuestionAfficher = indiceQuestionAfficher + deplacement
+            Log.e("yguygygigu", "ioouiuiouiouiouùiupio ipioioipisc sdc iscsipsi o iaoi çeiçriaçrierçe")
+            affichageQuestion()
+        }
+    }
+
+
+    fun sauvegardeReponsesAvantPassage(){
+        Log.e("sauvegardeAVP","test indice : " + indiceQuestionAfficher.toString() + "    " + indiceQuestionMax.toString() + "   " + listeReponsesTemporaires.size)
+        val questionTemporaire = listeQuestions.get(indiceQuestionAfficher)
+        if(indiceQuestionAfficher == indiceQuestionMax && RechercheQuestionIdDansListeReponsesTemporairePourIndice(questionTemporaire) == -1 && !listeSousQuestions.contains(indiceQuestionAfficher+1)){
+            val question = listeQuestions.get(indiceQuestionAfficher)
+
+            if(question.questionType.equals("GroupeQuestion")){
+                var reponses = ""
+                var indice = 1
+                val sousQuestionsId = question.numerosDeQuestionsGroupe!!.split(";")
+                for(sousQuestionId in sousQuestionsId){
+                    val sousQuestion = RechercheSousQuestionParId(sousQuestionId.toInt())
+                    if(sousQuestion != null && sousQuestion.questionType == "QuestionOuverte"){
+                        val linearLayoutTemporaire =
+                            linearLayoutPourQuestionGroup!!.getChildAt(indice) as LinearLayout
+                        val view = linearLayoutTemporaire.getChildAt(1) as EditText
+                        listeReponsesTemporaires.add(sousQuestion.id_question.toString() + ";" + view.text.toString())
+                        indice++
+                    }
+                }
+                listeReponsesTemporaires.add(question.id_question.toString() + ";")
+/*
+                for(i in 1 until linearLayoutPourQuestionGroup!!.childCount){
+                    if(i != 1){
+                        reponses = reponses.plus(";")
+                    }
+                    Log.e("jjj","kkkklll    " + i)
+                    val linearLayoutTemporaire =
+                        linearLayoutPourQuestionGroup!!.getChildAt(i) as LinearLayout
+                    val view = linearLayoutTemporaire.getChildAt(1) as EditText
+                    reponses = reponses.plus(view.text.toString() + "")
+                }
+                listeReponsesTemporaires.add("sq" + question.id_question.toString() + ";" + reponses)*/
+            } else if(question.questionType.equals("QuestionOuverte")
+                && linearLayoutPourQuestionTexteLibre != null
+                && linearLayoutPourQuestionTexteLibre!!.childCount == 2){
+                val viewTest = linearLayoutPourQuestionTexteLibre!!.getChildAt(1) as EditText
+                listeReponsesTemporaires.add(question.id_question.toString() + ";" + viewTest.text.toString())
+            } else if(question.questionType.equals("QuestionChoix")
+                && question.nombreChoix != null){
+                if(question.estUnique != null
+                    && question.estUnique
+                    && radioGroupPourQuestionChoixUnique != null){
+                    var reponse = question.id_question.toString()
+                    for(i in 0 until radioGroupPourQuestionChoixUnique!!.childCount){
+                        val view = radioGroupPourQuestionChoixUnique!!.getChildAt(i) as RadioButton
+                        reponse = reponse.plus(";" + view.isChecked.toString())
+                    }
+                    listeReponsesTemporaires.add(reponse)
+                } else if(question.estUnique != null
+                    && linearLayoutPourQuestionChoixMultiples != null) {
+                    var reponse = question.id_question.toString()
+                    for(i in 0 until linearLayoutPourQuestionChoixMultiples!!.childCount){
+                        val view = linearLayoutPourQuestionChoixMultiples!!.getChildAt(i) as CheckBox
+                        reponse = reponse.plus(";" + view.isChecked.toString())
+                    }
+                    listeReponsesTemporaires.add(reponse)
+                }
+//                RequeteChoixPourQuestionEtSondage(question, null, 1)
+
+            } else if(question.questionType.equals("QuestionPoint")
+                && linearLayoutPourQuestionPoint != null
+                && linearLayoutPourQuestionPoint!!.childCount == 2){
+                val viewTest = linearLayoutPourQuestionPoint!!.getChildAt(1) as EditText
+                listeReponsesTemporaires.add(question.id_question.toString() + ";" + viewTest.text.toString())
+            }
+        } else if (!listeSousQuestions.contains(indiceQuestionAfficher+1)){
+
+            val question = listeQuestions.get(indiceQuestionAfficher)
+            val indiceDansListeReponses = RechercheQuestionIdDansListeReponsesTemporairePourIndice(question)
+
+            if(question.questionType.equals("GroupeQuestion")){
+                var reponses = ""
+                var indice = 1
+                val sousQuestionsId = question.numerosDeQuestionsGroupe!!.split(";")
+                for(sousQuestionId in sousQuestionsId){
+                    val sousQuestion = RechercheSousQuestionParId(sousQuestionId.toInt())
+                    val indiceSousQuestionDansListeReponses = RechercheQuestionIdDansListeReponsesTemporairePourIndice(sousQuestion!!)
+                    if(sousQuestion != null && sousQuestion.questionType == "QuestionOuverte"){
+                        val linearLayoutTemporaire =
+                            linearLayoutPourQuestionGroup!!.getChildAt(indice) as LinearLayout
+                        val view = linearLayoutTemporaire.getChildAt(1) as EditText
+                        Log.e("fjzeoifjfjfoj", "isdjdjvodjvidjvd                          " + indiceDansListeReponses + "   " + indice + "   " + sousQuestionsId.size)
+                        listeReponsesTemporaires.set(indiceDansListeReponses + indice - sousQuestionsId.size-1,sousQuestion.id_question.toString() + ";" + view.text.toString())
+                        indice++
+                    }
+                }
+                listeReponsesTemporaires.set(indiceDansListeReponses, question.id_question.toString() + ";")
+/*
+                for(i in 1 until linearLayoutPourQuestionGroup!!.childCount){
+                    if(i != 1){
+                        reponses = reponses.plus(";")
+                    }
+                    Log.e("jjj","kkkklll    " + i)
+                    val linearLayoutTemporaire =
+                        linearLayoutPourQuestionGroup!!.getChildAt(i) as LinearLayout
+                    val view = linearLayoutTemporaire.getChildAt(1) as EditText
+                    reponses = reponses.plus(view.text.toString() + "")
+                }
+                listeReponsesTemporaires.add("sq" + question.id_question.toString() + ";" + reponses)*/
+            } else if(question.questionType.equals("QuestionOuverte")
+                && linearLayoutPourQuestionTexteLibre != null
+                && linearLayoutPourQuestionTexteLibre!!.childCount == 2){
+                val viewTest = linearLayoutPourQuestionTexteLibre!!.getChildAt(1) as EditText
+                listeReponsesTemporaires.set(indiceDansListeReponses, question.id_question.toString() + ";" + viewTest.text.toString())
+            } else if(question.questionType.equals("QuestionChoix")
+                && question.nombreChoix != null){
+                if(question.estUnique != null
+                    && question.estUnique
+                    && radioGroupPourQuestionChoixUnique != null){
+                    var reponse = question.id_question.toString()
+                    for(i in 0 until radioGroupPourQuestionChoixUnique!!.childCount){
+                        val view = radioGroupPourQuestionChoixUnique!!.getChildAt(i) as RadioButton
+                        reponse = reponse.plus(";" + view.isChecked.toString())
+                    }
+                    listeReponsesTemporaires.set(indiceDansListeReponses, reponse)
+                } else if(question.estUnique != null
+                    && linearLayoutPourQuestionChoixMultiples != null) {
+                    var reponse = question.id_question.toString()
+                    for(i in 0 until linearLayoutPourQuestionChoixMultiples!!.childCount){
+                        val view = linearLayoutPourQuestionChoixMultiples!!.getChildAt(i) as CheckBox
+                        reponse = reponse.plus(";" + view.isChecked.toString())
+                    }
+                    listeReponsesTemporaires.set(indiceDansListeReponses, reponse)
+                }
+//                RequeteChoixPourQuestionEtSondage(question, null, 1)
+
+            } else if(question.questionType.equals("QuestionPoint")
+                && linearLayoutPourQuestionPoint != null
+                && linearLayoutPourQuestionPoint!!.childCount == 2){
+                val viewTest = linearLayoutPourQuestionPoint!!.getChildAt(1) as EditText
+                listeReponsesTemporaires.set(indiceDansListeReponses, question.id_question.toString() + ";" + viewTest.text.toString())
+            }
+        }
+    }
+
+
+
+
+
+
+    fun RequeteChoixPourQuestions(){
+
+        var serverApiService = ServiceGenerator().createService(ServerApiService::class.java)
+        val call_Post = serverApiService.getChoixPArSondage(sondage!!.id_sondage.toString())
+
+
+        call_Post.enqueue(object : Callback<List<ModeleChoix>> {
+            override fun onResponse(call : Call<List<ModeleChoix>>, response : Response<List<ModeleChoix>>) {
+                //Test si la requête a réussi ( code http allant de 200 à 299).
+                if (response.isSuccessful()) {
+//                    Log.e("TAG", "La personne a été enlevée")
+                    val allChoix = response.body()
+                    if (allChoix != null) {
+                        for (choix in allChoix)
+                            listeChoix.add(Transformation_ModeleChoix_Choix(choix))
+                    }
+                }
+            }
+            override fun onFailure(call : Call<List<ModeleChoix>>, t : Throwable ) {
+                //Méthode affichant les messages pour l'utilisateur en cas de onFailure, voir ServiceFenerator pour plus de précision.
+                Log.e("yhuygutcy", "pfkspfkdspckpkpsd :        " + t.localizedMessage)
+//              ServiceGenerator.Message(this, "blah", t)
+            }
+        })
+    }
+
+
+    fun Transformation_ModeleSondage_Sondage(modeleSondage: ModeleSondagePossible): Sondage{
+        return Sondage(modeleSondage.id_sondage, modeleSondage.intituleSondage, modeleSondage.descriptionSondage, modeleSondage.administrateur_id)
+    }
+
+
+
+
+    fun RequeteChoixParQuestionsPourSondage(){
+        listeChoix = ArrayList()
+        val indiceDerniereQuestionChoix = VerificationDerniereQuestionChoix()
+        val derniereQuestionChoix = listeQuestions[indiceDerniereQuestionChoix]
+        var serverApiService = ServiceGenerator().createService(ServerApiService::class.java)
+        for(question in listeQuestions){
+            if(question.questionType.equals("QuestionChoix")){
+
+                val call_Post = serverApiService.getChoixParQuestionParSondage(question.sondage_id.toString(), question.id_question.toString())
+
+
+                call_Post.enqueue(object : Callback<List<ModeleChoix>> {
+                    override fun onResponse(call : Call<List<ModeleChoix>>, response : Response<List<ModeleChoix>>) {
+                        //Test si la requête a réussi ( code http allant de 200 à 299).
+                        if (response.isSuccessful()) {
+                            val listChoixTemporaire = response.body()
+                            if (listChoixTemporaire != null) {
+                                for(choix in listChoixTemporaire) {
+                                    listeChoix.add(Transformation_ModeleChoix_Choix(choix))
+                                }
+                            }
+                            if(question == derniereQuestionChoix) {
+                                affichageQuestion()
+                            }
+                        }
+                    }
+                    override fun onFailure(call : Call<List<ModeleChoix>>, t : Throwable ) {
+                        //Méthode affichant les messages pour l'utilisateur en cas de onFailure, voir ServiceFenerator pour plus de précision.
+                        Log.e("yhuygutcy", "pfkspfkdspckpkpsd :        " + t.localizedMessage)
+//              ServiceGenerator.Message(this, "blah", t)
+                    }
+                })
+            }
+        }
+    }
+
+
+    fun RequeteSondageVoulu(sondage_id: Int){
+        var serverApiService = ServiceGenerator().createService(ServerApiService::class.java)
+        val call_Post = serverApiService.getSondage(sondage_id.toString())
+
+
+        call_Post.enqueue(object : Callback<ModeleSondagePossible> {
+            override fun onResponse(call : Call<ModeleSondagePossible>, response : Response<ModeleSondagePossible>) {
+                //Test si la requête a réussi ( code http allant de 200 à 299).
+                if (response.isSuccessful()) {
+                    val sondageVoulu = response.body()
+                    if (sondageVoulu != null) {
+                        sondage = Transformation_ModeleSondage_Sondage(sondageVoulu)
+                    }
+                }
+            }
+            override fun onFailure(call : Call<ModeleSondagePossible>, t : Throwable ) {
+                //Méthode affichant les messages pour l'utilisateur en cas de onFailure, voir ServiceFenerator pour plus de précision.
+                Log.e("yhuygutcy", "pfkspfkdspckpkpsd :        " + t.localizedMessage)
+//              ServiceGenerator.Message(this, "blah", t)
+            }
+        })
+    }
+
+
+    fun SelectionChoixPourReponses(question: Question): Choix?{
+        for(choix in listeChoix){
+        }
+        return null
+    }
+
+
+/*
+    fun RequeteChoixPourQuestionEtSondage(question : Question, linearLayoutBase: LinearLayout?, indiceUtilisation: Int?){
+
+        var serverApiService = ServiceGenerator().createService(ServerApiService::class.java)
+        val call_Post = serverApiService.getChoixParQuestionParSondage("" + question.id_sondage, "" + question.id_question)
+
+
+        call_Post.enqueue(object : Callback<List<ModeleChoix>> {
+            override fun onResponse(call : Call<List<ModeleChoix>>, response : Response<List<ModeleChoix>>) {
+                //Test si la requête a réussi ( code http allant de 200 à 299).
+                if (response.isSuccessful()) {
+//                    Log.e("TAG", "La personne a été enlevée")
+                    var arrayList : ArrayList<ModeleChoix> = ArrayList()
+                    val allStringChoix = ArrayList<String>()
+                    val allChoix = response.body()
+                    if (allChoix != null){
+                        for(choix in allChoix)
+                            arrayList.add(choix)
+                    }
+
+                    for(choix in arrayList) {
+                        allStringChoix.add(choix.intituleChoix)
+                        /*
+                        Log.e(
+                            "Le choix  :  ",
+                            "id_choix " + choix.id_choix + "\n  question_id   " + choix.question_id + "\n  intituleChoix  " + choix.intituleChoix
+                        )
+                        */
+                    }
+                    if(indiceUtilisation == 0) {
+                        if (question.estUnique != null && question.estUnique) {
+                            LancementQuestionChoixUnique(question, allStringChoix, linearLayoutBase!!)
+                        } else if (question.estUnique != null) {
+                            LancementQuestionChoixMultiple(
+                                question,
+                                allStringChoix,
+                                linearLayoutBase!!
+                            )
+                        }
+                    } else {
+                        var totalReponsesQuestion = ""
+                        if(question.estUnique != null && question.nombreChoix != null && question.estUnique) {
+                            for (i in 0 until question.nombreChoix) {
+                                val view = linearLayout!!.findViewWithTag<View>("Reponse_" + indiceQuestionAfficher + "_" + i) as RadioButton
+                                totalReponsesQuestion = totalReponsesQuestion.plus(";" + view.isChecked.toString())
+                            }
+                        } else if (question.estUnique != null && question.nombreChoix != null) {
+                            for (i in 0 until question.nombreChoix) {
+                                val view = linearLayout!!.findViewWithTag<View>("Reponse_" + indiceQuestionAfficher + "_" + i) as CheckBox
+                                totalReponsesQuestion = totalReponsesQuestion.plus(";" + view.isChecked.toString())
+                            }
+                        }
+                        listeReponsesTemporaires.add(question.id_question.toString() + totalReponsesQuestion)
+                    }
+                } else {
+                    //Affiche le code de la reponse, soit le code http de la requête.
+                    Log.e("blah", "Status code : " + response.raw() + response.code()/*+ response.code()*/)
+                }
+            }
+            @Override
+            override fun onFailure(call : Call<List<ModeleChoix>>, t : Throwable ) {
+                //Méthode affichant les messages pour l'utilisateur en cas de onFailure, voir ServiceFenerator pour plus de précision.
+                Log.e("yhuygutcy", "pfkspfkdspckpkpsd :        " + t.localizedMessage)
+//                ServiceGenerator.Message(this, "blah", t)
+            }
+        })
+    }*/
+
+
+
+    fun SelectionSondageVoulueParNom(nomsondage: String): Sondage?{
+        for(sondage in sondagesDisponibles){
+            if(sondage.intituleSondage.equals(nomsondage)){
+                return sondage
+            }
+        }
+        return null
+    }
+
+
+
+    fun VerificationDerniereQuestionChoix(): Int{
+        var indiceDerniereQuestionChoix = -1
+        for(question in listeQuestions){
+            if(question.questionType.equals("QuestionChoix")){
+                indiceDerniereQuestionChoix = listeQuestions.indexOf(question)
+            }
+        }
+        return indiceDerniereQuestionChoix
+    }
+
+
+
+    fun RequeteEnvoieReponse(reponse: Reponse){
+        var serverApiService = ServiceGenerator().createService(ServerApiService::class.java)
+        val call_Post = serverApiService.EnvoieReponse(reponse.id_utilisateur, reponse.id_sondage, reponse.question_id, reponse.reponse)
+
+        Log.e("RequeteEnvoieReponse", "La reponse a envoyé : " + reponse.question_id + "  " + reponse.id_utilisateur + " "+ reponse.reponse)
+
+        call_Post.enqueue(object : Callback<Reponse> {
+            override fun onResponse(call : Call<Reponse>, response : Response<Reponse>) {
+                //Test si la requête a réussi ( code http allant de 200 à 299).
+                if (response.isSuccessful()) {
+                    val reponseRecu = response.body()
+                    if (reponseRecu != null) {
+                        Log.e("RequeteEnvoieReponse: ", reponseRecu.id_utilisateur.toString() + "  " + reponseRecu.id_sondage.toString()
+                                + "  " + reponseRecu.question_id.toString() + "  " + reponseRecu.reponse)
+                    } else {
+                        Log.e("RequeteEnvoieReponse", "La reponse recu est null")
+                    }
+                }
+            }
+            override fun onFailure(call : Call<Reponse>, t : Throwable ) {
+                //Méthode affichant les messages pour l'utilisateur en cas de onFailure, voir ServiceFenerator pour plus de précision.
+                Log.e("RequeteEnvoieReponse", "Erreur de connexion" + t.localizedMessage)
+//              ServiceGenerator.Message(this, "blah", t)
+            }
+        })
+    }
+
+
+    fun RechercheSousQuestionParId(sousQuestionId : Int): Question?{
+        for(question in listeQuestions){
+            if(question.id_question == sousQuestionId){
+                return question
+            }
+        }
+        return null
+    }
+
+
+
+
+    fun affichageListeReponsesTemporaires(){
+        Log.e("ListeTemporaire : ", " \n\n\n\n ")
+        for(reponseTempo in listeReponsesTemporaires){
+            Log.e("ListeTemporaire : ", "                                                        " + reponseTempo + " \n ")
+        }
+        Log.e("ListeTemporaire : ", " \n\n\n ")
+    }
+
+
+
 }
-
-
-

@@ -8,8 +8,10 @@ import androidx.room.Relation
 data class SondageAvecQuestions (
     @Embedded val sondage: Sondage,
     @Relation(
-        parentColumn = "sondageId",
-        entityColumn = "questionId"
+//        parentColumn = "sondageId",
+//        entityColumn = "questionId"
+        parentColumn = "id_sondage",
+        entityColumn = "id_question"
     )
     val questions : List<Question>
 )

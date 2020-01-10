@@ -1,7 +1,6 @@
 package com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Retrofit
 
-import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.Reponse
-import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.Sondage
+import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.*
 import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -34,8 +33,44 @@ interface ServerApiService {
     @GET("adressse")
     fun getAllSondages(): Call<List<Sondage>>
 
+
     @GET(".")
-    fun getTestConnexion(): Call<ReponseRequete>
+    fun getTestConnexion(): Call<ModeleSuccessConnexion>
+
+
+    @GET("sondagesPublies")
+    fun getSondagesPublics() : Call<List<ModeleSondagePossible>>
+
+
+    @GET("questionsDuSondage/{temp}")
+    fun getQuestionsDuSondage(@Path("temp") Variable: String): Call<List<ModeleQuestion>>
+
+
+    @GET("lesChoixParQuestion/{sondage}/{question}")
+    fun getChoixParQuestionParSondage(@Path("sondage") Sondage: String, @Path("question") Question: String) : Call<List<ModeleChoix>>
+
+
+    @GET("lesChoixParSondage/{sondage}")
+    fun getChoixPArSondage(@Path("sondage") Sondage: String) : Call<List<ModeleChoix>>
+
+    @GET("sondagePublie/{sondage}")
+    fun getSondage(@Path("sondage") Sondage: String) : Call<ModeleSondagePossible>
+
+    @FormUrlEncoded
+    @POST("repondre")
+    fun EnvoieReponse(@Field("id_utilisateur") id_utilisateur: Int,
+                      @Field("id_sondage") id_sondage: Int,
+                      @Field("id_question") id_question: Int,
+                      @Field("reponse") reponse: String): Call<Reponse>
+
+
+    @FormUrlEncoded
+    @POST("newUser")
+    fun EnvoieNouveauUtilisateur(@Field("email")email: String,
+                                 @Field("adresseIP")adresseIP : String
+    )
+
+
 
     /**
      * Requête pour prendre les informations de toutes personnes présentes.

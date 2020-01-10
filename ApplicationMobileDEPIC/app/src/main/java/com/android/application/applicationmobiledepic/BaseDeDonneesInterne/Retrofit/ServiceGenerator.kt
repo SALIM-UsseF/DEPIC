@@ -25,7 +25,8 @@ class ServiceGenerator {
      * Builder des requêtes.
      */
     private val builder = Retrofit.Builder()
-        .baseUrl("http://192.168.43.24/")
+        //.baseUrl("http://192.168.43.24/sondagesPublies/")
+        .baseUrl("http://192.168.43.24:3100/")
         .addConverterFactory(GsonConverterFactory.create())
 
 

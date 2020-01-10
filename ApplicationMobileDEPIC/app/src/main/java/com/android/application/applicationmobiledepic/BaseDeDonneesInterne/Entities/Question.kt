@@ -17,7 +17,9 @@ import androidx.room.PrimaryKey
  * questionIntitule : Intitulé de la question
  */
 @Entity(tableName = "Questions")
+
 data class Question(
+/*
     @PrimaryKey(autoGenerate = true) var questionId: Int = 0,
     var questionIdWeb: Long,
     var sondageId: Int,
@@ -25,4 +27,18 @@ data class Question(
     var questionNumero: Int,
     var questionType: String,
     var questionIntitule: String
-    )
+*/
+
+@PrimaryKey val id_question : Int,
+val sondage_id : Int,
+val intitule : String,
+val estObligatoire : Boolean,
+val nombreChoix : Int?,
+val estUnique : Boolean?,
+val nombreDeCaractere : Int?,
+val numerosDeQuestionsGroupe : String?,
+val ordre : Int,
+val questionType : String
+
+
+)

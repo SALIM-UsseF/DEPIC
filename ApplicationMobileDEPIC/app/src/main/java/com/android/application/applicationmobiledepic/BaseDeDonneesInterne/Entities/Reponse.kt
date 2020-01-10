@@ -18,8 +18,9 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "Reponses")
 data class Reponse(
-    @PrimaryKey(autoGenerate = true) var reponseId: Int = 0,
-    var sondageId: Int,
-    var sondageIdWeb: Int,
-    var listeReponses: String
+    @PrimaryKey(autoGenerate = true) var id_reponse: Int = 0,
+    var id_utilisateur : Int,
+    var id_sondage: Int,
+    var question_id: Int,
+    var reponse: String
 )
