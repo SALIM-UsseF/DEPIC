@@ -22,8 +22,8 @@ class QuestionPointService
 
         question = QuestionPoint.new(:intitule => intitule,
                                         :estObligatoire => estObligatoire,
-                                        :minPoints => estUnique,
-                                        :maxPoints => lesChoix,
+                                        :minPoints => minPoints,
+                                        :maxPoints => maxPoints,
                                         :ordre => ordre,
                                         :sondage_id => sondage_id)
 
@@ -60,15 +60,22 @@ class QuestionPointService
     end
 
 
-    def questionsPoints(id_sondage)
-        arry = Array.new
-        questionsPoints=QuestionPoint.where(sondage_id: id_sondage, etat: false)
-        questionsPoints.each do |question|
+    # afficher toutes les moyennes des question à point d'un sondage 
+    def questionsPointsMoyennes(id_sondage)
+        # associer pour chaque question à point sa moyenne générale
+        hash=Hash.new
 
-        moy=ParticiperService.instance.moyenneParticipationsParQuestionEtParSondage(question.id_question, id_sondage)
-        arry << moy   
+        QuestionPoint.where(sondage_id: id_sondage, etat: false).find_each do |question|
+            
+            moy=ParticiperService.instance.moyenneParticipationsParQuestionAPointsEtParSondage(question.id_question, id_sondage)
+            hash[question.id_question.to_s]=moy
+        
+        
 
         end
+        
+        arr=hash
+        
 
 
     end

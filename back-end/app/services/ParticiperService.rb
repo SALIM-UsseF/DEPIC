@@ -92,23 +92,17 @@ class ParticiperService
 
     # nombre de participations sur un sondage
     def nombreUtilisateurParSondage(id_sondage)
-        nombreUtilisateurs = Participer.where(sondage_id: id_sondage, etat: false).count
+        nombreUtilisateurs = Participer.where(id_sondage: id_sondage, etat: false).count
     end
 
 
-    #def tauxReponseChoixUnique(id_sondage)
-
-    #questionsChoixUnique=QuestionService.afficherQuestionsParSondage(id_sondage)
-
-        
-    #end
 
 
     # Calculer la moyenne des participations pour une question 
     def moyenneParticipationsParQuestionAPointsEtParSondage(id_question, id_sondage)
-        participations = Participer.where(id_question: id_question, id_sondage: id_sondage, etat: false)
-        compteur=0
-        participations.each do |participation|
+        
+        compteur=0 # pour faire la somme des réponses
+        Participer.where(id_question: id_question, id_sondage: id_sondage, etat: false).find_each do |participation|
 
             reponseString=participation.reponse
             reponseFloat=reponseString.to_f
@@ -118,34 +112,81 @@ class ParticiperService
 
         nbrParticipations=countParticipationsParQuestionAPointsEtParSondage(id_question,id_sondage)
 
-        moyenne=compteur / nbrParticipations
+        moyenne = compteur / nbrParticipations
+        
         
 
     end
 
+    # Afficher le nombre des participations pour une question à point
     def countParticipationsParQuestionAPointsEtParSondage(id_question,id_sondage)
         nombreParticipations = Participer.where(id_question: id_question, id_sondage: id_sondage, etat: false).count
         
 
     end
 
-    def ParticipationsParQuestionChoixUniqueEtParSondage(id_question, id_sondage)
-        participations=Participer.where(id_question: id_question, id_sondage: id_sondage, etat: false)
+    # Afficher pour chaque question à choix unique le nombre de participations pour chaque choix
+    def ParticipationsParQuestionChoixUniqueEtParSondage(id_question, id_sondage, nombre_choix)
+        
 
-        choixQuestion= ChoixService.afficherLesChoixParQuestion(id_question)
+        choixQuestion= ChoixService.instance.afficherLesChoixParQuestion(id_question)
+        # map pour associer chaque choix le nombre de participation 
+        hash=Hash.new
+        hash ["id_question"]=id_question
 
-
-        participations.each do |participation|
-
-            reponseString= participation.reponse
-            reponseInt= reponseString.to_i
-            
+        choixQuestion.find_each do |choix|
+            choixString=choix.id_choix.to_s
+            hash[choixString]=0
 
         end
+
+        Participer.where(id_question: id_question, id_sondage: id_sondage, etat: false).find_each do |participation|
+
+            reponseString= participation.reponse
+            hash[reponseString]=hash[reponseString]+1
+
+        end
+
+        resultat= hash
 
 
 
     end
 
+    # Afficher pour chaque question à choix multiple le nombre de participations pour chaque choix
+    def ParticipationsParQuestionChoixMultipleEtParSondage(id_question, id_sondage, nombre_choix)
+        
+
+        choixQuestion= ChoixService.instance.afficherLesChoixParQuestion(id_question)
+        # map pour associer chaque choix le nombre de participation 
+        hash=Hash.new
+        hash ["id_question"]=id_question
+
+        choixQuestion.find_each do |choix|
+            choixString=choix.id_choix.to_s
+            hash[choixString]=0
+
+        end
+
+        Participer.where(id_question: id_question, id_sondage: id_sondage, etat: false).find_each do |participation|
+
+            reponseString= participation.reponse
+            reponseString.split(';').each do |id|
+
+                hash[id]=hash[id]+1    
+            end
+            
+            
+
+            
+            
+
+        end
+
+        resultat= hash
+
+
+
+    end
 
 end
