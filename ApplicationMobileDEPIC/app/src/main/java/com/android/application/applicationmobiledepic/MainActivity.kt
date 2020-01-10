@@ -246,7 +246,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
             db.myDAO().deleteAllReponses()
             db.myDAO().deleteAllSondages()
             db.myDAO().deleteAllchoix()
-            
+
         }
     }
 
@@ -1001,7 +1001,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
             if(testConnexion){
                 Log.e("uhiuhihu", "iojoijoijoij")
                 RequeteSondageVoulu(sondage!!.id_sondage)
-                RecuperationQuestionsDuSondage("1")
+                RecuperationQuestionsDuSondage(sondage!!.id_sondage.toString())
 //                RequeteChoixPourQuestions()
 
             } else {
@@ -1839,6 +1839,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         }
         Log.e("ListeTemporaire : ", " \n\n\n ")
     }
+
+
+
+
+
+
+
 
 
 
