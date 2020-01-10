@@ -35,7 +35,7 @@ class ChoixService
     def afficherLesChoixParSondagePublie(id_sondage)
         if SondageService.instance.estPublie(id_sondage)
 
-            sql = 'SELECT id_choix, "intituleChoix"
+            sql = 'SELECT id_choix, "intituleChoix", questions.id_question
                    FROM choixes
                    INNER JOIN questions ON (choixes.question_id = questions.id_question)
                    INNER JOIN sondages ON (questions.sondage_id = sondages.id_sondage)
