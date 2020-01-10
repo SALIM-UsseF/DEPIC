@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">ApplicationMobileDEPIC</string>
+    <string name="IntitulerQuestionChoixUnique">La question à choix unique</string>
+    <string name="TexteRadioButton1ChoixUnique">RadioButton</string>
+    <string name="TexteRadioButton2ChoixUnique">RadioButton</string>
+    <string name="IntitulerQuestionChoixMultiple">La question à choix multiple</string>
+    <string name="TexteToggleButtonChoixmultiple1">ToggleButton1</string>
+    <string name="TexteToggleButtonChoixmultiple2">ToggleButton2</string>
+    <string name="IntitulerQuestionTexteLibre">La question à réponse libre</string>
+    <string name="IntitulerQuestion">La question de base.</string>
+    <string name="EditTexteHint">Réponse libre.</string>
+    <string name="texte_cliquage_qcu">Cliquage QCU</string>
+    <string name="texte_cliquage_qcm">Cliquage QCM</string>
+    <string name="TitreFormulaire">Formulaire :</string>
+
+    // Textes pour les bouttons
+    <string name="Texte_Button_Valider_Enregistrer">Valider</string>
+    <string name="Texte_Button_Reinitialisation">Réinitialiser</string>
+    <string name="Texte_Button_Precedent">Précédent</string>
+    <string name="Texte_Button_Suivant">Suivant</string>
+</resources>

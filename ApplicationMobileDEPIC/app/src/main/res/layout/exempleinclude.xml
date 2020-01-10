@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <include
+        layout="@layout/question_choix_unique"
+        android:id="@+id/includedLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        />
+
+    <include
+        layout="@layout/question_choix_multiple"
+        android:id="@+id/includedLayout2"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <include
+        layout="@layout/question_texte_libre"
+        android:id="@+id/includedLayout3"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <include
+        layout="@layout/question_avec_points"
+        android:id="@+id/includedLayout4"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/ToggleButton1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/TexteToggleButtonChoixmultiple1"
+        />
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/ToggleButton2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/TexteToggleButtonChoixmultiple2"
+        />
+
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ListView"
+        />
+
+
+
+
+
+
+
+    <RadioButton
+        android:id="@+id/RadioButton1ChoixUnique"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/TexteRadioButton1ChoixUnique" />
+
+    <RadioButton
+        android:id="@+id/RadioButton2ChoixUnique"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/TexteRadioButton2ChoixUnique" />
+
+</LinearLayout>
