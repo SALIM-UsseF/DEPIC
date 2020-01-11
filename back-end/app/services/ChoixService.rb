@@ -50,6 +50,34 @@ class ChoixService
         end
     end
 
+    # selectionner tout les choix des sondages publies (publier = true)
+    def listeDesChoixPublies
+
+        # array contient la liste des choix publies
+        choixPublies = Array.new
+
+        # récupérer la liste des sondages publies
+        # et traiter chaque sondage
+        Sondage.where(publier: true, etat: false).order('id_sondage DESC').find_each do |sondage|
+
+            # récupérer la liste des questions
+            # et traiter chaque question
+            Question.where(sondage_id: sondage.id_sondage, etat: false).order('sondage_id ASC, ordre ASC').find_each do |question|
+
+                # récupérer la liste des choix
+                # et traiter chaque choix
+                Choix.where(question_id: question.id_question, etat: false).order('id_choix ASC').find_each do |choix|
+                    choixPublies << choix
+                end
+
+            end
+
+        end
+        
+        lesChoix = choixPublies
+
+    end
+
     # Creer un nouveau Choix
     def creerNouveauChoix(intituleChoix, question_id)
 

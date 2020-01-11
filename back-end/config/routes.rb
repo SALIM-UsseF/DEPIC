@@ -101,6 +101,8 @@ Rails.application.routes.draw do
   get 'questionDuSondage/:idSondage/:idQuestion' => 'questions#questionDuSondage' # Afficher une question d'un sondage publié par l'id du sondage et l'id question
   get 'lesChoixParQuestion/:idSondage/:idQuestion' => 'choixes#afficherLesChoixParQuestionPublie' # Fournir la liste des choix pour une question donnée par son idQuestion => id_question | et idSondage => id_sondage
   get 'lesChoixParSondage/:idSondage' => 'choixes#afficherLesChoixParSondagePublie' # Fournir la liste des choix d'un sondage par son idSondage => id_sondage
+  get 'questionsPublies' => 'questions#listeDesQuestionsPublies' # Fournir la liste de toutes les questions publies
+  get 'choixPublies' => 'choixes#listeDesChoixPublies' # Fournir la liste de tout les choix publies
 ##########################                    "END ROUTES PARTIE MOBILE"                #####################
 
 
