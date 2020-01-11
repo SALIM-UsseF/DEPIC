@@ -11,6 +11,28 @@ class QuestionService
         questions = Question.where(etat: false).order('sondage_id ASC, ordre ASC')
     end
 
+    # selectionner tout les questions des sondages publies (publier = true)
+    def listeDesQuestionsPublies
+
+        # array contient la liste des questions publies
+        questionsPublies = Array.new
+
+        # récupérer la liste des sondages publies
+        # et traiter chaque sondage
+        Sondage.where(publier: true, etat: false).order('id_sondage DESC').find_each do |sondage|
+
+            # récupérer la liste des questions
+            # et traiter chaque question
+            Question.where(sondage_id: sondage.id_sondage, etat: false).order('sondage_id ASC, ordre ASC').find_each do |question|
+                questionsPublies << question
+            end
+
+        end
+        
+        questions = questionsPublies
+
+    end
+
     # Afficher une Question par ID
     def afficherQuestionParId(id_question)
         questions = Question.find_by(id_question: id_question, etat: false)
