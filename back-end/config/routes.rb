@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   #routes Utilisateur
   get 'utilisateurs' => 'utilisateurs#index' # Fournir la listes des utilisateurs
   get 'utilisateur/:id' => 'utilisateurs#show' # Fournir un user par son id => id_utilisateur
-  post 'newUtilisateur' => 'utilisateurs#create' # Ajouter un nouveau user | éléments à fournir: {email, adresseIp}
+  #post 'newUtilisateur' => 'utilisateurs#create' # Ajouter un nouveau user | éléments à fournir: {email, adresseIp}
   put 'updateUtilisateur/:id' => 'utilisateurs#update' # Modifier un user par son id => id_utilisateur | éléments à fournir: {email, adresseIp}
   put 'deleteUtilisateur/:id' => 'utilisateurs#delete' # Supprimer un user par son id => id_utilisateur
 
@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   get 'participationsBySondage/:id' => 'participers#showParticipationsBySondage' # Fournir la listes des participations pour un sondage donné par son id => id_sondage
   get 'participationsByUserAndSondage/:idUser/:idSondage' => 'participers#showParticipationsByUserAndSondage' # Fournir la listes des participations d'un user(id_utilisateur) pour un sondage donné par son id => id_sondage
   get 'participationsByQuestionAndSondage/:idQuestion/:idSondage' => 'participers#showParticipationsByQuestionAndSondage' # Fournir la listes des participations pour une question donnée(id_question) pour un sondage donné par son id => id_sondage
-  #post 'newParticipation' => 'participers#create' # Ajouter une participation par un admin
+  post 'newParticipation' => 'participers#create' # Ajouter une participation par un admin
   #put 'updateParticipation/:idUser/:idSondage/:idQuestion' => 'participers#update' # Modifier une participation
   put 'deleteParticipation/:idUser/:idSondage/:idQuestion' => 'participers#delete' # Supprimer une participation
 
@@ -77,6 +77,9 @@ Rails.application.routes.draw do
   post 'newGroupeQuestions' => 'groupequestions#create' # éléments à fournir: {intitule, estObligatoire, numerosDeQuestionsGroupe, ordre, sondage_id}
   put 'updateGroupeQuestions/:id' => 'groupequestions#update'
   put 'deleteGroupeQuestions/:id' => 'groupequestions#delete'
+
+  # route Résultat
+  get 'resultats/:id_sondage' => 'resultats#result'
 
   #routes Choix
   get 'choix' => 'choixes#index' # Fournir la liste des choix
