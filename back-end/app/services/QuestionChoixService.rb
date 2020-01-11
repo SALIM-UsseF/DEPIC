@@ -63,14 +63,14 @@ class QuestionChoixService
 
         arry = Array.new
 
+        # récupérer la liste des QuestionChoix de type choix unique par sondage
+        # et traiter chaque QuestionChoix
         QuestionChoix.where(sondage_id: id_sondage, estUnique: true, etat: false).find_each do |question|
-
-        participations=ParticiperService.instance.ParticipationsParQuestionChoixUniqueEtParSondage(question.id_question, id_sondage, question.nombreChoix)
-        arry << participations 
+            participations = ParticiperService.instance.ParticipationsParQuestionChoixUniqueEtParSondage(question.id_question, id_sondage, question.nombreChoix)
+            arry << participations 
         end
 
         resultatChoix = arry
-
 
     end
 
@@ -79,14 +79,14 @@ class QuestionChoixService
         
         arry = Array.new
 
+        # récupérer la liste des QuestionChoix de type choix multiple par sondage
+        # et traiter chaque QuestionChoix
         QuestionChoix.where(sondage_id: id_sondage, estUnique: false, etat: false).find_each do |question|
-
-        participations=ParticiperService.instance.ParticipationsParQuestionChoixMultipleEtParSondage(question.id_question, id_sondage, question.nombreChoix)
-        arry << participations 
+            participations=ParticiperService.instance.ParticipationsParQuestionChoixMultipleEtParSondage(question.id_question, id_sondage, question.nombreChoix)
+            arry << participations 
         end
 
         resultatChoix = arry
-
 
     end
 
