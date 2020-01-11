@@ -22,8 +22,8 @@ class QuestionPointService
 
         question = QuestionPoint.new(:intitule => intitule,
                                         :estObligatoire => estObligatoire,
-                                        :minPoints => estUnique,
-                                        :maxPoints => lesChoix,
+                                        :minPoints => minPoints,
+                                        :maxPoints => maxPoints,
                                         :ordre => ordre,
                                         :sondage_id => sondage_id)
 
@@ -54,22 +54,23 @@ class QuestionPointService
     # Supprimer une QuestionPoint par ID
     def supprimerQuestion(id_question, etat)
         question = QuestionPoint.find_by(id_question: id_question, etat: false)
-
         supprimer = (question != nil && question.update_attributes(:etat => etat))
-
     end
 
+    # afficher toutes les moyennes des question à point d'un sondage 
+    def questionsPointsMoyennes(id_sondage)
 
-    def questionsPoints(id_sondage)
-        arry = Array.new
-        questionsPoints=QuestionPoint.where(sondage_id: id_sondage, etat: false)
-        questionsPoints.each do |question|
+        # associer pour chaque question à point sa moyenne générale
+        hash = Hash.new
 
-        moy=ParticiperService.instance.moyenneParticipationsParQuestionEtParSondage(question.id_question, id_sondage)
-        arry << moy   
-
+        # récupérer la liste des QuestionPoint par sondage
+        # et traiter chaque QuestionPoint
+        QuestionPoint.where(sondage_id: id_sondage, etat: false).find_each do |question|
+            moy = ParticiperService.instance.moyenneParticipationsParQuestionAPointsEtParSondage(question.id_question, id_sondage)
+            hash[question.id_question.to_s] = moy
         end
-
+        
+        arr = hash
 
     end
 

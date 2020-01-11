@@ -62,6 +62,12 @@ class ChoixesController < ApplicationController
     choix = ChoixService.instance.afficherLesChoixParSondagePublie(params[:idSondage])
     (choix != nil) ? (render json: choix, status: :ok) : (render json: nil, status: :not_found)
   end
+
+  # selectionner tout les choix des sondages publies (publier = true)
+  def listeDesChoixPublies
+    lesChoix = ChoixService.instance.listeDesChoixPublies
+    (!lesChoix.empty?) ? (render json: lesChoix, status: :ok) : (render json: nil, status: :not_found)
+  end
   #######################################################################################################
 
   # Liste des parametres à fournir

@@ -58,16 +58,35 @@ class QuestionChoixService
     end
 
 
+    # Récupérer le nombre de participations sur chaque choix effectué pour toutes les question à choix unique d'un sondage
     def questionsChoixUnique(id_sondage)
 
-        questionsChoixUnique=QuestionChoix.where(sondage_id: id_sondage, estUnique: true, etat: false)
+        arry = Array.new
 
-        questionsChoixUnique.each do |question|
-
-        =ParticiperService.instance.ParticipationsParQuestionEtParSondage(question.id_question, id_sondage)
-
+        # récupérer la liste des QuestionChoix de type choix unique par sondage
+        # et traiter chaque QuestionChoix
+        QuestionChoix.where(sondage_id: id_sondage, estUnique: true, etat: false).find_each do |question|
+            participations = ParticiperService.instance.ParticipationsParQuestionChoixUniqueEtParSondage(question.id_question, id_sondage, question.nombreChoix)
+            arry << participations 
         end
 
+        resultatChoix = arry
+
+    end
+
+    # Récupérer le nombre de participations sur chaque choix effectué pour toutes les question à choix multiple d'un sondage
+    def questionsChoixMultiple(id_sondage)
+        
+        arry = Array.new
+
+        # récupérer la liste des QuestionChoix de type choix multiple par sondage
+        # et traiter chaque QuestionChoix
+        QuestionChoix.where(sondage_id: id_sondage, estUnique: false, etat: false).find_each do |question|
+            participations=ParticiperService.instance.ParticipationsParQuestionChoixMultipleEtParSondage(question.id_question, id_sondage, question.nombreChoix)
+            arry << participations 
+        end
+
+        resultatChoix = arry
 
     end
 

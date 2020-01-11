@@ -47,6 +47,12 @@ class QuestionsController < ApplicationController
     question = QuestionService.instance.questionDuSondagePublie(params[:idSondage], params[:idQuestion])
     (question != nil) ? (render json: question, status: :ok) : (render json: nil, status: :not_found)
   end
+
+  # selectionner tout les questions des sondages publies (publier = true)
+  def listeDesQuestionsPublies
+    questions = QuestionService.instance.listeDesQuestionsPublies
+    (!questions.empty?) ? (render json: questions, status: :ok) : (render json: nil, status: :not_found)
+  end
   #######################################################################################################
 
   
