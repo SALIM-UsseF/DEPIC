@@ -13,9 +13,16 @@
     <string name="texte_cliquage_qcm">Cliquage QCM</string>
     <string name="TitreFormulaire">Formulaire :</string>
 
+
     // Textes pour les bouttons
     <string name="Texte_Button_Valider_Enregistrer">Valider</string>
     <string name="Texte_Button_Reinitialisation">Réinitialiser</string>
     <string name="Texte_Button_Precedent">Précédent</string>
     <string name="Texte_Button_Suivant">Suivant</string>
+
+
+    // Textes pour le dialog pour l'utilisateur
+    <string name="Button_Accepter">Accepter</string>
+    <string name="Button_Refuser">Refuser</string>
+    <string name="Message_Utilisateur">Si vous voulez associer une adresse email à vos réponses veuillez la donner puis appuyez sur Accepter. \n Toute autres actions signifie un refus.</string>
 </resources>

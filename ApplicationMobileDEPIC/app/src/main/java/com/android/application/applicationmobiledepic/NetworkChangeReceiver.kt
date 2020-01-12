@@ -14,24 +14,24 @@ import androidx.core.content.ContextCompat.getSystemService
 
 
 
+
+
+
+
+//        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+
+//        connectivityManager.registerDefaultNetworkCallback(object  : ConnectivityManager.NetworkCallback() {
+//            override fun onAvailable(network: Network?) {
+//                super.onAvailable(network)
+//                Log.i("Test", "Default -> Network Available")
+//            }
 //
-//
-//
-//
-////        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//
-//
-////        connectivityManager.registerDefaultNetworkCallback(object  : ConnectivityManager.NetworkCallback() {
-////            override fun onAvailable(network: Network?) {
-////                super.onAvailable(network)
-////                Log.i("Test", "Default -> Network Available")
-////            }
-////
-////            override fun onLost(network: Network?) {
-////                super.onLost(network)
-////                Log.i("Test", "Default -> Connection lost")
-////            }
-////        })
+//            override fun onLost(network: Network?) {
+//                super.onLost(network)
+//                Log.i("Test", "Default -> Connection lost")
+//            }
+//        })
 //
 //
 //var filters = IntentFilter()
@@ -54,53 +54,54 @@ import androidx.core.content.ContextCompat.getSystemService
 //
 //}
 //
+
+
+
+
+class NetworkChangeReceiver: BroadcastReceiver() {
+
+
+    override fun onReceive(context: Context?, intent: Intent?) {
+        val connectivityManager =
+            context!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//            val networks = connectivityManager.allNetworks
+        val networkInfo = connectivityManager.activeNetworkInfo
+
+//            val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+//            val wifi = wifiManager.connectionInfo
 //
-//
-//
-//
-//inner class NetworkChangeReceiver: BroadcastReceiver(){
-//
-//    override fun onReceive(context: Context?, intent: Intent?) {
-//        val connectivityManager =
-//            context!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-////            val networks = connectivityManager.allNetworks
-//        val networkInfo = connectivityManager.activeNetworkInfo
-//
-////            val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-////            val wifi = wifiManager.connectionInfo
-////
-////                Log.e("wififi","wifi : " + wifi.toString())
-//
-//
-//
-////            for(n in networks){
-////                Log.e("iuhjiuj", n.toString() + "  ")
-////            }
-//
-////     NetworkInfo mWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-////     return mWifi.isConnected();
-//
-////            for(n in networks){
-////                Log.e("efe",n.toString() + "  " + intent!!.action)
-////            }
-////            Log.e("yguyg", "uhiojjjuhiu" + "  " + intent!!.action)
-//
-//        if (networkInfo != null && networkInfo.isConnected) {
-////                //Il y a une connexion
-//            Log.e("joijojioj", "oijoijojoijoijioj")
-////                Log.e("Connection","il y en a" + networkInfo.subtypeName + "  " + intent!!.action)
-////                Toast.makeText(context, "Il y a de la connexion.", Toast.LENGTH_SHORT).show()
-//        } else {
-////                // il n'y a pas de connexion
-////                Log.e("Connection","il y en a pas" + intent!!.action)
-////                Toast.makeText(context, "Il n'y a pas de connexion.", Toast.LENGTH_SHORT).show()
-//        }
-//    }
-//}
-//
-//
-//fun isInternetConnected(): Boolean {
-//    val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//    val networkInfo = connectivityManager.activeNetworkInfo
-//    return networkInfo != null && networkInfo.isConnected
-//}
+//                Log.e("wififi","wifi : " + wifi.toString())
+
+
+
+//            for(n in networks){
+//                Log.e("iuhjiuj", n.toString() + "  ")
+//            }
+
+//     NetworkInfo mWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+//     return mWifi.isConnected();
+
+//            for(n in networks){
+//                Log.e("efe",n.toString() + "  " + intent!!.action)
+//            }
+//            Log.e("yguyg", "uhiojjjuhiu" + "  " + intent!!.action)
+
+        if (networkInfo != null && networkInfo.isConnected) {
+//                //Il y a une connexion
+            Log.e("joijojioj", "oijoijojoijoijioj     connexion")
+//                Log.e("Connection","il y en a" + networkInfo.subtypeName + "  " + intent!!.action)
+                Toast.makeText(context, "Il y a de la connexion.", Toast.LENGTH_SHORT).show()
+        } else {
+//                // il n'y a pas de connexion
+                Log.e("Connection","il y en a pas" + intent!!.action)
+                Toast.makeText(context, "Il n'y a pas de connexion.", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
+/*
+fun isInternetConnected(): Boolean {
+    val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkInfo = connectivityManager.activeNetworkInfo
+    return networkInfo != null && networkInfo.isConnected
+}*/

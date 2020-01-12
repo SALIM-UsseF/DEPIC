@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey
  * sondageId : id du sondage dans cette bdd,
  * sondageIdWeb : id du sondage dans la bdd du site,
  * questionNumero : Numéro de la question dans le sondage,
- * questionType : Type de la question,
+ * type : Type de la question,
  * questionIntitule : Intitulé de la question
  */
 @Entity(tableName = "Questions")
@@ -25,7 +25,7 @@ data class Question(
     var sondageId: Int,
     var sondageIdWeb: Long,
     var questionNumero: Int,
-    var questionType: String,
+    var type: String,
     var questionIntitule: String
 */
 
@@ -38,7 +38,7 @@ val estUnique : Boolean?,
 val nombreDeCaractere : Int?,
 val numerosDeQuestionsGroupe : String?,
 val ordre : Int,
-val questionType : String
+val type : String
 
 
 )
