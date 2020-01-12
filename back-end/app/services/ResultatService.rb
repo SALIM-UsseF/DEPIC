@@ -39,12 +39,12 @@ class ResultatService
         # Nombre de réponse pour chaque choix d'une question à choix multiple
         questionsChoixMultiple = QuestionChoixService.instance.questionsChoixMultiple(id_sondage) 
 
-        hash=Hash.new
+        hash = Hash.new
 
         hash["id_sondage"] = id_sondage.to_i
         hash["nombre de questions"] = nbrQuestions
         hash["nombre de participations"] = nbrUtilisateur
-        hash["Moyennes generales des questions a points"] = arrayMoy
+        hash["moyennes generales des questions a points"] = arrayMoy
         hash["nombre de participations sur chaque choix des questions a choix unique"] = questionsChoixUnique
         hash["nombre de participations sur chaque choix des questions a choix multiple"] = questionsChoixMultiple
 
