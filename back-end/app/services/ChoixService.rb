@@ -33,21 +33,28 @@ class ChoixService
 
     # Afficher les Choix d'un sondage publié
     def afficherLesChoixParSondagePublie(id_sondage)
+        
+        # array contient la liste des choix publies
+        choixPublies = Array.new
+
         if SondageService.instance.estPublie(id_sondage)
 
-            sql = 'SELECT id_choix, "intituleChoix", questions.id_question
-                   FROM choixes
-                   INNER JOIN questions ON (choixes.question_id = questions.id_question)
-                   INNER JOIN sondages ON (questions.sondage_id = sondages.id_sondage)
-                   WHERE questions.sondage_id = '"#{id_sondage}"'
-                   AND choixes.etat = false
-                   AND questions.etat = false;'
-                   
-            choix = ActiveRecord::Base.connection.execute(sql)
+            # récupérer la liste des questions
+            # et traiter chaque question
+            Question.where(sondage_id: id_sondage, etat: false).order('ordre ASC').find_each do |question|
 
-        else
-            choix = nil
+                # récupérer la liste des choix
+                # et traiter chaque choix
+                Choix.where(question_id: question.id_question, etat: false).order('id_choix ASC').find_each do |choix|
+                    choixPublies << choix
+                end
+
+            end
+
         end
+
+        lesChoix = choixPublies
+
     end
 
     # selectionner tout les choix des sondages publies (publier = true)

@@ -111,7 +111,11 @@ class ParticiperService
 
         nbrParticipations = countParticipationsParQuestionAPointsEtParSondage(id_question,id_sondage)
 
-        moyenne = compteur / nbrParticipations
+        if nbrParticipations != 0
+            moyenne = compteur / nbrParticipations
+        else
+            moyenne = nil
+        end
         
     end
 
@@ -145,7 +149,7 @@ class ParticiperService
 
         end
 
-        resultat= hash
+        resultat = hash
 
     end
 
@@ -172,12 +176,12 @@ class ParticiperService
 
             # dans le cas des choix multiple la reponse est sous format : idChoix;idChoix;...
             reponseString.split(';').each do |id|
-                hash[id]=hash[id]+1    
+                hash[id] = hash[id]+1    
             end
         
         end
 
-        resultat= hash
+        resultat = hash
 
     end
 
