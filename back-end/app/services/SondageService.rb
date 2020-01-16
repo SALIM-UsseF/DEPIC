@@ -76,11 +76,16 @@ class SondageService
 
     end
 
-    # Verifier si le sondage est publié
+    # Vérifier si le sondage est publié
     def estPublie(id_sondage)
         ((Sondage.find_by(id_sondage: id_sondage, etat: false, publier: true)) != nil) ? (publie = true) : (publie = false)
     end
 
+    # Vérifier si les résultats d'un sondage publié sont disponible
+    def checkResultats(id_sondage)
+        ((Sondage.find_by(id_sondage: id_sondage, etat: false, publier: true, resultats: true)) != nil) ? (resultats = true) : (resultats = false)
+    end
+    
     # Supprimer un Sondage par ID
     def supprimerSondage(id_sondage, etat)
         sondage = Sondage.find_by(id_sondage: id_sondage, etat: false)

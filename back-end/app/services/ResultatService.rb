@@ -52,4 +52,11 @@ class ResultatService
 
     end
 
+    # renvoie les resultats d'un sondage publié
+    def resultatsPublie(id_sondage)
+        if SondageService.instance.checkResultats(id_sondage)
+            resultats = resultats(id_sondage)
+        end
+    end
+
 end
