@@ -79,7 +79,7 @@ Rails.application.routes.draw do
   put 'deleteGroupeQuestions/:id' => 'groupequestions#delete'
 
   # route Résultat
-  get 'resultats/:id_sondage' => 'resultats#result'
+  get 'resultats/:idSondage' => 'resultats#result'
 
   #routes Choix
   get 'choix' => 'choixes#index' # Fournir la liste des choix
@@ -103,6 +103,8 @@ Rails.application.routes.draw do
   get 'lesChoixParSondage/:idSondage' => 'choixes#afficherLesChoixParSondagePublie' # Fournir la liste des choix d'un sondage par son idSondage => id_sondage
   get 'questionsPublies' => 'questions#listeDesQuestionsPublies' # Fournir la liste de toutes les questions publies
   get 'choixPublies' => 'choixes#listeDesChoixPublies' # Fournir la liste de tout les choix publies
+  get 'checkResultats/:idSondage' => 'sondages#checkResultats' # Vérifier si les résultats d'un sondage sont disponible
+  get 'resultatsPublie/:idSondage' => 'resultats#resultatsPublie' # Fournir les résultats d'un sondage publié
 ##########################                    "END ROUTES PARTIE MOBILE"                #####################
 
 
