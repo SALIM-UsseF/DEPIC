@@ -56,6 +56,11 @@ def activerResultats
   (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found)
 end
 
+# Vérifier si les résultats d'un sondage publié sont disponible
+def checkResultats
+  (SondageService.instance.checkResultats(params[:idSondage])) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
+end
+
 # Supprimer un Sondage par ID
 def delete
   supprimer = SondageService.instance.supprimerSondage(params[:id], params[:etat])
