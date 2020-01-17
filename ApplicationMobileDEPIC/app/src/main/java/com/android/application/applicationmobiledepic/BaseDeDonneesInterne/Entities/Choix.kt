@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class Choix(
     @PrimaryKey val id_choix : Int,
     val intituleChoix : String,
-    val question_id : Int
+    val id_question : Int
 )

@@ -98,4 +98,10 @@ interface MyDAO {
 
     @Query("Select * FROM Reponses")
     suspend fun loadAllReponses(): Array<Reponse>
+
+    @Query("SELECT * FROM Choix WHERE Choix.id_question = :questionID")
+    suspend fun loadAllChoixPourQuestion(questionID : Int): Array<Choix>
+
+    @Query("SELECT * FROM Choix")
+    suspend fun loadAllChoix(): Array<Choix>
 }

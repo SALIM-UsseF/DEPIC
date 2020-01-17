@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey
  * sondageId : id du sondage dans cette bdd,
  * sondageIdWeb : id du sondage dans la bdd du site,
  * questionNumero : Numéro de la question dans le sondage,
- * questionType : Type de la question,
+ * type : Type de la question,
  * questionIntitule : Intitulé de la question
  */
 @Entity(tableName = "Reponses")
