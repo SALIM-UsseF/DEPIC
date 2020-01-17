@@ -42,6 +42,8 @@
 
 
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,17 +72,12 @@
         </LinearLayout>
 
 
-
-
-
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:id="@+id/Layout_Buttons_Valider_Reinitialiser"
-        >
+            >
 
             <Button
                 android:layout_width="0dp"
@@ -89,7 +86,7 @@
                 android:id="@+id/Button_Validation_Enregistrement"
                 android:text="@string/Texte_Button_Valider_Enregistrer"
                 android:onClick="validationSondage"
-            />
+                />
 
             <Button
                 android:layout_width="0dp"
@@ -103,8 +100,11 @@
         </LinearLayout>
 
 
-
-
     </LinearLayout>
 
 </ScrollView>
+
+
+
+
+

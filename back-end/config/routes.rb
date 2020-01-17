@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
 
 
-  # Pour supprimer un enregistrement dans la base de données, donner la valeur true pour l'attribut etat => {"etat": true} 
-
   ##########################                    "ROUTES PARTIE FRONT-END"             #####################
   #routes Administrateur
   get 'admins' => 'administrateurs#index' # Fournir la listes des admins

@@ -29,33 +29,43 @@ import retrofit2.http.*
  *
  */
 interface ServerApiService {
-
-    @GET("adressse")
-    fun getAllSondages(): Call<List<Sondage>>
-
-
+    // Pour la connexion
     @GET(".")
     fun getTestConnexion(): Call<ModeleSuccessConnexion>
 
 
-    @GET("sondagesPublies")
-    fun getSondagesPublics() : Call<List<ModeleSondagePossible>>
 
+    // Pour les sondages
+    @GET("sondagesPublies")
+    fun getAllSondages() : Call<ArrayList<Sondage>>
+
+    @GET("sondagePublie/{sondage}")
+    fun getSondage(@Path("sondage") Sondage: String) : Call<Sondage>
+
+
+
+    // Pour les questions
+    @GET("TRUC")
+    fun getAllQuestions(): Call<ArrayList<Question>>
 
     @GET("questionsDuSondage/{temp}")
-    fun getQuestionsDuSondage(@Path("temp") Variable: String): Call<List<ModeleQuestion>>
+    fun getQuestionsDuSondage(@Path("temp") Variable: String): Call<ArrayList<Question>>
 
+
+
+    // Pour les choix
+    @GET("TRUC")
+    fun getAllChoix(): Call<ArrayList<Choix>>
 
     @GET("lesChoixParQuestion/{sondage}/{question}")
     fun getChoixParQuestionParSondage(@Path("sondage") Sondage: String, @Path("question") Question: String) : Call<List<ModeleChoix>>
 
-
     @GET("lesChoixParSondage/{sondage}")
-    fun getChoixPArSondage(@Path("sondage") Sondage: String) : Call<List<ModeleChoix>>
+    fun getChoixParSondage(@Path("sondage") Sondage: String) : Call<ArrayList<Choix>>
 
-    @GET("sondagePublie/{sondage}")
-    fun getSondage(@Path("sondage") Sondage: String) : Call<ModeleSondagePossible>
 
+
+    // Les envoies de données
     @FormUrlEncoded
     @POST("repondre")
     fun EnvoieReponse(@Field("id_utilisateur") id_utilisateur: Int,
@@ -63,12 +73,11 @@ interface ServerApiService {
                       @Field("id_question") id_question: Int,
                       @Field("reponse") reponse: String): Call<Reponse>
 
-
     @FormUrlEncoded
     @POST("newUser")
     fun EnvoieNouveauUtilisateur(@Field("email")email: String,
                                  @Field("adresseIP")adresseIP : String
-    )
+    ) : Call<Utilisateur>
 
 
 
