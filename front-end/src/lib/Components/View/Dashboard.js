@@ -8,7 +8,7 @@ import {
   Segment
 } from 'semantic-ui-react'
 
-import Title from './Title'
+import Title from '../Title'
 import Survey from './Survey'
 
 import { dictionnary } from '../../Langs/langs'

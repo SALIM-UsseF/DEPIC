@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 
 
-import Title from './Title'
+import Title from '../Title'
 import Dashboard from './Dashboard'
 import CreateSurvey from './CreateSurvey'
 import Settings from './Settings'

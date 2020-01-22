@@ -8,7 +8,7 @@ import {
   Sidebar 
 } from 'semantic-ui-react'
 
-import Title from './Title'
+import Title from '../Title'
 
 import { dictionnary } from '../../Langs/langs'
 
