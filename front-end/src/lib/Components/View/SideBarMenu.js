@@ -14,11 +14,13 @@ import { dictionnary } from '../../Langs/langs'
 
 export default class SideBarMenu extends React.Component {
   static propTypes = {
+    client: PropTypes.any.isRequired,
     lang: PropTypes.string,
     open: PropTypes.bool,
     title: PropTypes.string,
     onHide: PropTypes.func,
-    onItemClick: PropTypes.func
+    onItemClick: PropTypes.func,
+    onOpenSondage: PropTypes.func
   }
 
   static defaultProps = {
@@ -38,6 +40,12 @@ export default class SideBarMenu extends React.Component {
 
     if (this.props.onHide) {
       this.props.onHide();
+    }
+
+    if (name === 'createSurvey') {
+      if (this.props.onOpenSondage) {
+        this.props.onOpenSondage();
+      }
     }
   }
 

@@ -44,14 +44,33 @@ export default class ListTypeQuestion extends React.Component {
   static propTypes = {
     onChangeTypeQuestion: PropTypes.func,
     fluid: PropTypes.bool,
-    width: PropTypes.bool
+    width: PropTypes.bool,
+    isModifying: PropTypes.bool,
+    typeOfQuestion: PropTypes.string,
+    isUnique: PropTypes.bool
   }
 
   render() {
+    let type = '';
+
+    if (this.props.typeOfQuestion === 'QuestionChoix') {
+      if (this.props.isUnique) {
+        type = 'Choix unique';
+      } else {
+        type = 'Choix multiple';
+      }
+    } else if (this.props.typeOfQuestion === 'QuestionOuverte') {
+      type = 'Question ouverte';
+    } else if (this.props.typeOfQuestion === 'GroupeQuestion') {
+      type = 'Groupe de questions';
+    } else if (this.props.typeOfQuestion === 'QuestionPoint') {
+      type = 'Évaluation par points';
+    }
+
     return (
       <React.Fragment>
         <Form.Select
-          placeholder='Question ouverte'
+          placeholder={this.props.isModifying?type:'Question ouverte'}
           fluid={this.props.fluid}
           width={this.props.width}
           selection

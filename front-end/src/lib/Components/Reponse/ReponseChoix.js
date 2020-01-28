@@ -47,10 +47,12 @@ export default class ReponseChoixMultiple extends React.Component {
 
   handleChangeUnique = (e, {value}) => {
     this.setState({ value })
+
+    console.log(value)
   }
 
   handleChangeMultiple = (e, value) => {
-
+    console.log(value)
   }
 
   render() {

@@ -20,7 +20,10 @@ const styles = {
 
 export default class View extends React.Component {
   static propTypes = {
-    lang: PropTypes.string
+    client: PropTypes.any.isRequired,
+    lang: PropTypes.string,
+    onOpenSondageAgain: PropTypes.func,
+    idAmin: PropTypes.number
   }
 
   static defaultProps = {
@@ -29,7 +32,11 @@ export default class View extends React.Component {
 
   state = {
     openSideBar: false,
-    title: 'dashboard'
+    title: 'dashboard',
+    openModalSondage: false,
+    idSondage: 0,
+    nomSondage: '',
+    descriptionSondage: ''
   }
 
   onItemClickSideBarHome = name => {
@@ -60,28 +67,75 @@ export default class View extends React.Component {
     })
   }
 
+  onOpenSondage = () => {
+    this.setState({
+      openModalSondage: true,
+      idAmin: this.props.idAmin
+    })
+  }
+
+  openModalSondageFunc = () => {
+    this.setState({
+      openModalSondage: true
+    })
+  }
+
+  closeModalSondageFunc = () => {
+    this.setState({
+      openModalSondage: false,
+      title: 'dashboard'
+    })
+  }
+
+  onSuccessSondage = (nomSondage, descriptionSondage) => {
+    this.props.client.Sondage.newSondage(
+      nomSondage,
+      descriptionSondage,
+      this.props.idAdmin,
+      result => {
+        this.setState({
+          openModalSondage: false,
+          idSondage: result.data.id_sondage,
+          nomSondage: nomSondage,
+          descriptionSondage: descriptionSondage
+        })
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
   render() {
     return (
       <React.Fragment>
         {/* SideBarHome : Barre de menu d'accueil */}
-        <SideBarHome 
+        <SideBarHome
+          client={this.props.client}
           onItemClick={this.onItemClickSideBarHome}
         />
 
         <div style={styles.frame}>
           <Frame
+            client={this.props.client}
             lang={this.props.lang}
             title={this.state.title}
-            onCreateSurvey={this.onCreateSurvey} />
+            onCreateSurvey={this.onCreateSurvey}
+            openModalSondage={this.state.openModalSondage}
+            openModalSondageFunc={this.openModalSondageFunc}
+            closeModalSondageFunc={this.closeModalSondageFunc}
+            onSuccess={this.onSuccessSondage} />
         </div>
 
         {/* SideBarMenu : Barre de menu de paramètres */}
         <SideBarMenu
+          client={this.props.client}
           lang={this.props.lang}
           open={this.state.openSideBar}
           title={this.state.title}
           onHide={this.onHideSideBar}
           onItemClick={this.onItemClickSideBarMenu}
+          onOpenSondage={this.onOpenSondage}
         />
       </React.Fragment>
     );

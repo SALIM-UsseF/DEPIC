@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import _ from 'lodash'
 
 import { 
@@ -9,6 +10,10 @@ import {
 import ListQuestions from './ListQuestions'
 
 export default class CreationQuestions extends React.Component {
+  static propTypes = {
+    client: PropTypes.any.isRequired
+  }
+
   state = {
     listQuestions: [1]
   }
@@ -28,6 +33,7 @@ export default class CreationQuestions extends React.Component {
       <React.Fragment>
         <Segment>
           <ListQuestions
+            client={this.props.client}
             listQuestions={this.state.listQuestions}
           />
           <Button

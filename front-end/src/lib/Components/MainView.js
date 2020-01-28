@@ -16,13 +16,15 @@ export default class MainView extends React.Component {
   }
 
   state = {
-    page: 'mainReponse',
-    lang: this.props.lang
+    page: 'mainView',
+    lang: this.props.lang,
+    idAdmin: 0
   }
 
-  onSuccess = () => {
+  onSuccess = (idAdmin) => {
     this.setState({
-      page: 'mainView'
+      page: 'mainView',
+      idAdmin: idAdmin
     })
   }
 
@@ -31,11 +33,14 @@ export default class MainView extends React.Component {
       <React.Fragment>
         {(this.state.page === 'connexion')?
             <MainUser
+              client={this.props.client}
               lang={this.state.lang}
               onSuccess={this.onSuccess} />
             :(this.state.page === 'mainView')?
               <View
-                lang={this.state.lang} />
+                client={this.props.client}
+                lang={this.state.lang}
+                idAdmin={this.state.idAdmin} />
               :(this.state.page === 'mainReponse')?
                 <MainReponse
                   client={this.props.client}

@@ -8,6 +8,7 @@ import {
 
 export default class SideBarHome extends React.Component {
   static propTypes = {
+    client: PropTypes.any.isRequired,
     onItemClick: PropTypes.func
   }
 

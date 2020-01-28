@@ -29,6 +29,7 @@ const styles = {
 
 export default class MainUser extends React.Component {
   static propTypes = {
+    client: PropTypes.any.isRequired,
     lang: PropTypes.string,
     onSuccess: PropTypes.func
   }
@@ -43,7 +44,7 @@ export default class MainUser extends React.Component {
 
   onSuccessConnexion = () => {
     if (this.props.onSuccess) {
-      this.props.onSuccess();
+      this.props.onSuccess(6); // id de l'admin
     }
   }
 
@@ -64,7 +65,8 @@ export default class MainUser extends React.Component {
       <React.Fragment>
         {this.state.page === 'connexion'?
           <div style={styles.connexion}>
-            <Login 
+            <Login
+              client={this.props.client}
               lang={this.props.lang}
               onSuccess={this.onSuccessConnexion}
               createAccount={this.createAccount}
@@ -73,6 +75,7 @@ export default class MainUser extends React.Component {
           : this.state.page === 'register'?
             <div style={styles.register}>
               <Register
+                client={this.props.client}
                 lang={this.props.lang}
                 onSuccess={this.onSuccessRegister}
                 onCancel={this.onSuccessRegister}

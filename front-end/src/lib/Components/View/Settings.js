@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 
 export default class Settings extends React.Component {
   static propTypes = {
+    client: PropTypes.any.isRequired,
     lang: PropTypes.string
   }
 

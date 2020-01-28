@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
+import md5 from 'js-md5'
 
 import {
   Button,
@@ -16,6 +17,7 @@ import { emailValidityForm } from '../../Helpers/Helpers'
 
 export default class Register extends React.Component {
   static propTypes = {
+    client: PropTypes.any.isRequired,
     lang: PropTypes.string,
     onSuccess: PropTypes.func,
     onCancel: PropTypes.func
@@ -29,8 +31,6 @@ export default class Register extends React.Component {
     login: '',
     password: '',
     confirmPassword: '',
-    firstname: '',
-    lastname: '',
     email: '',
     error: false,
     errorMessage: '',
@@ -43,8 +43,6 @@ export default class Register extends React.Component {
       login: this.state.login,
       password: this.state.password,
       confirmPassword: this.state.confirmPassword,
-      firstname: this.state.firstname,
-      lastname: this.state.lastname,
       email: this.state.email,
       error: false,
       errorMessage: '',
@@ -63,8 +61,6 @@ export default class Register extends React.Component {
     return (
       !_.isEmpty(this.state.login) &&
       !_.isEmpty(this.state.password) &&
-      !_.isEmpty(this.state.firstname) &&
-      !_.isEmpty(this.state.lastname) &&
       this.emailValidity() &&
       (this.state.password === this.state.confirmPassword)
     );
@@ -83,22 +79,21 @@ export default class Register extends React.Component {
       return;
     }
 
-    /**
-     * Lorsque l'utilisateur renseigne ses coordonnées, on envoyera au serveur pour les enregistrer
-     * Si les coordonnées sont enregistrés dans la BDD, alors on revient à la page de connexion pour se connecter
-     * Sinon on affiche un message d'erreur
-     */
-
-    // Je fais un test si l'identifiant n'existe pas déjà
-    if (this.state.login === 'user') {
-      this.setState({
-        modalType: 2
-      })
-    } else {
-      this.setState({
-        modalType: 1
-      })
-    }
+    this.props.client.Administrateur.newAdmin(
+      this.state.login,
+      this.state.email,
+      md5(this.state.password),
+      result => {
+        this.setState({
+          modalType: 1
+        })
+      },
+      error => {
+        this.setState({
+          modalType: 2
+        })
+      }
+    )
   }
 
   onCancel = () => {
@@ -109,8 +104,6 @@ export default class Register extends React.Component {
 
   render() {
     let lang = _.toUpper(this.props.lang);
-    let lastname = _.get(dictionnary, lang + '.lastname');
-    let firstname = _.get(dictionnary, lang + '.firstname');
     let email = _.get(dictionnary, lang + '.email');
     let login = _.get(dictionnary, lang + '.login');
     let password = _.get(dictionnary, lang + '.password');
@@ -132,16 +125,6 @@ export default class Register extends React.Component {
             {_.upperFirst(createAccount)}
           </Header>
           <Form size='big'>
-            <Form.Input
-              focus
-              placeholder={_.upperFirst(lastname)}
-              onChange={e => this.handleChangeInput(e, 'lastname')} />
-
-            <Form.Input
-              focus
-              placeholder={_.upperFirst(firstname)}
-              onChange={e => this.handleChangeInput(e, 'firstname')} />
-
             <Form.Input
               error={!this.emailValidity()}
               focus
