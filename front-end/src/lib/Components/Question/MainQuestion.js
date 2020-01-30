@@ -20,10 +20,19 @@ export default class MainQuestion extends React.Component {
     type: PropTypes.string,
     intituleQuestion: PropTypes.string,
     isOptional: PropTypes.bool,
+    ordre: PropTypes.number,
     nbChoix: PropTypes.number,
     isUnique: PropTypes.bool,
     nbCharactere: PropTypes.number,
-    maxPoints: PropTypes.number
+    minPoints: PropTypes.number,
+    maxPoints: PropTypes.number,
+    removeQuestion: PropTypes.func
+  }
+
+  removeQuestion = () => {
+    if (this.props.removeQuestion) {
+      this.props.removeQuestion();
+    }
   }
   
   render() {
@@ -45,10 +54,13 @@ export default class MainQuestion extends React.Component {
                   typeQuestion={this.props.type}
                   intituleQuestion={this.props.intituleQuestion}
                   isOptional={this.props.isOptional}
+                  ordre={this.props.ordre}
                   nbChoix={this.props.nbChoix}
                   isUnique={this.props.isUnique}
                   nbCharactere={this.props.nbCharactere}
+                  minPoints={this.props.minPoints}
                   maxPoints={this.props.maxPoints}
+                  removeQuestion={this.removeQuestion}
                 />
               </React.Fragment>
             )

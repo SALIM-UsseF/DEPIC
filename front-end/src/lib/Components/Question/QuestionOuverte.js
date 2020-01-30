@@ -8,7 +8,9 @@ import {
 export default class QuestionOuverte extends React.Component {
   static propTypes = {
     nbCharactere: PropTypes.number,
-    isModifying: PropTypes.bool
+    isModifying: PropTypes.bool,
+    disabled: PropTypes.bool,
+    onChangeNbCharactere: PropTypes.func
   }
 
   render() {
@@ -16,10 +18,16 @@ export default class QuestionOuverte extends React.Component {
       <React.Fragment>
         <Form.Group>
           <Form.Input
-            value={this.props.isModifying?this.props.nbCharactere:''}
+            disabled={this.props.disabled}
+            value={this.props.nbCharactere}
             fluid
             label='Nombre de caractères autorisés'
             placeholder='100'
+            onChange={(e, data) => {
+              if (this.props.onChangeNbCharactere) {
+                this.props.onChangeNbCharactere(data.value);
+              }
+            }}
           />
         </Form.Group>
       </React.Fragment>

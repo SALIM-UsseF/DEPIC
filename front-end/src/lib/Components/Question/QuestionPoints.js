@@ -8,7 +8,9 @@ import {
 export default class QuestionPoints extends React.Component {
   static propTypes = {
     maxPoints: PropTypes.number,
-    isModifying: PropTypes.bool
+    isModifying: PropTypes.bool,
+    disabled: PropTypes.bool,
+    onChangeMaxPoints: PropTypes.func
   }
 
   render() {
@@ -16,10 +18,16 @@ export default class QuestionPoints extends React.Component {
       <React.Fragment>
         <Form.Group>
           <Form.Input
+            disabled={this.props.disabled}
             value={this.props.isModifying?this.props.maxPoints:''}
             fluid
             label='Nombre de points maximal'
             placeholder='5'
+            onChange={(e, data) => {
+              if (this.props.onChangeMaxPoints) {
+                this.props.onChangeMaxPoints(data.value);
+              }
+            }}
           />
         </Form.Group>
       </React.Fragment>

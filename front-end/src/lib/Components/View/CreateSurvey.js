@@ -56,6 +56,20 @@ export default class CreateSurvey extends React.Component {
     }
   }
 
+  removeQuestion = () => {
+    this.props.client.Question.readBySondage(
+      this.props.idSondage,
+      success => {
+        this.setState({
+          questions: success.data
+        })
+      },
+      error => {
+        console.log(error)
+      }
+    )
+  }
+
   render() {
     let key = 0;
     let creation = (
@@ -95,24 +109,21 @@ export default class CreateSurvey extends React.Component {
                 type={question.type}
                 intituleQuestion={question.intitule}
                 isOptional={question.estObligatoire}
+                ordre={question.ordre}
                 nbChoix={question.nombreChoix}
                 isUnique={question.estUnique}
                 nbCharactere={question.nombreDeCaractere}
-                maxPoints={question.maxPoints} />
+                minPoints={question.minPoints}
+                maxPoints={question.maxPoints}
+                removeQuestion={this.removeQuestion} />
             </React.Fragment>
           )
         })}
         <div style={{ marginBottom:"50px" }}>
           <Button
-            content='Enregistrer'
+            content='Terminer'
             floated='right'
             positive
-          />
-          <Button
-            content='Annuler'
-            floated='right'
-            basic
-            color='black'
           />
         </div>
       </React.Fragment>

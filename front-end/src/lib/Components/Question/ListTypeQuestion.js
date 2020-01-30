@@ -47,7 +47,8 @@ export default class ListTypeQuestion extends React.Component {
     width: PropTypes.bool,
     isModifying: PropTypes.bool,
     typeOfQuestion: PropTypes.string,
-    isUnique: PropTypes.bool
+    isUnique: PropTypes.bool,
+    disabled: PropTypes.bool
   }
 
   render() {
@@ -70,6 +71,7 @@ export default class ListTypeQuestion extends React.Component {
     return (
       <React.Fragment>
         <Form.Select
+          disabled={this.props.disabled}
           placeholder={this.props.isModifying?type:'Question ouverte'}
           fluid={this.props.fluid}
           width={this.props.width}

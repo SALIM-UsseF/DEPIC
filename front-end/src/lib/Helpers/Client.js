@@ -114,26 +114,75 @@ class Client {
     }
   };
 
+  // update : {:intitule, :estObligatoire, :nombreDeCaractere, :ordre, :type}
   QuestionOuverte = {
-
+    delete: (id, success, errors) => {
+      axios
+        .put(this.url + 'deleteQuestionOuverte/' + id)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
+    },
+    update: (id, params, success, errors) => {
+      axios
+        .put(this.url + 'updateQuestionOuverte/' + id, params)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
+    }
   };
-
+  
+  // update : {:intitule, :estObligatoire, :nombreChoix, :estUnique, :ordre, :type}
   QuestionChoix = {
-
+    delete: (id, success, errors) => {
+      axios
+        .put(this.url + 'deleteQuestionChoix/' + id)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
+    },
+    update: (id, params, success, errors) => {
+      axios
+        .put(this.url + 'updateQuestionChoix/' + id, params)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
+    }
   };
 
+  // update : {:intitule, :estObligatoire, :minPoints, :maxPoints, :ordre, :type}
   QuestionPoints = {
-
+    delete: (id, success, errors) => {
+      axios
+        .put(this.url + 'deleteQuestionPoints/' + id)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
+    },
+    update: (id, params, success, errors) => {
+      axios
+        .put(this.url + 'updateQuestionPoints/' + id, params)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
+    }
   };
 
+  // update : {:intitule, :estObligatoire, :numerosDeQuestionsGroupe, :ordre, :type}
   GroupQuestions = {
-
+    delete: (id, success, errors) => {
+      axios
+        .put(this.url + 'deleteGroupeQuestions/' + id)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
+    },
+    update: (id, params, success, errors) => {
+      axios
+        .put(this.url + 'updateGroupeQuestions/' + id, params)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
+    }
   };
 
   Resultat = {
 
   };
 
+  // update : {:id_choix, :intituleChoix, :question_id}
   Choix = {
     read: (id, success, errors) => {
       axios
@@ -141,6 +190,27 @@ class Client {
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
+    delete: (id, success, errors) => {
+      axios
+        .put(this.url + 'deleteChoix/' + id)
+        .then(result => success(result))
+        .catch(error => errors(error.response));
+    },
+    update: (id, params, success, errors) => {
+      axios
+        .put(this.url + 'updateChoix/' + id, params)
+        .then(result => success(result))
+        .catch(error => errors(error.response));
+    },
+    newChoix: (intituleChoix, question_id, success, errors) => {
+      axios
+        .post(this.url + 'newChoix', {
+          intituleChoix: intituleChoix,
+          question_id: question_id
+        })
+        .then(result => success(result))
+        .catch(error => errors(error.response));
+    }
   };
 }
 
