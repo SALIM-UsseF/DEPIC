@@ -99,7 +99,7 @@ class ChoixService
     end
 
     # Modifier un Choix
-    def modifierChoix(id_Choix, intituleChoix)
+    def modifierChoix(id_choix, intituleChoix)
         choix = Choix.find_by(id_choix: id_choix, etat: false);
 
         if choix != nil && choix.update_attributes(:intituleChoix => intituleChoix)
