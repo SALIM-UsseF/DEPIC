@@ -35,21 +35,19 @@ export default class QuestionChoixMultiple extends React.Component {
                 choix: data.value
               });
 
-              // let params = {
-              //   intituleChoix: data.value,
-              //   question_id: this.props.idQuestion
-              // }
+              let params = {
+                intituleChoix: data.value,
+                question_id: this.props.idQuestion
+              }
 
-              // this.props.client.Choix.update(
-              //   this.props.id_choix,
-              //   params,
-              //   result => {
-              //     console.log(result);
-              //   },
-              //   error => {
-              //     console.log(error);
-              //   }
-              // )
+              this.props.client.Choix.update(
+                this.props.id_choix,
+                params,
+                result => {},
+                error => {
+                  console.log(error);
+                }
+              )
             }}
           />
           <Form.Button

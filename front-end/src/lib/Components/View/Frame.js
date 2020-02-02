@@ -55,7 +55,11 @@ export default class Frame extends React.Component {
     this.setState({
       idSondage: idSondage,
       modifying: true
-    })
+    });
+  }
+
+  onUpdate = () => {
+    this.props.closeModalSondageFunc();
   }
 
   render() {
@@ -149,7 +153,8 @@ export default class Frame extends React.Component {
           client={this.props.client}
           lang={this.props.lang}
           idSondage={this.state.idSondage}
-          modifying={this.state.modifying} />
+          modifying={this.state.modifying}
+          onUpdate={this.onUpdate} />
       </React.Fragment>
     );
     let settings = (

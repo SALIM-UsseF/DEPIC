@@ -456,12 +456,33 @@ export default class Question extends React.Component {
               this.props.client.QuestionChoix.delete(
                 this.props.idQuestion,
                 result => {
-                  if (this.props.removeQuestion) {
-                    this.props.removeQuestion()
-                  }
-                  this.setState({
-                    remove: false
-                  })
+                  this.props.client.Choix.read(
+                    this.props.idQuestion,
+                    result => {
+                      if (this.props.removeQuestion) {
+                        this.props.removeQuestion()
+                      }
+
+                      this.setState({
+                        remove: false
+                      });
+
+                      _.map(result.data, choix => {
+                        this.props.client.Choix.delete(
+                          choix.id_choix,
+                          result => {
+                            this.update();
+                          },
+                          error => {
+                            console.log(error);
+                          }
+                        );
+                      })
+                    },
+                    error => {
+                      console.log(error);
+                    }
+                  )
                 },
                 error => {
                   console.log(error)

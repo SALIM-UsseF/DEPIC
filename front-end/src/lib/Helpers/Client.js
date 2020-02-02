@@ -65,6 +65,12 @@ class Client {
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
+    updateSondage: (id, params, success, errors) => {
+      axios
+        .put(this.url + 'updateSondage/' + id, params)
+        .then(result => success(result))
+        .catch(error => errors(error.response));
+    },
     deleteSondage: (id, success, errors) => {
       axios
         .put(this.url + 'deleteSondage/' + id)
@@ -115,6 +121,7 @@ class Client {
   };
 
   // update : {:intitule, :estObligatoire, :nombreDeCaractere, :ordre, :type}
+  // create : {intitule, estObligatoire, nombreDeCaractere, ordre, sondage_id}
   QuestionOuverte = {
     delete: (id, success, errors) => {
       axios
@@ -127,10 +134,17 @@ class Client {
         .put(this.url + 'updateQuestionOuverte/' + id, params)
         .then(result => success(result))
         .catch(error => errors(error.response))
+    },
+    create: (params, success, errors) => {
+      axios
+        .post(this.url + 'newQuestionOuverte', params)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
     }
   };
   
   // update : {:intitule, :estObligatoire, :nombreChoix, :estUnique, :ordre, :type}
+  // create : {intitule, estObligatoire, estUnique, nombreChoix, ordre, sondage_id}
   QuestionChoix = {
     delete: (id, success, errors) => {
       axios
@@ -143,10 +157,17 @@ class Client {
         .put(this.url + 'updateQuestionChoix/' + id, params)
         .then(result => success(result))
         .catch(error => errors(error.response))
+    },
+    create: (params, success, errors) => {
+      axios
+        .post(this.url + 'newQuestionChoix', params)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
     }
   };
 
   // update : {:intitule, :estObligatoire, :minPoints, :maxPoints, :ordre, :type}
+  // create : {intitule, estObligatoire, minPoints, maxPoints, ordre, sondage_id}
   QuestionPoints = {
     delete: (id, success, errors) => {
       axios
@@ -159,10 +180,17 @@ class Client {
         .put(this.url + 'updateQuestionPoints/' + id, params)
         .then(result => success(result))
         .catch(error => errors(error.response))
+    },
+    create: (params, success, errors) => {
+      axios
+        .post(this.url + 'newQuestionPoints', params)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
     }
   };
 
   // update : {:intitule, :estObligatoire, :numerosDeQuestionsGroupe, :ordre, :type}
+  // create : {intitule, estObligatoire, numerosDeQuestionsGroupe, ordre, sondage_id}
   GroupQuestions = {
     delete: (id, success, errors) => {
       axios
@@ -173,6 +201,12 @@ class Client {
     update: (id, params, success, errors) => {
       axios
         .put(this.url + 'updateGroupeQuestions/' + id, params)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
+    },
+    create: (params, success, errors) => {
+      axios
+        .post(this.url + 'newGroupeQuestions', params)
         .then(result => success(result))
         .catch(error => errors(error.response))
     }

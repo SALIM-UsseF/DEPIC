@@ -44,7 +44,7 @@ export default class ListTypeQuestion extends React.Component {
   static propTypes = {
     onChangeTypeQuestion: PropTypes.func,
     fluid: PropTypes.bool,
-    width: PropTypes.bool,
+    width: PropTypes.number,
     isModifying: PropTypes.bool,
     typeOfQuestion: PropTypes.string,
     isUnique: PropTypes.bool,
