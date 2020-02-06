@@ -45,6 +45,7 @@ export default class CreateSurvey extends React.Component {
   }
 
   componentDidMount() {
+    console.log('là')
     if (this.props.modifying) {
       this.props.client.Sondage.sondage(
         this.props.idSondage,
@@ -60,9 +61,32 @@ export default class CreateSurvey extends React.Component {
               })
             },
             error => {
-              console.log(error)
+              this.setState({
+                idSondage: result.data.id_sondage,
+                nomSondage: result.data.intituleSondage,
+                descriptionSondage: result.data.descriptionSondage,
+                questions: []
+              })
             }
           )
+        },
+        error => {
+          console.log(error)
+        }
+      )
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.idSondage !== prevProps.idSondage) {
+      this.props.client.Sondage.sondage(
+        this.props.idSondage,
+        result => {
+          this.setState({
+            idSondage: result.data.id_sondage,
+            nomSondage: result.data.intituleSondage,
+            descriptionSondage: result.data.descriptionSondage
+          });
         },
         error => {
           console.log(error)
@@ -114,7 +138,65 @@ export default class CreateSurvey extends React.Component {
     let key = 0;
     let creation = (
       <React.Fragment>
-
+        <Title
+          as='h1'
+          content={this.state.nomSondage}
+          color='teal' />
+      
+        <Form>
+          <TextArea
+            value={this.state.descriptionSondage}
+            onChange={(e, value) => {
+              this.setState({
+                descriptionSondage: value.value
+              })
+            }}
+            style={{ minHeight: 100 }}
+          />
+        </Form>
+        <Divider hidden />
+        <div style={{ marginBottom:"50px" }}>
+          <Button
+            icon='plus'
+            content='Ajouter une question'
+            floated='left'
+            primary
+            onClick={() => {
+              this.setState({
+                ajoutNouvelleQuestion: true,
+                intituleNouvelleQuestion: '',
+                typeNouvelleQuestion: '',
+                estObligatoireNouvelleQuestion: '',
+                maxPointsNouvelleQuestion: 5,
+                numerosDeQuestionsGroupeNouvelleQuestion: '0',
+                nbCharactereNouvelleQuestion: 100,
+                nombreChoixNouvelleQuestion: 5
+              });
+            }}
+          />
+          <Button
+            content='Terminer'
+            floated='right'
+            positive
+            onClick={() => {
+              this.props.client.Sondage.updateSondage(
+                this.props.idSondage,
+                {
+                  intituleSondage: this.state.nomSondage,
+                  descriptionSondage:this.state.descriptionSondage
+                },
+                result => {
+                  this.setState({
+                    confirmModification: true
+                  })
+                },
+                error => {
+                  console.log(error);
+                }
+              )
+            }}
+          />
+        </div>
       </React.Fragment>
     );
     let modification = (
@@ -160,7 +242,7 @@ export default class CreateSurvey extends React.Component {
           )
         })}
         <div style={{ marginBottom:"50px" }}>
-        <Button
+          <Button
             icon='plus'
             content='Ajouter une question'
             floated='left'

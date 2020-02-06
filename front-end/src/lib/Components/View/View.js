@@ -23,7 +23,7 @@ export default class View extends React.Component {
     client: PropTypes.any.isRequired,
     lang: PropTypes.string,
     onOpenSondageAgain: PropTypes.func,
-    idAmin: PropTypes.number
+    idAdmin: PropTypes.number
   }
 
   static defaultProps = {
@@ -69,8 +69,7 @@ export default class View extends React.Component {
 
   onOpenSondage = () => {
     this.setState({
-      openModalSondage: true,
-      idAmin: this.props.idAmin
+      openModalSondage: true
     })
   }
 
@@ -87,23 +86,10 @@ export default class View extends React.Component {
     })
   }
 
-  onSuccessSondage = (nomSondage, descriptionSondage) => {
-    this.props.client.Sondage.newSondage(
-      nomSondage,
-      descriptionSondage,
-      this.props.idAdmin,
-      result => {
-        this.setState({
-          openModalSondage: false,
-          idSondage: result.data.id_sondage,
-          nomSondage: nomSondage,
-          descriptionSondage: descriptionSondage
-        })
-      },
-      error => {
-        console.log(error);
-      }
-    );
+  onSuccessSondage = () => {
+    this.setState({
+      openModalSondage: false
+    });
   }
 
   render() {
@@ -120,6 +106,7 @@ export default class View extends React.Component {
             client={this.props.client}
             lang={this.props.lang}
             title={this.state.title}
+            idAdmin={this.props.idAdmin}
             onCreateSurvey={this.onCreateSurvey}
             openModalSondage={this.state.openModalSondage}
             openModalSondageFunc={this.openModalSondageFunc}

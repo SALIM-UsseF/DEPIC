@@ -15,6 +15,7 @@ export default class Frame extends React.Component {
     client: PropTypes.any.isRequired,
     lang: PropTypes.string,
     title: PropTypes.string,
+    idAdmin: PropTypes.number,
     onCreateSurvey: PropTypes.func,
     openModalSondage: PropTypes.bool,
     openModalSondageFunc: PropTypes.func,
@@ -43,7 +44,7 @@ export default class Frame extends React.Component {
   onCreateSurvey = title => {
     if (this.props.onCreateSurvey) {
       this.props.onCreateSurvey(title);
-      this.props.openModalSondageFunc()
+      this.props.openModalSondageFunc();
     }
   }
 
@@ -134,13 +135,25 @@ export default class Frame extends React.Component {
                   return;
                 }
 
-                if (this.props.onSuccess) {
-                  this.props.onSuccess(this.state.nomSondage, this.state.descriptionSondage);
-                }
+                this.props.client.Sondage.newSondage(
+                  this.state.nomSondage,
+                  this.state.descriptionSondage,
+                  this.props.idAdmin,
+                  result => {
+                    if (this.props.onSuccess) {
+                      this.props.onSuccess();
+                    }
 
-                this.setState({
-                  modifying: false
-                })
+                    this.setState({
+                      idSondage: result.data.id_sondage,
+                      modifying: false
+                    });
+                  },
+                  error => {
+                    // console.log(error);
+                    // Le sondage n'a pas pu se créer
+                  }
+                );
               }}
             >
               Créer un sondage
@@ -169,7 +182,6 @@ export default class Frame extends React.Component {
           lang={this.props.lang} />
       </React.Fragment>
     );
-
     return (
       <React.Fragment>        
         {(this.state.title === 'dashboard')?

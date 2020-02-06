@@ -18,7 +18,7 @@ export default class MainView extends React.Component {
   state = {
     page: 'mainView',
     lang: this.props.lang,
-    idAdmin: 0
+    idAdmin: 6
   }
 
   onSuccess = (idAdmin) => {
