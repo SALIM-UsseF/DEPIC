@@ -6,7 +6,7 @@ class QuestionService
 
     include Singleton
 
-    # selectionner que les Questions non supprimés (etat=false)
+    # selectionner tout les Questions
     def listeDesQuestions
         questions = Question.where(etat: false).order('sondage_id ASC, ordre ASC')
     end

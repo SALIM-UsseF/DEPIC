@@ -41,7 +41,7 @@ class QuestionouvertesController < ApplicationController
 
   # Supprimer une QuestionOuverte par ID
   def delete
-    supprimer = QuestionOuverteService.instance.supprimerQuestion(params[:id], params[:etat])
+    supprimer = QuestionOuverteService.instance.supprimerQuestion(params[:id])
     (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 
@@ -52,13 +52,5 @@ class QuestionouvertesController < ApplicationController
   def question_params
       params.permit(:intitule, :estObligatoire, :nombreDeCaractere, :ordre, :sondage_id)
   end
-
-  # parametres de suppression
-  def question_param_delete
-    params.permit(:etat)
-  end
-
-
-
   
 end

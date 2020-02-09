@@ -6,7 +6,7 @@ class UtilisateurService
 
     include Singleton
 
-    # selectionner que les Utilisateurs non supprimés (etat=false)
+    # selectionner tout les Utilisateurs
     def listeDesUtilisateurs
         utilisateurs = Utilisateur.where(etat: false).order('created_at ASC')
     end
@@ -42,9 +42,9 @@ class UtilisateurService
     end
 
     # Supprimer un Utilisateur par ID
-    def supprimerUtilisateur(id_utilisateur, etat)
+    def supprimerUtilisateur(id_utilisateur)
         utilisateur = Utilisateur.find_by(id_utilisateur: id_utilisateur, etat: false)
-        supprimer = (utilisateur != nil && utilisateur.update_attributes(:etat => etat))
+        supprimer = (utilisateur != nil && utilisateur.update_attributes(:etat => true))
     end
 
 end

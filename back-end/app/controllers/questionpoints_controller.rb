@@ -41,7 +41,7 @@ class QuestionpointsController < ApplicationController
   
     # Supprimer une QuestionPoint par ID
     def delete
-      supprimer = QuestionPointService.instance.supprimerQuestion(params[:id], params[:etat])
+      supprimer = QuestionPointService.instance.supprimerQuestion(params[:id])
       (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
     end
 
@@ -51,11 +51,6 @@ class QuestionpointsController < ApplicationController
   # parametres d'ajout
   def question_params
       params.permit(:intitule, :estObligatoire, :minPoints, :maxPoints, :ordre, :sondage_id)
-  end
-
-  # parametres de suppression
-  def question_param_delete
-    params.permit(:etat)
   end
   
 end

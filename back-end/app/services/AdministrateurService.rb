@@ -7,7 +7,7 @@ class AdministrateurService
     include Singleton
     include UtilsHelper
 
-    # selectionner que les admins non supprimés (etat=false)
+    # selectionner tout les admins
     def listeDesAdmins
         administrateurs = Administrateur.where(etat: false).order('created_at ASC')
     end
@@ -81,9 +81,9 @@ class AdministrateurService
     end
 
     # Supprimer un admin par ID
-    def supprimerAdmin(id_admin, etat)
+    def supprimerAdmin(id_admin)
         administrateur = Administrateur.find_by(id_administrateur: id_admin, etat: false)
-        supprimer = (administrateur != nil && administrateur.update_attributes(:etat => etat))
+        supprimer = (administrateur != nil && administrateur.update_attributes(:etat => true))
     end
 
 end

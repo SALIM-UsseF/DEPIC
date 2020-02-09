@@ -42,7 +42,7 @@ class QuestionchoixesController < ApplicationController
 
   # Supprimer une QuestionChoix par ID
   def delete
-    supprimer = QuestionChoixService.instance.supprimerQuestion(params[:id], params[:etat])
+    supprimer = QuestionChoixService.instance.supprimerQuestion(params[:id])
     (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 
@@ -52,11 +52,6 @@ class QuestionchoixesController < ApplicationController
   # parametres d'ajout
   def question_params
       params.permit(:intitule, :estObligatoire, :estUnique, :nombreChoix, :ordre, :sondage_id)
-  end
-
-  # parametres de suppression
-  def question_param_delete
-    params.permit(:etat)
   end
 
 end

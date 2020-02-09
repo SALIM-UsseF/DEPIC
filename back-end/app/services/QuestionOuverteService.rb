@@ -6,7 +6,7 @@ class QuestionOuverteService
 
     include Singleton
 
-    # selectionner que les QuestionOuverte non supprimés (etat=false)
+    # selectionner tout les QuestionOuverte
     def listeDesQuestions
         questions = QuestionOuverte.where(etat: false).order('sondage_id ASC, ordre ASC')
     end
@@ -49,9 +49,9 @@ class QuestionOuverteService
     end
 
     # Supprimer une QuestionOuverte par ID
-    def supprimerQuestion(id_question, etat)
+    def supprimerQuestion(id_question)
         question = QuestionOuverte.find_by(id_question: id_question, etat: false)
-        supprimer = (question != nil && question.update_attributes(:etat => etat))
+        supprimer = (question != nil && question.update_attributes(:etat => true))
     end
 
 end

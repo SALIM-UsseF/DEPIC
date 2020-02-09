@@ -6,7 +6,7 @@ class CategorieService
 
     include Singleton
 
-    # selectionner que les categories non supprimés (etat=false)
+    # selectionner tout les categories
     def listeDesCategories
         categories = Categorie.where(etat: false).order('created_at ASC')
     end
@@ -42,9 +42,9 @@ class CategorieService
     end
 
     # Supprimer une categorie par ID
-    def supprimerCategorie(id_categorie, etat)
+    def supprimerCategorie(id_categorie)
         categorie = Categorie.find_by(id_categorie: id_categorie, etat: false)
-        supprimer = (categorie != nil && Categorie.update_attributes(:etat => etat)) 
+        supprimer = (categorie != nil && Categorie.update_attributes(:etat => true)) 
     end
 
 end

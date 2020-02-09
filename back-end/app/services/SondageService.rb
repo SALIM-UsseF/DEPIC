@@ -6,7 +6,7 @@ class SondageService
 
     include Singleton
 
-    # selectionner tout les sondages non supprimés (etat=false)
+    # selectionner tout les sondages
     def listeDesSondages
         sondages = Sondage.where(etat: false).order('created_at ASC')
     end
@@ -97,9 +97,9 @@ class SondageService
     end
     
     # Supprimer un Sondage par ID
-    def supprimerSondage(id_sondage, etat)
+    def supprimerSondage(id_sondage)
         sondage = Sondage.find_by(id_sondage: id_sondage, etat: false)
-        supprimer = (sondage != nil && sondage.update_attributes(:etat => etat))
+        supprimer = (sondage != nil && sondage.update_attributes(:etat => true))
     end
 
 end

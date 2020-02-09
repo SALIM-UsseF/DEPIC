@@ -7,7 +7,7 @@ class QuestionChoixService
 
     include Singleton
 
-    # selectionner que les QuestionChoix non supprimés (etat=false)
+    # selectionner tout les QuestionChoix
     def listeDesQuestions
         questions = QuestionChoix.where(etat: false).order('sondage_id ASC, ordre ASC')
     end
@@ -52,9 +52,9 @@ class QuestionChoixService
     end
 
     # Supprimer une QuestionChoix par ID
-    def supprimerQuestion(id_question, etat)
+    def supprimerQuestion(id_question)
         question = QuestionChoix.find_by(id_question: id_question, etat: false)
-        supprimer = (question != nil && question.update_attributes(:etat => etat))
+        supprimer = (question != nil && question.update_attributes(:etat => true))
     end
 
 

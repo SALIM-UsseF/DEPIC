@@ -85,9 +85,9 @@ class ParticiperService
     end
 
     # Supprimer une Participation
-    def supprimerParticipation(id_utilisateur, id_sondage, id_question, etat)
+    def supprimerParticipation(id_utilisateur, id_sondage, id_question)
         participation = Participer.find_by(id_utilisateur: id_utilisateur, id_sondage: id_sondage, id_question: id_question, etat: false)
-        supprimer = (participation != nil && participation.update_attributes(:etat => etat))
+        supprimer = (participation != nil && participation.update_attributes(:etat => true))
     end
 
     # nombre de participations sur un sondage
