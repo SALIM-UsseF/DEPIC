@@ -13,7 +13,8 @@
 require 'ChoixService'
 
 class ChoixesController < ApplicationController
-    # Afficher la liste des choix 
+  
+  # Afficher la liste des choix 
   def index
     choix = ChoixService.instance.listeDesChoix
     render json: choix, status: :ok

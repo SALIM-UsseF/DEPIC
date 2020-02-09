@@ -26,12 +26,30 @@ Utilisateur.create({
 user = Utilisateur.new();
 user.save
 
+# Insertion dans la Table categorie => les categories des sondages
+Categorie.create({
+	intitule: "Technologie"
+})
+
+Categorie.create({
+	intitule: "Sport"
+})
+
+Categorie.create({
+	intitule: "Enseignement"
+})
+
+Categorie.create({
+	intitule: "Vie étudiante"
+})
+
 ####################################################         "SIMULATION D'UN SONDAGE"        ####################################################
 # Insertion dans la Table Sondage
 Sondage.create({
 	intituleSondage: "Bracelet connecté",
     descriptionSondage: "Il s’agit de la création d’un bracelet connecté faisant office de télécommande universelle basé sur un nouveau système de commande à distance et de saisie de texte.
-    Ce bracelet sera composé d’un écran à affichage permanent, lisible en pleine lumière sans rétro-éclairage et d’une zone tactile de contrôle de 25mm de diamètre.",
+	Ce bracelet sera composé d’un écran à affichage permanent, lisible en pleine lumière sans rétro-éclairage et d’une zone tactile de contrôle de 25mm de diamètre.",
+	categorie_id: 1,
 	administrateur_id: 1
 })
 
@@ -40,7 +58,6 @@ Sondage.create({
 QuestionChoix.create({
 	intitule: "Parmi les équipements technologiques suivants, lesquels possédez-vous ?",
     estObligatoire: true,
-    nombreChoix: 5,
     estUnique: false,
 	ordre: 1,
 	sondage_id: 1
@@ -75,7 +92,6 @@ Choix.create({
 QuestionChoix.create({
 	intitule: "Quels usages faites-vous de votre smartphone ?",
     estObligatoire: true,
-    nombreChoix: 5,
     estUnique: false,
 	ordre: 2,
 	sondage_id: 1
@@ -110,7 +126,6 @@ Choix.create({
 QuestionChoix.create({
 	intitule: "A quelle fréquence utilisez-vous votre smartphone pour surfer sur internet ou consulter vos mails ou vos messages ?",
     estObligatoire: true,
-    nombreChoix: 5,
     estUnique: true,
 	ordre: 3,
 	sondage_id: 1
@@ -145,7 +160,6 @@ Choix.create({
 QuestionChoix.create({
 	intitule: "Avez-vous l’habitude de porter des ornements au niveau des poignets (tels que des bracelets, montres, bijoux,…) ?",
     estObligatoire: true,
-    nombreChoix: 3,
     estUnique: true,
 	ordre: 4,
 	sondage_id: 1
@@ -170,7 +184,6 @@ Choix.create({
 QuestionChoix.create({
 	intitule: "Êtes-vous intéressé(e) par ce nouveau concept de bracelet connecté/télécommande universelle ?",
     estObligatoire: true,
-    nombreChoix: 4,
     estUnique: true,
 	ordre: 5,
 	sondage_id: 1
@@ -200,7 +213,6 @@ Choix.create({
 QuestionChoix.create({
 	intitule: "Quelles sont les fonctionnalités qui vous plaisent le plus ?",
     estObligatoire: true,
-    nombreChoix: 4,
     estUnique: false,
 	ordre: 6,
 	sondage_id: 1
@@ -227,7 +239,15 @@ Choix.create({
 })
 
 
-#Groupe de questions :
+#################################### GROUPE DE QUESTION
+#Groupe de Questions
+GroupeQuestion.create({
+	intitule: "Vos attentes concernant le design de ce bracelet connecté :",
+	estObligatoire: false,
+	ordre: 7,
+	sondage_id: 1
+})
+
 #Question ouverte
 QuestionOuverte.create({
 	intitule: "Matière ?",
@@ -235,6 +255,11 @@ QuestionOuverte.create({
 	nombreDeCaractere: 100,
 	ordre: 1,
 	sondage_id: 1
+})
+
+Groupe.create({
+	id_groupe: 7,
+	id_question: 8
 })
 
 #Question ouverte
@@ -246,6 +271,11 @@ QuestionOuverte.create({
 	sondage_id: 1
 })
 
+Groupe.create({
+	id_groupe: 7,
+	id_question: 9
+})
+
 #Question ouverte
 QuestionOuverte.create({
 	intitule: "Largeur du bracelet ?",
@@ -255,20 +285,17 @@ QuestionOuverte.create({
 	sondage_id: 1
 })
 
-#Question Groupe
-GroupeQuestion.create({
-	intitule: "Quelles seraient vos attentes concernant le design de ce bracelet connecté ?",
-	estObligatoire: false,
-	numerosDeQuestionsGroupe: "7;8;9",
-	ordre: 7,
-	sondage_id: 1
+Groupe.create({
+	id_groupe: 7,
+	id_question: 10
 })
+
+#################################### FIN GROUPE DE QUESTION
 
 #Question choix unique
 QuestionChoix.create({
 	intitule: "Quel serait le prix maximum que vous seriez prêt à payer pour acheter ce bracelet connecté de type télécommande universelle ?",
     estObligatoire: true,
-    nombreChoix: 6,
     estUnique: true,
 	ordre: 8,
 	sondage_id: 1
@@ -308,7 +335,6 @@ Choix.create({
 QuestionChoix.create({
 	intitule: "Si elle était vendue à un prix qui vous convenait… Seriez-vous susceptible d’acheter ce bracelet connecté?",
     estObligatoire: true,
-    nombreChoix: 4,
     estUnique: true,
 	ordre: 9,
 	sondage_id: 1
@@ -358,14 +384,14 @@ Sondage.create({
 	intituleSondage: "Sondage Test 2",
     descriptionSondage: "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression.
      Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.",
-	administrateur_id: 1
+	administrateur_id: 1,
+	categorie_id: 4
 })
 
 #Question choix multiple
 QuestionChoix.create({
 	intitule: "Test de quoi ?",
     estObligatoire: true,
-    nombreChoix: 2,
     estUnique: false,
 	ordre: 1,
 	sondage_id: 2
