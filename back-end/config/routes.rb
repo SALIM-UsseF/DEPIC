@@ -90,6 +90,7 @@ Rails.application.routes.draw do
   #route Groupe qui contient les questions d'un QuestionGroupe
   get 'questions/groupe/:id' => 'groupes#show' # Fournir les questions d'un groupe | :id => est l'id du question de type GroupeQuestion
   post 'groupe/ajoutQuestion' => 'groupes#create' # éléments à fournir: {id_groupe, id_question} | id_groupe => est l'id du question de type GroupeQuestion
+  put 'deleteGroupe/:id' => 'groupes#delete' # Supprimer un groupe par son id => id_groupe
 
   # route Résultat
   get 'resultats/:idSondage' => 'resultats#result'
