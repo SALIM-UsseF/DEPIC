@@ -26,7 +26,7 @@ class GroupesController < ApplicationController
 
   # Supprimer un groupe par ID
   def delete
-    #TODO
+    GroupeService.instance.supprimerGroupe(params[:id_groupe], params[:etat])
   end
 
   # Liste des parametres à fournir
