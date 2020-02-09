@@ -13,15 +13,14 @@ class GroupeQuestionService
 
     # Afficher un GroupeQuestion par ID
     def afficherQuestionParId(id_question)
-        questions = GroupeQuestion.find_by(id_question: id_question, etat: false);
+        question = GroupeQuestion.find_by(id_question: id_question, etat: false);
     end
 
     # Creer un nouveau GroupeQuestion
-    def creerGroupeQuestion(intitule, estObligatoire, numerosDeQuestionsGroupe, ordre, sondage_id)
+    def creerGroupeQuestion(intitule, estObligatoire, ordre, sondage_id)
 
         question = GroupeQuestion.new(:intitule => intitule,
                                         :estObligatoire => estObligatoire,
-                                        :numerosDeQuestionsGroupe => numerosDeQuestionsGroupe,
                                         :ordre => ordre,
                                         :sondage_id => sondage_id)
 
@@ -34,12 +33,11 @@ class GroupeQuestionService
     end
 
     # Modifier un GroupeQuestion
-    def modifierQuestion(id_question, intitule, estObligatoire, numerosDeQuestionsGroupe, ordre)
+    def modifierQuestion(id_question, intitule, estObligatoire, ordre)
         question = GroupeQuestion.find_by(id_question: id_question, etat: false);
 
         if question != nil && question.update_attributes(:intitule => intitule,
                                                         :estObligatoire => estObligatoire,
-                                                        :numerosDeQuestionsGroupe => numerosDeQuestionsGroupe,
                                                         :ordre => ordre)
             modifier = question
         else

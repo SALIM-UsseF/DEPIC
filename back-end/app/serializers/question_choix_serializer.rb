@@ -1,3 +1,3 @@
 class QuestionChoixSerializer < ActiveModel::Serializer
-  attributes :id_question, :sondage_id, :intitule, :estObligatoire, :nombreChoix, :estUnique, :ordre, :type
+  attributes :id_question, :sondage_id, :intitule, :estObligatoire, :estUnique, :ordre, :type
 end

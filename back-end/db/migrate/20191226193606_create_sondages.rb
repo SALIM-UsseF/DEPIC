@@ -7,6 +7,7 @@ class CreateSondages < ActiveRecord::Migration[5.2]
       t.text :descriptionSondage, :null => false
       t.boolean :etat, :default => false
       t.references :administrateur, index: true
+      t.references :categorie, index: true
       t.boolean :publier, :default => false
       t.boolean :resultats, :default => false
 
@@ -14,5 +15,6 @@ class CreateSondages < ActiveRecord::Migration[5.2]
 
     end
     add_foreign_key :sondages, :administrateurs, column: :administrateur_id, primary_key: "id_administrateur"
+    add_foreign_key :sondages, :categories, column: :categorie_id, primary_key: "id_categorie"
   end
 end
