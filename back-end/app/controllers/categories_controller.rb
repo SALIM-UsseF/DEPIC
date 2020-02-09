@@ -41,7 +41,7 @@ class CategoriesController < ApplicationController
 
   # Supprimer une categorie par ID
   def delete
-    supprimer = CategorieService.instance.supprimerCategorie(params[:id], params[:etat])
+    supprimer = CategorieService.instance.supprimerCategorie(params[:id])
     (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 
@@ -51,11 +51,6 @@ class CategoriesController < ApplicationController
   # parametres d'ajout
   def categorie_params
       params.permit(:intitule)
-  end
-
-  # parametres de suppression
-  def categorie_param_delete
-    params.permit(:etat)
   end
 
 end

@@ -5,8 +5,6 @@ require 'ParticiperService'
 require 'QuestionChoixService'
 
 
-# Si l'attribut 'etat' égale 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
-
 class ResultatService
 
     include Singleton

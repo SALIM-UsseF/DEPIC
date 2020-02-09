@@ -15,7 +15,7 @@ require 'AdministrateurService'
 
 class AdministrateursController < ApplicationController
 
-  # selectionner que les admins non supprimés (etat=false)
+  # selectionner tout les admins
   def index
     administrateurs = AdministrateurService.instance.listeDesAdmins
     render json: administrateurs, status: :ok
@@ -63,7 +63,7 @@ class AdministrateursController < ApplicationController
 
   # Supprimer un admin par ID
   def delete
-    supprimer = AdministrateurService.instance.supprimerAdmin(params[:id], params[:etat])
+    supprimer = AdministrateurService.instance.supprimerAdmin(params[:id])
     (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 
@@ -74,11 +74,6 @@ class AdministrateursController < ApplicationController
   # parametres d'ajout
   def administrateur_params
     params.permit(:pseudo_administrateur, :email_administrateur, :motDePasse_administrateur)
-  end
-
-  # parametres de suppression
-  def administrateur_param_delete
-    params.permit(:etat)
   end
 
 end

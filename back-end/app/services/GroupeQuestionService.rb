@@ -6,7 +6,7 @@ class GroupeQuestionService
 
     include Singleton
 
-    # selectionner que les GroupeQuestion non supprimés (etat=false)
+    # selectionner tout les GroupeQuestion
     def listeDesQuestions
         questions = GroupeQuestion.where(etat: false).order('sondage_id ASC, ordre ASC')
     end
@@ -47,9 +47,9 @@ class GroupeQuestionService
     end
 
     # Supprimer un GroupeQuestion par ID
-    def supprimerQuestion(id_question, etat)
+    def supprimerQuestion(id_question)
         question = GroupeQuestion.find_by(id_question: id_question, etat: false)
-        supprimer = (question != nil && question.update_attributes(:etat => etat))
+        supprimer = (question != nil && question.update_attributes(:etat => true))
     end
 
 end

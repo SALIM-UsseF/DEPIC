@@ -7,7 +7,7 @@ class QuestionPointService
 
     include Singleton
 
-    # selectionner que les QuestionPoint non supprimés (etat=false)
+    # selectionner tout les QuestionPoint
     def listeDesQuestions
         questions = QuestionPoint.where(etat: false).order('sondage_id ASC, ordre ASC')
     end
@@ -52,9 +52,9 @@ class QuestionPointService
     end
 
     # Supprimer une QuestionPoint par ID
-    def supprimerQuestion(id_question, etat)
+    def supprimerQuestion(id_question)
         question = QuestionPoint.find_by(id_question: id_question, etat: false)
-        supprimer = (question != nil && question.update_attributes(:etat => etat))
+        supprimer = (question != nil && question.update_attributes(:etat => true))
     end
 
     # afficher toutes les moyennes des question à point d'un sondage 

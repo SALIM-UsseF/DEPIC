@@ -69,7 +69,7 @@ end
 
 # Supprimer un Sondage par ID
 def delete
-  supprimer = SondageService.instance.supprimerSondage(params[:id], params[:etat])
+  supprimer = SondageService.instance.supprimerSondage(params[:id])
   (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
 end
 
@@ -106,11 +106,6 @@ end
 # parametres de modification
 def up_sondage_params
   params.permit(:intituleSondage, :descriptionSondage, :publier, :resultats, :categorie_id)
-end
-
-# parametres de suppression
-def sondage_param_delete
-  params.permit(:etat)
 end
 
 # parametres de publication
