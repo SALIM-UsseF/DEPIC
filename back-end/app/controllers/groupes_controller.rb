@@ -26,7 +26,7 @@ class GroupesController < ApplicationController
 
   # Supprimer un groupe par ID
   def delete
-    GroupeService.instance.supprimerGroupe(params[:id_groupe], params[:etat])
+    GroupeService.instance.supprimerGroupe(params[:id_groupe])
   end
 
   # Liste des parametres à fournir
@@ -35,11 +35,6 @@ class GroupesController < ApplicationController
   # parametres d'ajout
   def groupe_params
       params.permit(:id_groupe, :id_question)
-  end
-
-  # parametres de suppression
-  def groupe_param_delete
-    params.permit(:etat)
   end
 
 end

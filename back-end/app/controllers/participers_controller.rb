@@ -49,7 +49,7 @@ class ParticipersController < ApplicationController
 
   # Supprimer une participation
   def delete
-    supprimer = ParticiperService.instance.supprimerParticipation(params[:idUser], params[:idSondage], params[:idQuestion], etat: false)
+    supprimer = ParticiperService.instance.supprimerParticipation(params[:idUser], params[:idSondage], params[:idQuestion])
     (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 
@@ -69,13 +69,5 @@ class ParticipersController < ApplicationController
   def participer_params
     params.permit(:id_utilisateur, :id_sondage, :id_question, :reponse)
   end
-
-  # parametres de suppression
-  def participer_param_delete
-    params.permit(:etat)
-  end
-
-
-
   
 end

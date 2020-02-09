@@ -47,7 +47,7 @@ class ChoixesController < ApplicationController
 
   # Supprimer un Choix par ID
   def delete
-    supprimer = ChoixService.instance.supprimerChoix(params[:id], params[:etat])
+    supprimer = ChoixService.instance.supprimerChoix(params[:id])
     (supprimer) ? (render json: true, status: :ok) : (render json: false, status: :not_found)
   end
 
@@ -78,11 +78,6 @@ class ChoixesController < ApplicationController
   # parametres d'ajout
   def choix_params
       params.permit(:intituleChoix, :question_id)
-  end
-
-  # parametres de suppression
-  def choix_param_delete
-    params.permit(:etat)
   end
 
 end

@@ -7,7 +7,7 @@ class ChoixService
 
     include Singleton
 
-    # selectionner que les Choix non supprimés (etat=false)
+    # selectionner tout les Choix
     def listeDesChoix
         choix = Choix.where(etat: false).order('created_at ASC')
     end
@@ -111,9 +111,9 @@ class ChoixService
     end
 
     # Supprimer un Choix par ID
-    def supprimerChoix(id_choix, etat)
+    def supprimerChoix(id_choix)
         choix = Choix.find_by(id_choix: id_choix, etat: false)
-        supprimer = (choix != nil && choix.update_attributes(:etat => etat)) 
+        supprimer = (choix != nil && choix.update_attributes(:etat => true)) 
     end
 
 end

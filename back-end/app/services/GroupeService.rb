@@ -40,8 +40,8 @@ class GroupeService
     end
 
     # Supprimer un groupe par ID
-    def supprimerGroupe(id_groupe, etat)
-        Groupe.where(id_groupe: id_groupe).update_all(etat: etat)
+    def supprimerGroupe(id_groupe)
+        Groupe.where(id_groupe: id_groupe).update_all(etat: true)
     end
 
 end
