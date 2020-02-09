@@ -24,6 +24,12 @@ class SondagesController < ApplicationController
     render json: sondages, status: :ok
   end
 
+  # Afficher la liste des sondages par categorie
+  def sondagesParCategorie
+    sondages = SondageService.instance.listeDesSondagesParCategorie(params[:id])
+    render json: sondages, status: :ok
+  end
+
   # Afficher un Sondage par ID
   def show
     sondage = SondageService.instance.afficherSondageParId(params[:id])
@@ -32,14 +38,14 @@ class SondagesController < ApplicationController
 
 # Creer un nouveau Sondage
 def create
-  params.permit(:intituleSondage, :descriptionSondage, :administrateur_id)
-  ajout = SondageService.instance.creerNouveauSondage(params[:intituleSondage], params[:descriptionSondage], params[:administrateur_id])
+  params.permit(:intituleSondage, :descriptionSondage, :categorie_id, :administrateur_id)
+  ajout = SondageService.instance.creerNouveauSondage(params[:intituleSondage], params[:descriptionSondage], params[:categorie_id], params[:administrateur_id])
   (ajout != nil) ? (render json: ajout, status: :ok) : (render json: nil, status: :not_found)
 end
 
 # Modifier un Sondage
 def update
-  modifier = SondageService.instance.modifierSondage(params[:id], params[:intituleSondage], params[:descriptionSondage], params[:publier], params[:resultats])
+  modifier = SondageService.instance.modifierSondage(params[:id], params[:intituleSondage], params[:descriptionSondage], params[:publier], params[:resultats], params[:categorie_id])
   (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found)      
 end
 
@@ -75,6 +81,12 @@ def showSondagesPublies
   (!sondages.empty?) ? (render json: sondages, status: :ok) : (render json: nil, status: :not_found)
 end
 
+# Afficher les Sondages publiés par categorie
+def showSondagesPubliesByCategorie
+  sondages = SondageService.instance.listeDesSondagesPubliesParCategorie(categorie_id)
+  (!sondages.empty?) ? (render json: sondages, status: :ok) : (render json: nil, status: :not_found)
+end
+
 # Afficher un Sondage publié
 def showSondagePublie
   sondage = SondageService.instance.afficherSondagePublie(params[:idSondage])
@@ -88,12 +100,12 @@ private
 
 # parametres d'ajout
 def sondage_params
-    params.permit(:intituleSondage, :descriptionSondage, :administrateur_id)
+    params.permit(:intituleSondage, :descriptionSondage, :categorie_id, :administrateur_id)
 end
 
 # parametres de modification
 def up_sondage_params
-  params.permit(:intituleSondage, :descriptionSondage, :publier, :resultats)
+  params.permit(:intituleSondage, :descriptionSondage, :publier, :resultats, :categorie_id)
 end
 
 # parametres de suppression

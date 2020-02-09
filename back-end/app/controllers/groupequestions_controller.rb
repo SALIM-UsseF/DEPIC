@@ -28,14 +28,14 @@
   
   # Creer un nouveau GroupeQuestion
   def create
-    params.permit(:intitule, :estObligatoire, :numerosDeQuestionsGroupe, :ordre, :sondage_id)
-    ajout = GroupeQuestionService.instance.creerGroupeQuestion(params[:intitule], params[:estObligatoire], params[:ordre], params[:numerosDeQuestionsGroupe], params[:sondage_id])
+    params.permit(:intitule, :estObligatoire, :ordre, :sondage_id)
+    ajout = GroupeQuestionService.instance.creerGroupeQuestion(params[:intitule], params[:estObligatoire], params[:ordre], params[:sondage_id])
     (ajout != nil) ? (render json: ajout, status: :ok) : (render json: nil, status: :not_found)
   end
   
   # Modifier un GroupeQuestion
   def update
-    modifier = GroupeQuestionService.instance.modifierQuestion(params[:id], params[:intitule], params[:estObligatoire], params[:ordre], params[:numerosDeQuestionsGroupe])
+    modifier = GroupeQuestionService.instance.modifierQuestion(params[:id], params[:intitule], params[:estObligatoire], params[:ordre])
     (modifier != nil) ? (render json: modifier, status: :ok) : (render json: nil, status: :not_found)  
   end
   
@@ -50,7 +50,7 @@
   
   # parametres d'ajout
   def question_params
-      params.permit(:intitule, :estObligatoire, :numerosDeQuestionsGroupe, :ordre, :sondage_id)
+      params.permit(:intitule, :estObligatoire, :ordre, :sondage_id)
   end
 
   # parametres de suppression

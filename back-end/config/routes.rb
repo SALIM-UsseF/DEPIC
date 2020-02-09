@@ -12,8 +12,19 @@ Rails.application.routes.draw do
   post 'checkAdminEmail' => 'administrateurs#checkAdminEmail' # Verifier l'email d'un admin | éléments à fournir:  {email_administrateur}
   post 'loginAdmin' => 'administrateurs#loginAdmin' # Verifier le login d'un admin | éléments à fournir: {email_administrateur, motDePasse_administrateur} => motDePasse_administrateur en MD5
 
+
+  #routes Categorie
+  get 'categories' => 'categories#index' # Fournir la liste des categories
+  get 'categorie/:id' => 'categories#show' # Fournir une categorie par son id => id_categorie
+  post 'newCategorie' => 'categories#create' # éléments à fournir: {intitule}
+  put 'updateCategorie/:id' => 'categories#update' # Modifier une categorie par son id => id_categorie
+  put 'deleteCategorie/:id' => 'categories#delete' # Supprimer une categorie par son id => id_categorie
+
+
   #routes Sondage
   get 'sondages' => 'sondages#index' # Fournir la listes des sondages
+  get 'sondages/categorie/:id' => 'sondages#sondagesParCategorie' # Fournir la listes des sondages par categorie
+  get 'questions/Sondage/:idSondage' => 'questions#questionsParSondage' # Afficher les questions d'un sondage par l'id du sondage
   get 'sondage/:id' => 'sondages#show' # Fournir un sondage par son id => id_sondage
   post 'newSondage' => 'sondages#create' # Ajouter un nouveau sondage | éléments à fournir: {intituleSondage, descriptionSondage, administrateur_id}
   put 'updateSondage/:id' => 'sondages#update' # Modifier un sondage par son id_sondage | éléments à fournir: {intituleSondage, descriptionSondage, publier, resultats}
@@ -69,12 +80,16 @@ Rails.application.routes.draw do
   put 'updateQuestionPoints/:id' => 'questionpoints#update'
   put 'deleteQuestionPoints/:id' => 'questionpoints#delete'
 
-  #routes Groupe de questions
+  #routes QuestionGroupe
   get 'groupesQuestions' => 'groupequestions#index'
   get 'groupeQuestions/:id' => 'groupequestions#show'
-  post 'newGroupeQuestions' => 'groupequestions#create' # éléments à fournir: {intitule, estObligatoire, numerosDeQuestionsGroupe, ordre, sondage_id}
+  post 'newGroupeQuestions' => 'groupequestions#create' # éléments à fournir: {intitule, estObligatoire, ordre, sondage_id}
   put 'updateGroupeQuestions/:id' => 'groupequestions#update'
   put 'deleteGroupeQuestions/:id' => 'groupequestions#delete'
+
+  #route Groupe qui contient les questions d'un QuestionGroupe
+  get 'questions/groupe/:id' => 'groupes#show' # Fournir les questions d'un groupe | :id => est l'id du question de type GroupeQuestion
+  post 'groupe/ajoutQuestion' => 'groupes#create' # éléments à fournir: {id_groupe, id_question} | id_groupe => est l'id du question de type GroupeQuestion
 
   # route Résultat
   get 'resultats/:idSondage' => 'resultats#result'
@@ -93,10 +108,12 @@ Rails.application.routes.draw do
 ##########################                    "ROUTES PARTIE MOBILE"                    #####################
   post 'newUser' => 'utilisateurs#create' # Creer un utilisateur afin de repondre aux sondages publiés | éléments à fournir: {email, adresseIp}
   get 'sondagesPublies' => 'sondages#showSondagesPublies' # Fournir la listes des sondages publies
+  get 'sondagesPublies/categorie/:id' => 'sondages#showSondagesPubliesByCategorie' # Fournir la listes des sondages publies par categorie
   get 'sondagePublie/:idSondage' => 'sondages#showSondagePublie' # Fournir un sondage donné par son id => id du sondage
   post 'repondre' => 'participers#repondreSondagePublie' # Le post contient les éléments suivants: {utilisateur_id, sondage_id, question_id, reponse}
   get 'questionsDuSondage/:idSondage' => 'questions#questionsDuSondage' # Afficher les questions d'un sondage publié par l'id du sondage
   get 'questionDuSondage/:idSondage/:idQuestion' => 'questions#questionDuSondage' # Afficher une question d'un sondage publié par l'id du sondage et l'id question
+  get 'questionsDugroupe/:id' => 'groupes#show' # Fournir les questions d'un groupe | :id => est l'id du question de type GroupeQuestion
   get 'lesChoixParQuestion/:idSondage/:idQuestion' => 'choixes#afficherLesChoixParQuestionPublie' # Fournir la liste des choix pour une question donnée par son idQuestion => id_question | et idSondage => id_sondage
   get 'lesChoixParSondage/:idSondage' => 'choixes#afficherLesChoixParSondagePublie' # Fournir la liste des choix d'un sondage par son idSondage => id_sondage
   get 'questionsPublies' => 'questions#listeDesQuestionsPublies' # Fournir la liste de toutes les questions publies

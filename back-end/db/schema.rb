@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_08_235420) do
+ActiveRecord::Schema.define(version: 2020_02_08_170853) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,13 @@ ActiveRecord::Schema.define(version: 2020_01_08_235420) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "categories", primary_key: "id_categorie", id: :serial, force: :cascade do |t|
+    t.text "intitule", null: false
+    t.boolean "etat", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "choixes", primary_key: "id_choix", id: :serial, force: :cascade do |t|
     t.text "intituleChoix", null: false
     t.boolean "etat", default: false
@@ -34,7 +41,16 @@ ActiveRecord::Schema.define(version: 2020_01_08_235420) do
     t.index ["question_id"], name: "index_choixes_on_question_id"
   end
 
+  ### AUTO GENERATED TABLE - NOT USED
   create_table "groupe_questions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "groupes", primary_key: ["id_groupe", "id_question"], force: :cascade do |t|
+    t.integer "id_groupe", null: false
+    t.integer "id_question", null: false
+    t.boolean "etat", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -49,16 +65,19 @@ ActiveRecord::Schema.define(version: 2020_01_08_235420) do
     t.datetime "updated_at", null: false
   end
 
+  ### AUTO GENERATED TABLE - NOT USED
   create_table "question_choixes", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  ### AUTO GENERATED TABLE - NOT USED
   create_table "question_ouvertes", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  ### AUTO GENERATED TABLE - NOT USED
   create_table "question_points", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -72,9 +91,6 @@ ActiveRecord::Schema.define(version: 2020_01_08_235420) do
     t.float "minPoints"
     t.float "maxPoints"
     t.boolean "estUnique"
-    t.integer "nombreChoix"
-    t.text "lesChoix"
-    t.string "numerosDeQuestionsGroupe"
     t.integer "ordre", default: 0
     t.boolean "etat", default: false
     t.bigint "sondage_id"
@@ -88,11 +104,13 @@ ActiveRecord::Schema.define(version: 2020_01_08_235420) do
     t.text "descriptionSondage", null: false
     t.boolean "etat", default: false
     t.bigint "administrateur_id"
+    t.bigint "categorie_id"
     t.boolean "publier", default: false
     t.boolean "resultats", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["administrateur_id"], name: "index_sondages_on_administrateur_id"
+    t.index ["categorie_id"], name: "index_sondages_on_categorie_id"
   end
 
   create_table "utilisateurs", primary_key: "id_utilisateur", id: :serial, force: :cascade do |t|
@@ -106,4 +124,5 @@ ActiveRecord::Schema.define(version: 2020_01_08_235420) do
   add_foreign_key "choixes", "questions", primary_key: "id_question"
   add_foreign_key "questions", "sondages", primary_key: "id_sondage"
   add_foreign_key "sondages", "administrateurs", primary_key: "id_administrateur"
+  add_foreign_key "sondages", "categories", column: "categorie_id", primary_key: "id_categorie"
 end

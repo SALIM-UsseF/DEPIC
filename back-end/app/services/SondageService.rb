@@ -6,14 +6,24 @@ class SondageService
 
     include Singleton
 
-    # selectionner que les sondages non supprimés (etat=false)
+    # selectionner tout les sondages non supprimés (etat=false)
     def listeDesSondages
         sondages = Sondage.where(etat: false).order('created_at ASC')
+    end
+
+    # selectionner tout les sondages selon une categorie
+    def listeDesSondagesParCategorie(categorie_id)
+        sondages = Sondage.where(etat: false, categorie_id: categorie_id).order('created_at ASC')
     end
 
     # selectionner les sondages publiés (publier=true)
     def listeDesSondagesPublies
         sondages = Sondage.where(etat: false, publier: true).order('created_at DESC')
+    end
+
+    # selectionner les sondages publiés (publier=true) par categorie
+    def listeDesSondagesPubliesParCategorie(categorie_id)
+        sondages = Sondage.where(etat: false, publier: true, categorie_id: categorie_id).order('created_at DESC')
     end
 
     # Afficher un Sondage par ID
@@ -27,9 +37,9 @@ class SondageService
     end
 
     # Creer un nouveau Sondage
-    def creerNouveauSondage(intituleSondage, descriptionSondage, administrateur_id)
+    def creerNouveauSondage(intituleSondage, descriptionSondage, categorie_id, administrateur_id)
 
-            sondage = Sondage.new(:intituleSondage => intituleSondage, :descriptionSondage => descriptionSondage, :administrateur_id => administrateur_id)
+            sondage = Sondage.new(:intituleSondage => intituleSondage, :descriptionSondage => descriptionSondage, :categorie_id => categorie_id, :administrateur_id => administrateur_id)
 
             if sondage.save
                 newSondage = sondage
@@ -40,11 +50,11 @@ class SondageService
     end
 
     # Modifier un Sondage
-    # resultats = true => les utilisateurs ont le droit de voir les resultats sondage
-    def modifierSondage(id_sondage, intituleSondage, descriptionSondage, publier, resultats)
+    # si resultats = true => les utilisateurs ont le droit de voir les resultats sondage
+    def modifierSondage(id_sondage, intituleSondage, descriptionSondage, publier, resultats, categorie_id)
         sondage = Sondage.find_by(id_sondage: id_sondage, etat: false);
 
-        if sondage != nil && sondage.update_attributes(:intituleSondage => intituleSondage, :descriptionSondage => descriptionSondage, :publier => publier, :resultats => resultats)
+        if sondage != nil && sondage.update_attributes(:intituleSondage => intituleSondage, :descriptionSondage => descriptionSondage, :publier => publier, :resultats => resultats, :categorie_id => categorie_id)
             modifier = sondage
         else
             modifier = nil
