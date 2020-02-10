@@ -16,6 +16,11 @@ class SondageService
         sondages = Sondage.where(etat: false, categorie_id: categorie_id).order('created_at ASC')
     end
 
+    # selectionner tout les sondages d'un admin
+    def listeDesSondagesParAdmin(admin_id)
+        sondages = Sondage.where(etat: false, administrateur_id: admin_id).order('created_at ASC')
+    end
+
     # selectionner les sondages publiés (publier=true)
     def listeDesSondagesPublies
         sondages = Sondage.where(etat: false, publier: true).order('created_at DESC')

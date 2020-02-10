@@ -24,6 +24,12 @@ class SondagesController < ApplicationController
     render json: sondages, status: :ok
   end
 
+  # selectionner tout les sondages d'un admin
+  def sondagesParAdmin
+    sondages = SondageService.instance.listeDesSondagesParAdmin(params[:id])
+    render json: sondages, status: :ok
+  end
+
   # Afficher la liste des sondages par categorie
   def sondagesParCategorie
     sondages = SondageService.instance.listeDesSondagesParCategorie(params[:id])
