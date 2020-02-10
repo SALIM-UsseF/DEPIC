@@ -5,8 +5,8 @@ class Client {
     this.url = url;
   };
 
-  // create : {pseudo, email, password}
-  // update : {à voir}
+  // create : {pseudo_administrateur, email_administrateur, motDePasse_administrateur}
+  // update : {id_administrateur, pseudo_administrateur, email_administrateur, supAdmin}
   Admin = {
     readAll: (success, errors) => {
       axios
@@ -22,19 +22,26 @@ class Client {
     },
     login: (email, password, success, errors) => {
       axios
-        .post(this.url + 'loginAdmin', { email: email, password: password })
+        .post(this.url + 'loginAdmin', { 
+          email_administrateur: email, 
+          motDePasse_administrateur: password 
+        })
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     checkEmail: (email, success, errors) => {
       axios
-        .post(this.url + 'checkAdminEmail', { email: email })
+        .post(this.url + 'checkAdminEmail', { 
+          email_administrateur: email 
+        })
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     checkPassword: (id, password, success, errors) => {
       axios
-        .post(this.url + 'checkAdminPassword/' + id, { password: password })
+        .post(this.url + 'checkAdminPassword/' + id, { 
+          motDePasse_administrateur: password 
+        })
         .then(result => success(result))
         .catch(error => errors(error.response));
     },

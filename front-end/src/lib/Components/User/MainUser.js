@@ -42,9 +42,9 @@ export default class MainUser extends React.Component {
     page: 'connexion'
   }
 
-  onSuccessConnexion = () => {
+  onSuccessConnexion = (admin) => {
     if (this.props.onSuccess) {
-      this.props.onSuccess(6); // id de l'admin
+      this.props.onSuccess(admin);
     }
   }
 

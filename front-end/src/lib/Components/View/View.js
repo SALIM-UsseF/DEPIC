@@ -23,7 +23,8 @@ export default class View extends React.Component {
     client: PropTypes.any.isRequired,
     lang: PropTypes.string,
     onOpenSondageAgain: PropTypes.func,
-    idAdmin: PropTypes.number
+    admin: PropTypes.object, // {idAdmin, pseudoAdmin, emailAdmin, supAdmin}
+    onDeconnexion: PropTypes.func    
   }
 
   static defaultProps = {
@@ -32,6 +33,7 @@ export default class View extends React.Component {
 
   state = {
     openSideBar: false,
+    openCompte: false,
     title: 'dashboard',
     openModalSondage: false,
     idSondage: 0,
@@ -44,8 +46,14 @@ export default class View extends React.Component {
       this.setState({
         openSideBar: true
       });
-    } else if (name === 'user') {
-      console.log('OK')
+    } else if (name === 'compte') {
+      this.setState({
+        openCompte: true
+      });
+    } else if (name === 'déconnecter') {
+      if (this.props.onDeconnexion) {
+        this.props.onDeconnexion();
+      }
     }
   }
 
@@ -106,7 +114,7 @@ export default class View extends React.Component {
             client={this.props.client}
             lang={this.props.lang}
             title={this.state.title}
-            idAdmin={this.props.idAdmin}
+            idAdmin={this.props.admin.idAdmin}
             onCreateSurvey={this.onCreateSurvey}
             openModalSondage={this.state.openModalSondage}
             openModalSondageFunc={this.openModalSondageFunc}

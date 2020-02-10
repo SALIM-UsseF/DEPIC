@@ -16,16 +16,23 @@ export default class MainView extends React.Component {
   }
 
   state = {
-    page: 'mainView',
+    page: 'connexion',
     lang: this.props.lang,
-    idAdmin: 6
+    admin: {}
   }
 
-  onSuccess = (idAdmin) => {
+  onSuccess = (admin) => {
     this.setState({
       page: 'mainView',
-      idAdmin: idAdmin
-    })
+      admin: admin
+    });
+  }
+
+  onDeconnexion = () => {
+    this.setState({
+      page: 'connexion',
+      admin: {}
+    });
   }
 
   render() {
@@ -40,7 +47,8 @@ export default class MainView extends React.Component {
               <View
                 client={this.props.client}
                 lang={this.state.lang}
-                idAdmin={this.state.idAdmin} />
+                admin={this.state.admin}
+                onDeconnexion={this.onDeconnexion} />
               :(this.state.page === 'mainReponse')?
                 <MainReponse
                   client={this.props.client}
