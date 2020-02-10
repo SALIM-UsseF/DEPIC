@@ -34,13 +34,13 @@ export default class Dashboard extends React.Component {
     listSondage: [],
     showOption: false,
     publier: false,
+    supprimer: false,
     publierFinal: false,
     id_sondage: 0
   }
 
   componentDidMount() {
-    this.props.client.Sondage.sondages(
-      {},
+    this.props.client.Sondage.readAll(
       result => {
         this.setState({
           listSondage: result.data
@@ -87,7 +87,7 @@ export default class Dashboard extends React.Component {
                 <Segment color='teal' size='massive'>
                   <Grid>
                     <Grid.Column width={15}>
-                      <Header as='h3'>{survey.intituleSondage}</Header>
+                      <Header as='h3'>{_.upperFirst(survey.intituleSondage)}</Header>
                     </Grid.Column>
                     <Grid.Column width={1}>
                       <Dropdown>
@@ -108,32 +108,17 @@ export default class Dashboard extends React.Component {
                               this.setState({
                                 publier: true,
                                 id_sondage: survey.id_sondage
-                              })
+                              });
                             }}
                           />
                           <Dropdown.Item 
                             icon='trash alternate' 
                             text='Supprimer'
                             onClick={() => {
-                              this.props.client.Sondage.deleteSondage(
-                                survey.id_sondage,
-                                result => {
-                                  this.props.client.Sondage.sondages(
-                                    {},
-                                    result => {
-                                      this.setState({
-                                        listSondage: result.data
-                                      })
-                                    },
-                                    error => {
-                                      console.log(error)
-                                    }
-                                  )
-                                },
-                                error => {
-                                  console.log(error);
-                                }
-                              )
+                              this.setState({
+                                supprimer: true,
+                                id_sondage: survey.id_sondage
+                              });
                             }}
                           />
                         </Dropdown.Menu>
@@ -190,7 +175,7 @@ export default class Dashboard extends React.Component {
             })
           }}
           onConfirm={() => {
-            this.props.client.Sondage.publierSondage(
+            this.props.client.Sondage.publier(
               this.state.id_sondage,
               result => {
                 this.setState({
@@ -200,6 +185,55 @@ export default class Dashboard extends React.Component {
               },
               error => {
                 console.log(error)
+              }
+            )
+          }}
+        />
+        <Confirm
+          header="Suppression d'un sondage"
+          content="Etes-vous sûr de vouloir supprimer votre sondage ?"
+          open={this.state.supprimer}
+          size='large'
+          cancelButton={
+            <Button
+              negative
+              icon='close'
+              content='Non'
+            />
+          }
+          confirmButton={
+            <Button
+              positive
+              icon='check'
+              content='Oui'
+            />
+          }
+          onCancel={() => {
+            this.setState({
+              supprimer: false
+            })
+          }}
+          onConfirm={() => {
+            this.props.client.Sondage.delete(
+              this.state.id_sondage,
+              result => {
+                this.setState({
+                  supprimer: false
+                });
+
+                this.props.client.Sondage.readAll(
+                  result => {
+                    this.setState({
+                      listSondage: result.data
+                    })
+                  },
+                  error => {
+                    console.log(error)
+                  }
+                )
+              },
+              error => {
+                console.log(error);
               }
             )
           }}

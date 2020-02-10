@@ -79,7 +79,7 @@ export default class Register extends React.Component {
       return;
     }
 
-    this.props.client.Administrateur.newAdmin(
+    this.props.client.Admin.create(
       this.state.login,
       this.state.email,
       md5(this.state.password),

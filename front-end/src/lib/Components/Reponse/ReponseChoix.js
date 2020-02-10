@@ -32,7 +32,7 @@ export default class ReponseChoixMultiple extends React.Component {
   }
 
   componentDidMount() {
-    this.props.client.Choix.read(
+    this.props.client.Choix.readByQuestion(
       this.props.idQuestion,
       result => {
         this.setState({

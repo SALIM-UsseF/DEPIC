@@ -135,10 +135,14 @@ export default class Frame extends React.Component {
                   return;
                 }
 
-                this.props.client.Sondage.newSondage(
-                  this.state.nomSondage,
-                  this.state.descriptionSondage,
-                  this.props.idAdmin,
+                let params = {
+                  intituleSondage: this.state.nomSondage,
+                  descriptionSondage: this.state.descriptionSondage,
+                  administrateur_id: this.props.idAdmin
+                };
+
+                this.props.client.Sondage.create(
+                  params,
                   result => {
                     if (this.props.onSuccess) {
                       this.props.onSuccess();
@@ -150,7 +154,6 @@ export default class Frame extends React.Component {
                     });
                   },
                   error => {
-                    // console.log(error);
                     // Le sondage n'a pas pu se créer
                   }
                 );

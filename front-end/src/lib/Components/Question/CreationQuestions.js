@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 
 import { 
-  Button, 
-  Segment
+  Button
 } from 'semantic-ui-react'
 
 import ListQuestions from './ListQuestions'
@@ -31,18 +30,16 @@ export default class CreationQuestions extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Segment>
-          <ListQuestions
-            client={this.props.client}
-            listQuestions={this.state.listQuestions}
-          />
-          <Button
-            icon='plus circle'
-            content='Question suivante'
-            positive
-            onClick={this.onNextQuestion}
-          />
-        </Segment>
+        <ListQuestions
+          client={this.props.client}
+          listQuestions={this.state.listQuestions}
+        />
+        <Button
+          icon='plus circle'
+          content='Question suivante'
+          positive
+          onClick={this.onNextQuestion}
+        />
       </React.Fragment>
     );
   }

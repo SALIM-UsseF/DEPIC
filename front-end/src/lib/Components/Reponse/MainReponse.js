@@ -53,7 +53,7 @@ export default class MainReponse extends React.Component {
   }
 
   componentDidMount() {
-    this.props.client.Sondage.sondage(
+    this.props.client.Sondage.read(
       this.props.idSondage,
       result => {
         this.setState({

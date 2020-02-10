@@ -45,9 +45,8 @@ export default class CreateSurvey extends React.Component {
   }
 
   componentDidMount() {
-    console.log('là')
     if (this.props.modifying) {
-      this.props.client.Sondage.sondage(
+      this.props.client.Sondage.read(
         this.props.idSondage,
         result => {
           this.props.client.Question.readBySondage(
@@ -79,7 +78,7 @@ export default class CreateSurvey extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.idSondage !== prevProps.idSondage) {
-      this.props.client.Sondage.sondage(
+      this.props.client.Sondage.read(
         this.props.idSondage,
         result => {
           this.setState({
@@ -96,7 +95,7 @@ export default class CreateSurvey extends React.Component {
   }
 
   updateSondage = () => {
-    this.props.client.Sondage.sondage(
+    this.props.client.Sondage.read(
       this.props.idSondage,
       result => {
         this.props.client.Question.readBySondage(
@@ -140,7 +139,7 @@ export default class CreateSurvey extends React.Component {
       <React.Fragment>
         <Title
           as='h1'
-          content={this.state.nomSondage}
+          content={_.upperFirst(this.state.nomSondage)}
           color='teal' />
       
         <Form>
@@ -155,35 +154,27 @@ export default class CreateSurvey extends React.Component {
           />
         </Form>
         <Divider hidden />
+        <MainQuestion
+          client={this.props.client}
+          isModifying={false}
+           />
         <div style={{ marginBottom:"50px" }}>
           <Button
-            icon='plus'
-            content='Ajouter une question'
-            floated='left'
-            primary
-            onClick={() => {
-              this.setState({
-                ajoutNouvelleQuestion: true,
-                intituleNouvelleQuestion: '',
-                typeNouvelleQuestion: '',
-                estObligatoireNouvelleQuestion: '',
-                maxPointsNouvelleQuestion: 5,
-                numerosDeQuestionsGroupeNouvelleQuestion: '0',
-                nbCharactereNouvelleQuestion: 100,
-                nombreChoixNouvelleQuestion: 5
-              });
-            }}
+            icon='plus circle'
+            content='Question suivante'
+            positive
+            onClick={this.onNextQuestion}
           />
           <Button
             content='Terminer'
             floated='right'
             positive
             onClick={() => {
-              this.props.client.Sondage.updateSondage(
+              this.props.client.Sondage.update(
                 this.props.idSondage,
                 {
                   intituleSondage: this.state.nomSondage,
-                  descriptionSondage:this.state.descriptionSondage
+                  descriptionSondage: this.state.descriptionSondage
                 },
                 result => {
                   this.setState({
@@ -203,7 +194,7 @@ export default class CreateSurvey extends React.Component {
       <React.Fragment>
         <Title
           as='h1'
-          content={this.state.nomSondage}
+          content={_.upperFirst(this.state.nomSondage)}
           color='teal' />
       
         <Form>
@@ -265,11 +256,11 @@ export default class CreateSurvey extends React.Component {
             floated='right'
             positive
             onClick={() => {
-              this.props.client.Sondage.updateSondage(
+              this.props.client.Sondage.update(
                 this.props.idSondage,
                 {
                   intituleSondage: this.state.nomSondage,
-                  descriptionSondage:this.state.descriptionSondage
+                  descriptionSondage: this.state.descriptionSondage
                 },
                 result => {
                   this.setState({

@@ -59,7 +59,7 @@ export default class Question extends React.Component {
   }
 
   componentDidMount() {
-    this.props.client.Choix.read(
+    this.props.client.Choix.readByQuestion(
       this.props.idQuestion,
       result => {
         this.setState({
@@ -93,7 +93,7 @@ export default class Question extends React.Component {
   }
 
   update = () => {
-    this.props.client.Choix.read(
+    this.props.client.Choix.readByQuestion(
       this.props.idQuestion,
       result => {
         this.setState({
@@ -125,9 +125,13 @@ export default class Question extends React.Component {
           circular 
           icon='plus'
           onClick={() => {
-            this.props.client.Choix.newChoix(
-              'Nouveau choix',
-              this.props.idQuestion,
+            let params = {
+              intituleChoix: 'Nouveau choix',
+              question_id: this.props.idQuestion
+            };
+
+            this.props.client.Choix.create(
+              params,
               result => {
                 this.update();
               },
@@ -158,9 +162,13 @@ export default class Question extends React.Component {
           circular 
           icon='plus'
           onClick={() => {
-            this.props.client.Choix.newChoix(
-              'Nouveau choix',
-              this.props.idQuestion,
+            let params = {
+              intituleChoix: 'Nouveau choix',
+              question_id: this.props.idQuestion
+            };
+
+            this.props.client.Choix.create(
+              params,
               result => {
                 this.update();
               },
@@ -456,7 +464,7 @@ export default class Question extends React.Component {
               this.props.client.QuestionChoix.delete(
                 this.props.idQuestion,
                 result => {
-                  this.props.client.Choix.read(
+                  this.props.client.Choix.readByQuestion(
                     this.props.idQuestion,
                     result => {
                       if (this.props.removeQuestion) {
