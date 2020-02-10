@@ -81,13 +81,13 @@ Rails.application.routes.draw do
   put 'deleteQuestionPoints/:id' => 'questionpoints#delete'
 
   #routes QuestionGroupe
-  get 'groupesQuestions' => 'groupequestions#index'
-  get 'groupeQuestions/:id' => 'groupequestions#show'
+  get 'groupesQuestions' => 'groupequestions#index' # Fourinr tout les questions de type GroupeQuestion
+  get 'groupeQuestions/:id' => 'groupequestions#show' # Fournir un GroupeQuestion par id_question
   post 'newGroupeQuestions' => 'groupequestions#create' # éléments à fournir: {intitule, estObligatoire, ordre, sondage_id}
   put 'updateGroupeQuestions/:id' => 'groupequestions#update'
   put 'deleteGroupeQuestions/:id' => 'groupequestions#delete'
 
-  #route Groupe qui contient les questions d'un QuestionGroupe
+  #route Groupe qui contient les IDs des questions d'un QuestionGroupe
   get 'questions/groupe/:id' => 'groupes#show' # Fournir les questions d'un groupe | :id => est l'id du question de type GroupeQuestion
   post 'groupe/ajoutQuestion' => 'groupes#create' # éléments à fournir: {id_groupe, id_question} | id_groupe => est l'id du question de type GroupeQuestion
   put 'deleteGroupe/:id' => 'groupes#delete' # Supprimer un groupe par son id => id_groupe

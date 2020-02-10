@@ -16,7 +16,7 @@ class CategoriesController < ApplicationController
 
   # Afficher la liste des categories 
   def index
-    categories = CategorieService.instance.listeDescategories
+    categories = CategorieService.instance.listeDesCategories
     render json: categories, status: :ok
   end
 
