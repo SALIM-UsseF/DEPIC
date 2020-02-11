@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   ##########################                    "ROUTES PARTIE FRONT-END"             #####################
   #routes Administrateur
-  get 'admins' => 'administrateurs#index' # Fournir la listes des admins
+  get 'admins' => 'administrateurs#index' # Fournir la liste des admins
   get 'admin/:id' => 'administrateurs#show' # Fournir un admin par son id => id_admin
   post 'newAdmin' => 'administrateurs#create' # Ajouter un nouveau admin | éléments à fournir: {pseudo_administrateur, email_administrateur, motDePasse_administrateur}
   put 'updateAdmin/:id' => 'administrateurs#update' # Modifier un admin par son id => id_admin
@@ -22,7 +22,7 @@ Rails.application.routes.draw do
 
 
   #routes Sondage
-  get 'sondages' => 'sondages#index' # Fournir la listes des sondages
+  get 'sondages' => 'sondages#index' # Fournir la liste des sondages
   get 'sondages/categorie/:id' => 'sondages#sondagesParCategorie' # Fournir la liste des sondages par categorie
   get 'sondages/admin/:id' => 'sondages#sondagesParAdmin' # Fournir la liste des sondages créés par un admin
   get 'questions/Sondage/:idSondage' => 'questions#questionsParSondage' # Afficher les questions d'un sondage par l'id du sondage
@@ -35,7 +35,7 @@ Rails.application.routes.draw do
 
 
   #routes Utilisateur
-  get 'utilisateurs' => 'utilisateurs#index' # Fournir la listes des utilisateurs
+  get 'utilisateurs' => 'utilisateurs#index' # Fournir la liste des utilisateurs
   get 'utilisateur/:id' => 'utilisateurs#show' # Fournir un user par son id => id_utilisateur
   post 'newUtilisateur' => 'utilisateurs#create' # Ajouter un nouveau user | éléments à fournir: {email, adresseIp}
   put 'updateUtilisateur/:id' => 'utilisateurs#update' # Modifier un user par son id => id_utilisateur | éléments à fournir: {email, adresseIp}
@@ -43,10 +43,10 @@ Rails.application.routes.draw do
 
 
   #routes Participer
-  get 'participations' => 'participers#index' # Fournir la listes de toutes les participations
-  get 'participationsBySondage/:id' => 'participers#showParticipationsBySondage' # Fournir la listes des participations pour un sondage donné par son id => id_sondage
-  get 'participationsByUserAndSondage/:idUser/:idSondage' => 'participers#showParticipationsByUserAndSondage' # Fournir la listes des participations d'un user(id_utilisateur) pour un sondage donné par son id => id_sondage
-  get 'participationsByQuestionAndSondage/:idQuestion/:idSondage' => 'participers#showParticipationsByQuestionAndSondage' # Fournir la listes des participations pour une question donnée(id_question) pour un sondage donné par son id => id_sondage
+  get 'participations' => 'participers#index' # Fournir la liste de toutes les participations
+  get 'participationsBySondage/:id' => 'participers#showParticipationsBySondage' # Fournir la liste des participations pour un sondage donné par son id => id_sondage
+  get 'participationsByUserAndSondage/:idUser/:idSondage' => 'participers#showParticipationsByUserAndSondage' # Fournir la liste des participations d'un user(id_utilisateur) pour un sondage donné par son id => id_sondage
+  get 'participationsByQuestionAndSondage/:idQuestion/:idSondage' => 'participers#showParticipationsByQuestionAndSondage' # Fournir la liste des participations pour une question donnée(id_question) pour un sondage donné par son id => id_sondage
   #post 'newParticipation' => 'participers#create' # Ajouter une participation par un admin
   #put 'updateParticipation/:idUser/:idSondage/:idQuestion' => 'participers#update' # Modifier une participation
   put 'deleteParticipation/:idUser/:idSondage/:idQuestion' => 'participers#delete' # Supprimer une participation
@@ -69,8 +69,8 @@ Rails.application.routes.draw do
   #routes Question choix
   get 'questionsChoix' => 'questionchoixes#index'
   get 'questionChoix/:id' => 'questionchoixes#show'
-  post 'newQuestionChoix' => 'questionchoixes#create' # éléments à fournir: {intitule, estObligatoire, estUnique, lesChoix, ordre, sondage_id}
-  put 'updateQuestionChoix/:id' => 'questionchoixes#update'
+  post 'newQuestionChoix' => 'questionchoixes#create' # éléments à fournir: {intitule, estObligatoire, estUnique, ordre, sondage_id}
+  put 'updateQuestionChoix/:id' => 'questionchoixes#update' # éléments à fournir {intitule, estObligatoire, estUnique, ordre}
   put 'deleteQuestionChoix/:id' => 'questionchoixes#delete'
 
 
@@ -109,8 +109,8 @@ Rails.application.routes.draw do
 
 ##########################                    "ROUTES PARTIE MOBILE"                    #####################
   post 'newUser' => 'utilisateurs#create' # Creer un utilisateur afin de repondre aux sondages publiés | éléments à fournir: {email, adresseIp}
-  get 'sondagesPublies' => 'sondages#showSondagesPublies' # Fournir la listes des sondages publies
-  get 'sondagesPublies/categorie/:id' => 'sondages#showSondagesPubliesByCategorie' # Fournir la listes des sondages publies par categorie
+  get 'sondagesPublies' => 'sondages#showSondagesPublies' # Fournir la liste des sondages publies
+  get 'sondagesPublies/categorie/:id' => 'sondages#showSondagesPubliesByCategorie' # Fournir la liste des sondages publies par categorie
   get 'sondagePublie/:idSondage' => 'sondages#showSondagePublie' # Fournir un sondage donné par son id => id du sondage
   post 'repondre' => 'participers#repondreSondagePublie' # Le post contient les éléments suivants: {utilisateur_id, sondage_id, question_id, reponse}
   get 'questionsDuSondage/:idSondage' => 'questions#questionsDuSondage' # Afficher les questions d'un sondage publié par l'id du sondage

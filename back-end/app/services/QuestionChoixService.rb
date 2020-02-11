@@ -18,12 +18,11 @@ class QuestionChoixService
     end
 
     # Creer une QuestionChoix
-    def creerQuestionChoix(intitule, estObligatoire, estUnique, nombreChoix, ordre, sondage_id)
+    def creerQuestionChoix(intitule, estObligatoire, estUnique, ordre, sondage_id)
 
         question = QuestionChoix.new(:intitule => intitule,
                                         :estObligatoire => estObligatoire,
                                         :estUnique => estUnique,
-                                        :nombreChoix => nombreChoix,
                                         :ordre => ordre,
                                         :sondage_id => sondage_id)
 
@@ -36,13 +35,12 @@ class QuestionChoixService
     end
 
     # Modifier une QuestionChoix
-    def modifierQuestion(id_question, intitule, estObligatoire, estUnique, nombreChoix, ordre)
+    def modifierQuestion(id_question, intitule, estObligatoire, estUnique, ordre)
         question = QuestionChoix.find_by(id_question: id_question, etat: false);
 
         if question != nil && question.update_attributes(:intitule => intitule,
                                                         :estObligatoire => estObligatoire,
                                                         :estUnique => estUnique,
-                                                        :lesChoix => nombreChoix,
                                                         :ordre => ordre)
             modifier = question
         else
@@ -66,7 +64,7 @@ class QuestionChoixService
         # récupérer la liste des QuestionChoix de type choix unique par sondage
         # et traiter chaque QuestionChoix
         QuestionChoix.where(sondage_id: id_sondage, estUnique: true, etat: false).find_each do |question|
-            participations = ParticiperService.instance.ParticipationsParQuestionChoixUniqueEtParSondage(question.id_question, id_sondage, question.nombreChoix)
+            participations = ParticiperService.instance.ParticipationsParQuestionChoixUniqueEtParSondage(question.id_question, id_sondage)
             arry << participations 
         end
 
@@ -82,7 +80,7 @@ class QuestionChoixService
         # récupérer la liste des QuestionChoix de type choix multiple par sondage
         # et traiter chaque QuestionChoix
         QuestionChoix.where(sondage_id: id_sondage, estUnique: false, etat: false).find_each do |question|
-            participations=ParticiperService.instance.ParticipationsParQuestionChoixMultipleEtParSondage(question.id_question, id_sondage, question.nombreChoix)
+            participations=ParticiperService.instance.ParticipationsParQuestionChoixMultipleEtParSondage(question.id_question, id_sondage)
             arry << participations 
         end
 

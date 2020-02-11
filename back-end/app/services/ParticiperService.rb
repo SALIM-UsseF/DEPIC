@@ -125,7 +125,7 @@ class ParticiperService
     end
 
     # Afficher pour chaque question à choix unique le nombre de participations pour chaque choix
-    def ParticipationsParQuestionChoixUniqueEtParSondage(id_question, id_sondage, nombre_choix)
+    def ParticipationsParQuestionChoixUniqueEtParSondage(id_question, id_sondage)
         
         # récupérer les choix de la question passée en paramétre
         choixQuestion = ChoixService.instance.afficherLesChoixParQuestion(id_question)
@@ -154,7 +154,7 @@ class ParticiperService
     end
 
     # Afficher pour chaque question à choix multiple le nombre de participations pour chaque choix
-    def ParticipationsParQuestionChoixMultipleEtParSondage(id_question, id_sondage, nombre_choix)
+    def ParticipationsParQuestionChoixMultipleEtParSondage(id_question, id_sondage)
         
         # récupérer les choix de la question passée en paramétre
         choixQuestion = ChoixService.instance.afficherLesChoixParQuestion(id_question)
