@@ -28,10 +28,10 @@ Rails.application.routes.draw do
   get 'questions/sondage/:idSondage' => 'questions#questionsParSondage' # Afficher les questions d'un sondage par l'id du sondage
   get 'sondage/:id' => 'sondages#show' # Fournir un sondage par son id => id_sondage
   post 'new/sondage' => 'sondages#create' # Ajouter un nouveau sondage | éléments à fournir: {intituleSondage, descriptionSondage, administrateur_id}
-  put 'updateSondage/:id' => 'sondages#update' # Modifier un sondage par son id_sondage | éléments à fournir: {intituleSondage, descriptionSondage, publier, resultats}
-  put 'publierSondage/:id' => 'sondages#publierSondage' # Publier un sondage par son id => id_sondage afin de le mettre visible pour les smartphone
-  put 'activerResultats/:id' => 'sondages#activerResultats' # Activer/Desactiver l'option resultats d'un sondage par son id => id_sondage. Si l'option est activée, l'utilisateur "Mobile" à le droit de voir les résultats de ce sondage
-  put 'deleteSondage/:id' => 'sondages#delete' # Supprimer un sondage par son id => id_sondage
+  put 'update/sondage/:id' => 'sondages#update' # Modifier un sondage par son id_sondage | éléments à fournir: {intituleSondage, descriptionSondage, publier, resultats}
+  put 'publier/sondage/:id' => 'sondages#publierSondage' # Publier un sondage par son id => id_sondage afin de le mettre visible pour les smartphone
+  put 'activer/resultats/:id' => 'sondages#activerResultats' # Activer/Desactiver l'option resultats d'un sondage par son id => id_sondage. Si l'option est activée, l'utilisateur "Mobile" à le droit de voir les résultats de ce sondage
+  put 'delete/sondage/:id' => 'sondages#delete' # Supprimer un sondage par son id => id_sondage
 
 
   #routes Utilisateur
@@ -39,7 +39,7 @@ Rails.application.routes.draw do
   get 'utilisateur/:id' => 'utilisateurs#show' # Fournir un user par son id => id_utilisateur
   post 'new/utilisateur' => 'utilisateurs#create' # Ajouter un nouveau user | éléments à fournir: {email, adresseIp}
   put 'update/utilisateur/:id' => 'utilisateurs#update' # Modifier un user par son id => id_utilisateur | éléments à fournir: {email, adresseIp}
-  put 'delete/tilisateur/:id' => 'utilisateurs#delete' # Supprimer un user par son id => id_utilisateur
+  put 'delete/utilisateur/:id' => 'utilisateurs#delete' # Supprimer un user par son id => id_utilisateur
 
 
   #routes Participer
