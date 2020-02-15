@@ -6,6 +6,26 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+
+# Création les comptes afin d'autoriser l'accé au API
+
+# Compte pour la partie FRONT-END
+AuthApi.create!({
+	login: 'REACT APP',
+	email:'reactapp@gmail.com', 
+	password: 'reactapptest', 
+	password_confirmation: 'reactapptest'
+	})
+
+# Compte pour la partie MOBILE
+AuthApi.create!({
+	login: 'MOBILE APP',
+	email:'mobileapp@gmail.com', 
+	password: 'mobileapptest', 
+	password_confirmation: 'mobileapptest'
+})
+
+
 # Insertion dans la Table Administrateur
 # Ajouter le super administrateur
 Administrateur.create({
@@ -381,7 +401,7 @@ QuestionOuverte.create({
 ##############################                  "END SIMULATION SONDAGE"                           ###########################
 
 Sondage.create({
-	intituleSondage: "Sondage Test 2",
+	intituleSondage: "Sondage Test II",
     descriptionSondage: "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression.
      Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.",
 	administrateur_id: 1,
@@ -390,7 +410,7 @@ Sondage.create({
 
 #Question choix multiple
 QuestionChoix.create({
-	intitule: "Test de quoi ?",
+	intitule: "Test de test ?",
     estObligatoire: true,
     estUnique: false,
 	ordre: 1,
