@@ -48,6 +48,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     arel (9.0.0)
+    bcrypt (3.1.13)
     bootsnap (1.4.5)
       msgpack (~> 1.0)
     builder (3.2.4)
@@ -120,6 +121,7 @@ GEM
     rb-inotify (0.10.0)
       ffi (~> 1.0)
     ruby_dep (1.5.0)
+    simple_command (0.1.0)
     spring (2.1.0)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -144,6 +146,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers
+  bcrypt (~> 3.1.7)
   bootsnap (>= 1.1.0)
   byebug
   jwt
@@ -152,6 +155,7 @@ DEPENDENCIES
   puma (~> 3.11)
   rack-cors
   rails (~> 5.2.4, >= 5.2.4.1)
+  simple_command
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
