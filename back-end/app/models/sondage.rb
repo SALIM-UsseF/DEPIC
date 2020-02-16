@@ -12,6 +12,9 @@
 
 class Sondage < ApplicationRecord
 
+    scope :active_sondage, -> { where(etat: false)}
+    scope :inactive_sondage, -> { where(etat: true)}
+
     validates :intituleSondage, presence: true
     validates :descriptionSondage, presence: true
     validates :administrateur_id, presence: true
