@@ -24,5 +24,8 @@
     // Textes pour le dialog pour l'utilisateur
     <string name="Button_Accepter">Accepter</string>
     <string name="Button_Refuser">Refuser</string>
-    <string name="Message_Utilisateur">Si vous voulez associer une adresse email à vos réponses veuillez la donner puis appuyez sur Accepter. \n Toute autres actions signifie un refus.</string>
+    <string name="Message_Utilisateur">Si vous voulez vous connecter, donnez une adresse email valide et appuyez sur le bouton Accepter, toute autre action vous connectera en tant qu\'utilisateur inconnu.</string>
+    <string name="Texte_Valider_Changement_Categories">Valider les changements.</string>
+    <string name="Texte_Item_Categories">Categories</string>
+    <string name="Texte_TexteView_Categorie">Texte bouton catégorie</string>
 </resources>
