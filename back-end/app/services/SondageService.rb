@@ -13,7 +13,7 @@ class SondageService
         sondages = Sondage.where(etat: false).order('created_at ASC')
     end
 
-    # selectionner tout les sondages selon une categorie
+    # selectionner tout les sondages selon une catégorie
     def listeDesSondagesParCategorie(categorie_id)
         sondages = Sondage.where(etat: false, categorie_id: categorie_id).order('created_at ASC')
     end
