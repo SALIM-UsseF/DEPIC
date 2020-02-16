@@ -1,7 +1,11 @@
 package com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "Utilisateur")
 data class Utilisateur (
-    val id_utilisateur: Int,
+    @PrimaryKey var id_utilisateur: Int,
     val email: String,
     val adresseIp: String
 )

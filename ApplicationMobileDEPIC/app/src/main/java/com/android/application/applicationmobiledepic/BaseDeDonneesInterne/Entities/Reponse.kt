@@ -4,6 +4,7 @@ package com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Enti
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.EtatReponse
 
 /**
  * Entité représentant une question,
@@ -22,5 +23,6 @@ data class Reponse(
     var id_utilisateur : Int,
     var id_sondage: Int,
     var question_id: Int,
-    var reponse: String
+    var reponse: String,
+    var etat: String
 )

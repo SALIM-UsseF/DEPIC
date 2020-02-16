@@ -37,6 +37,9 @@ val nombreChoix : Int?,
 val estUnique : Boolean?,
 val nombreDeCaractere : Int?,
 val numerosDeQuestionsGroupe : String?,
+var idQuestionDeGroupe : Int?,
+val minPoints : Int?,
+val maxPoints : Int?,
 val ordre : Int,
 val type : String
 

@@ -2,90 +2,194 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4772834c8b6b16cac31d4c836d513975",
+    "identityHash": "c0041aa4784da14f72542605d9becba3",
     "entities": [
       {
         "tableName": "Sondages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sondageId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sondageIdWeb` INTEGER NOT NULL, `sondageNom` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id_sondage` INTEGER NOT NULL, `intituleSondage` TEXT NOT NULL, `descriptionSondage` TEXT NOT NULL, `administrateur_id` INTEGER NOT NULL, `etat` TEXT NOT NULL, `categorie_id` INTEGER NOT NULL, PRIMARY KEY(`id_sondage`))",
         "fields": [
           {
-            "fieldPath": "sondageId",
-            "columnName": "sondageId",
+            "fieldPath": "id_sondage",
+            "columnName": "id_sondage",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "sondageIdWeb",
-            "columnName": "sondageIdWeb",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "sondageNom",
-            "columnName": "sondageNom",
+            "fieldPath": "intituleSondage",
+            "columnName": "intituleSondage",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descriptionSondage",
+            "columnName": "descriptionSondage",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "administrateur_id",
+            "columnName": "administrateur_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "etat",
+            "columnName": "etat",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "categorie_id",
+            "columnName": "categorie_id",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "sondageId"
+            "id_sondage"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "Questions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`questionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `questionIdWeb` INTEGER NOT NULL, `sondageId` INTEGER NOT NULL, `sondageIdWeb` INTEGER NOT NULL, `questionNumero` INTEGER NOT NULL, `questionType` TEXT NOT NULL, `questionIntitule` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id_question` INTEGER NOT NULL, `sondage_id` INTEGER NOT NULL, `intitule` TEXT NOT NULL, `estObligatoire` INTEGER NOT NULL, `nombreChoix` INTEGER, `estUnique` INTEGER, `nombreDeCaractere` INTEGER, `numerosDeQuestionsGroupe` TEXT, `idQuestionDeGroupe` INTEGER, `minPoints` INTEGER, `maxPoints` INTEGER, `ordre` INTEGER NOT NULL, `type` TEXT NOT NULL, PRIMARY KEY(`id_question`))",
         "fields": [
           {
-            "fieldPath": "questionId",
-            "columnName": "questionId",
+            "fieldPath": "id_question",
+            "columnName": "id_question",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "questionIdWeb",
-            "columnName": "questionIdWeb",
+            "fieldPath": "sondage_id",
+            "columnName": "sondage_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "sondageId",
-            "columnName": "sondageId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "sondageIdWeb",
-            "columnName": "sondageIdWeb",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "questionNumero",
-            "columnName": "questionNumero",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "questionType",
-            "columnName": "questionType",
+            "fieldPath": "intitule",
+            "columnName": "intitule",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "questionIntitule",
-            "columnName": "questionIntitule",
+            "fieldPath": "estObligatoire",
+            "columnName": "estObligatoire",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreChoix",
+            "columnName": "nombreChoix",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "estUnique",
+            "columnName": "estUnique",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nombreDeCaractere",
+            "columnName": "nombreDeCaractere",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "numerosDeQuestionsGroupe",
+            "columnName": "numerosDeQuestionsGroupe",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "idQuestionDeGroupe",
+            "columnName": "idQuestionDeGroupe",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "minPoints",
+            "columnName": "minPoints",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "maxPoints",
+            "columnName": "maxPoints",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ordre",
+            "columnName": "ordre",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
             "affinity": "TEXT",
             "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "questionId"
+            "id_question"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Reponses",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id_reponse` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id_utilisateur` INTEGER NOT NULL, `id_sondage` INTEGER NOT NULL, `question_id` INTEGER NOT NULL, `reponse` TEXT NOT NULL, `etat` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id_reponse",
+            "columnName": "id_reponse",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id_utilisateur",
+            "columnName": "id_utilisateur",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id_sondage",
+            "columnName": "id_sondage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "question_id",
+            "columnName": "question_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reponse",
+            "columnName": "reponse",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "etat",
+            "columnName": "etat",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id_reponse"
           ],
           "autoGenerate": true
         },
@@ -93,39 +197,123 @@
         "foreignKeys": []
       },
       {
-        "tableName": "Reponses",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reponseId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sondageId` INTEGER NOT NULL, `sondageIdWeb` INTEGER NOT NULL, `listeReponses` TEXT NOT NULL)",
+        "tableName": "Choix",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id_choix` INTEGER NOT NULL, `intituleChoix` TEXT NOT NULL, `question_id` INTEGER NOT NULL, PRIMARY KEY(`id_choix`))",
         "fields": [
           {
-            "fieldPath": "reponseId",
-            "columnName": "reponseId",
+            "fieldPath": "id_choix",
+            "columnName": "id_choix",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "sondageId",
-            "columnName": "sondageId",
+            "fieldPath": "intituleChoix",
+            "columnName": "intituleChoix",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "question_id",
+            "columnName": "question_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id_choix"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Utilisateur",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id_utilisateur` INTEGER NOT NULL, `email` TEXT NOT NULL, `adresseIp` TEXT NOT NULL, PRIMARY KEY(`id_utilisateur`))",
+        "fields": [
+          {
+            "fieldPath": "id_utilisateur",
+            "columnName": "id_utilisateur",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "sondageIdWeb",
-            "columnName": "sondageIdWeb",
-            "affinity": "INTEGER",
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "listeReponses",
-            "columnName": "listeReponses",
+            "fieldPath": "adresseIp",
+            "columnName": "adresseIp",
             "affinity": "TEXT",
             "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "reponseId"
+            "id_utilisateur"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Tokens",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id_token` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `auth_token` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id_token",
+            "columnName": "id_token",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "auth_token",
+            "columnName": "auth_token",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id_token"
           ],
           "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Categories",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id_categorie` INTEGER NOT NULL, `intitule` TEXT NOT NULL, `active` INTEGER NOT NULL, PRIMARY KEY(`id_categorie`))",
+        "fields": [
+          {
+            "fieldPath": "id_categorie",
+            "columnName": "id_categorie",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "intitule",
+            "columnName": "intitule",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id_categorie"
+          ],
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -134,7 +322,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4772834c8b6b16cac31d4c836d513975')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c0041aa4784da14f72542605d9becba3')"
     ]
   }
 }
