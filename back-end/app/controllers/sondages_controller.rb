@@ -30,7 +30,7 @@ class SondagesController < ApplicationController
     render json: sondages, status: :ok
   end
 
-  # Afficher la liste des sondages par categorie
+  # Afficher la liste des sondages par catégorie
   def sondagesParCategorie
     sondages = SondageService.instance.listeDesSondagesParCategorie(params[:id])
     render json: sondages, status: :ok

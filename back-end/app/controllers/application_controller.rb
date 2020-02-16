@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
     before_action :authenticate_request
     attr_reader :current_user
 
-    #Home page
+    # Page d'accueil
     def index
         render json: {status: 'SUCCESS', message: 'DPIC - API'}, status: :ok
     end
