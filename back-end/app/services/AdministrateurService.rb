@@ -22,9 +22,10 @@ class AdministrateurService
 
         if !motDePasse_administrateur.strip.empty?
 
-            motDePasse_administrateur = format_string_to_md5(motDePasse_administrateur) # la partie front-end qui doit faire ce cryptage
+            # activer cette ligne dans le cas si la partie frontend n'a pas crypter le password en MD5
+            # motDePasse_administrateur = format_string_to_md5(motDePasse_administrateur)
 
-            # TODO: Verifier si le pseudo et email n'existe pas avant l'insertion
+            # Pour le moment la partie frontend vérifier l'existance d'un profil avant de l'envoyer et de l'insérer, pour renforcer la securité vous pouver vérifier ici si le pseudo et email n'existe pas avant l'insertion
             administrateur = Administrateur.new(:pseudo_administrateur => pseudo_administrateur, :email_administrateur => email_administrateur, :motDePasse_administrateur => motDePasse_administrateur)
 
             if administrateur.save
