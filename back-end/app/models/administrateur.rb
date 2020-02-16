@@ -11,6 +11,9 @@
 
 class Administrateur < ApplicationRecord
 
+    scope :active_admin, -> { where(etat: false)}
+    scope :inactive_admin, -> { where(etat: true)}
+
     self.primary_key = :id_administrateur
     validates :pseudo_administrateur, presence: true
     validates :email_administrateur, presence: true
