@@ -53,6 +53,13 @@ class QuestionChoixService
     def supprimerQuestion(id_question)
         question = QuestionChoix.find_by(id_question: id_question, etat: false)
         supprimer = (question != nil && question.update_attributes(:etat => true))
+
+        # supprimer tout les choix de cette question
+        if supprimer
+            choix = Choix.where(question_id: id_question)
+            choix.update(etat: true)
+        end
+
     end
 
 

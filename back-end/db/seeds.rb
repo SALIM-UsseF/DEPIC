@@ -7,8 +7,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 
-# Création les comptes afin d'autoriser l'accé au API
-
+# Création des comptes afin d'autoriser l'accés au API
 # Compte pour la partie FRONT-END
 AuthApi.create!({
 	login: 'REACT APP',
@@ -23,7 +22,8 @@ AuthApi.create!({
 	email:'mobileapp@gmail.com', 
 	password: 'mobileapptest', 
 	password_confirmation: 'mobileapptest'
-})
+	
+	})
 
 
 # Insertion dans la Table Administrateur
@@ -34,13 +34,13 @@ Administrateur.create({
     motDePasse_administrateur: '21232f297a57a5a743894a0e4a801fc3',
     supAdmin: true, # true = admin principale
     etat: false # true = admin est supprimé 
-})
+	})
 
 # Insertion dans la Table utilisateur
 Utilisateur.create({
 	email: "user1@user.com",
     adresseIp: "30.171.172.52"
-})
+	})
 
 # Insertion dans la Table utilisateur => user sans email et adresseIP
 user = Utilisateur.new();

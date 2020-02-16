@@ -50,6 +50,12 @@ class GroupeQuestionService
     def supprimerQuestion(id_question)
         question = GroupeQuestion.find_by(id_question: id_question, etat: false)
         supprimer = (question != nil && question.update_attributes(:etat => true))
+
+        # supprimer tout les questions de ce GroupeQuestion
+        if supprimer
+            questions = Groupe.where(id_groupe: id_question)
+            questions.update(etat: true)
+        end
     end
 
 end
