@@ -1,8 +1,8 @@
-# La première méthode 'encode' prend trois paramètres - l'ID utilisateur, le délai d'expiration (1 jour) et la clé de base unique de l'application Rails - pour créer un token unique.
-# La deuxième méthode, 'decode' prend le token et utilise la clé secrète de l'application pour le décoder.
+# La première méthode 'encode' prend trois paramètres - l'ID utilisateur, le délai d'expiration (1 jour) et la clé de base unique de l'application - pour créer un token (jeton) unique
+# La deuxième méthode, 'decode' prend le token et utilise la clé secrète de l'application pour le décoder
 # Voici les deux cas dans lesquels ces méthodes seront utilisées:
-# Pour authentifier l'utilisateur et générer un token pour lui à l'aide de l'encodage.
-# Pour vérifier si le token de l'utilisateur ajouté à chaque demande est correct en utilisant le décodage.
+# Pour authentifier l'utilisateur et générer un token pour lui à l'aide de l'encodage
+# Pour vérifier si le token de l'utilisateur ajouté à chaque demande est correct en utilisant le décodage
 
 class JsonWebToken
     class << self

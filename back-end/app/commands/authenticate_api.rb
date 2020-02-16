@@ -6,8 +6,8 @@
 class AuthenticateApi
 
     # SimpleCommand: un moyen facile de créer des services
-    # Son rôle est similaire à celui d'un helper, mais il facilite plutôt la connexion entre le contrôleur et le modèle, plutôt que le contrôleur et la vue.
-    # De cette façon, nous pouvons raccourcir le code dans les modèles et les contrôleurs.
+    # Son rôle est similaire à celui d'un helper, mais il facilite plutôt la connexion entre le contrôleur et le modèle, plutôt que le contrôleur et la vue
+    # De cette façon, nous pouvons raccourcir le code dans les modèles et les contrôleurs
     prepend SimpleCommand
   
     # les paramètres sont pris lors de l'appel de la commande
@@ -24,7 +24,8 @@ class AuthenticateApi
     private
   
     attr_accessor :email, :password
-  
+
+    # utilise les informations d'identification pour vérifier si l'utilisateur existe dans la base de données en utilisant AuthApi.find_by_email
     def user
       user = AuthApi.find_by_email(email)
       return user if user && user.authenticate(password)

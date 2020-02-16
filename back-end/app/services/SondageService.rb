@@ -1,4 +1,6 @@
 require 'singleton'
+require 'QuestionService'
+require 'GroupeService'
 
 # Si l'attribut 'etat' égale 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
@@ -105,6 +107,28 @@ class SondageService
     def supprimerSondage(id_sondage)
         sondage = Sondage.find_by(id_sondage: id_sondage, etat: false)
         supprimer = (sondage != nil && sondage.update_attributes(:etat => true))
+
+        # supprimer toutes les questions du sondage supprimé
+        if supprimer
+
+            Question.where(sondage_id: id_sondage, type: ['QuestionChoix', 'GroupeQuestion']).find_each do |question|
+
+                if question.type == 'QuestionChoix'
+                    # supprimer tout les choix de la question
+                    choix = Choix.where(question_id: question.id_question)
+                    choix.update(etat: true)                    
+                elsif question.type == 'GroupeQuestion'
+                    # supprimer tout les sous questions d'un groupeQuestions
+                    groupes = Groupe.where(id_groupe: question.id_question)
+                    groupes.update(etat: true)         
+                end 
+
+            end
+
+            questions = Question.where(sondage_id: id_sondage)
+            questions.update(etat: true)
+        end
+
     end
 
 end
