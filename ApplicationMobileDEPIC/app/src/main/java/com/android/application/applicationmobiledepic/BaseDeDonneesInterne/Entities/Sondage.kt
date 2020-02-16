@@ -4,6 +4,7 @@ package com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Enti
 //import android.arch.persistence.room.PrimaryKey
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.EtatSondage
 
 
 /**
@@ -24,6 +25,7 @@ data class Sondage(
 @PrimaryKey val id_sondage: Int,
 val intituleSondage: String,
 val descriptionSondage: String,
-val administrateur_id: Int
-
+val administrateur_id: Int,
+var etat: String,
+val categorie_id : Int
 )

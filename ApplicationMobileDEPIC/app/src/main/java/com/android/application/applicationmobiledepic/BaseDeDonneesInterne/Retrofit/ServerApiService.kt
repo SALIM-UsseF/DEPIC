@@ -1,11 +1,7 @@
 package com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Retrofit
 
 import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Entities.*
-import io.reactivex.Observable
 import retrofit2.Call
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.Retrofit
 import retrofit2.http.*
 
 
@@ -44,13 +40,13 @@ interface ServerApiService {
 
 
 
-    // Pour les questions
-    @GET("TRUC")
-    fun getAllQuestions(): Call<ArrayList<Question>>
-
     @GET("questionsDuSondage/{temp}")
     fun getQuestionsDuSondage(@Path("temp") Variable: String): Call<ArrayList<Question>>
 
+
+    // Pour les sous-questions
+    @GET("questionsDuGroupe/{idQuestionGroupe}")
+    fun getSousQuestionsDeQuestionGroupe(@Path("idQuestionGroupe") Variable: String): Call<ArrayList<Question>>
 
 
     // Pour les choix
@@ -63,6 +59,8 @@ interface ServerApiService {
     @GET("lesChoixParSondage/{sondage}")
     fun getChoixParSondage(@Path("sondage") Sondage: String) : Call<ArrayList<Choix>>
 
+    @GET("categories")
+    fun getAllCategories() : Call<ArrayList<Categorie>>
 
 
     // Les envoies de données
@@ -80,91 +78,9 @@ interface ServerApiService {
     ) : Call<Utilisateur>
 
 
-
-    /**
-     * Requête pour prendre les informations de toutes personnes présentes.
-     * Le 1 permet d'indiquer que la requête vient de l'application et non de l'écran.
-     *
-     * @return réponse de la requête
-     */
-//    @GET("/controlleur/listePersonne/1")
-//    fun RecoitPersonnes(): Call<List<ModeleUtilisateur>>
-
-    /**
-     * Requête envoyant les changements d'heures de séances et capacité d'accueil
-     * Prend en Path le string commposé de la capacité / heure  / 1
-     * Attend un retour de type String pour avoir des informations sur l'intéraction avec la base de données
-     *
-     *
-     * @param capacite Nouvelle capacité à envoyé au serveur
-     * @param temps Nouvelle durée minimal pour une séance
-     * @param id identifiant de la séance
-     * @return Réponse du serveur
-     */
-//    @FormUrlEncoded
-//    @POST("controlleur/setSeance")
-//    fun EnvoieTempsCapacite(
-//        @Field("capacite") capacite: String,
-//        @Field("temps") temps: String,
-//        @Field("id"/) id: String
-//    ): Call<ReponseRequete>
-
-    /**
-     *
-     * Requête pour prendre les données de la base de données à propos des paramètres de la séance
-     * pour pouvoir les mettre à jour sur l'affichage.
-     *
-     * @return réponse de la requête
-     */
-//    @GET("/controlleur/sendSeance")
-//    fun RecoitParametre(): Call<List<AuaListeSeance>>
-
-    /**
-     * Requête pour enlever quelqu'un selon son numero id
-     * Prend en Body et en Path son numéro id
-     *
-     *
-     * @param Variable Contient l'id de l'étudiant pour la séance actuelle (à confirmer)
-     * @param IDEtudiant Identifiant de l'étudiant pour le repérer dans la base de données
-     * @return réponse de la requête
-     */
-//    @POST("/controlleur/vuePresenceUpdate/{temp}")
-//    fun EnleverPersonne(@Path("temp") Variable: String, @Body IDEtudiant: NumeroIDCarteEtudiant): Call<Void>
-
-    /**
-     * Requête pour envoyer une personne badgeant avec son numéro de carte
-     * Prend en Field et en Path son numéro de carte
-     * Attend un retour de type String pour avoir des informations sur l'intéraction avec la base de données
-     *
-     * @param numeroCarte numéro MIFARE inverse de la carte qui sert d'identifiant
-     * @return réponse de la requête
-     */
-//    @FormUrlEncoded
-//    @POST("/controlleur/badgeage")
-//    fun EnvoieNumCarte(@Field("numeroCarte") numeroCarte: String): Call<ReponseRequete>
-
-    /**
-     * Requête pour envoyer une personne ajouter manuellement avec son nom
-     * Prend en Field et en Path son nom
-     *
-     * @param nom Nom de l'étudiant
-     * @param prenom Prénom de l'étudiant
-     * @return réponse de la requête
-     */
-//    @FormUrlEncoded
-//    @POST("/controlleur/addPersonne")
-//    fun EnvoieNom(
-//        @Field("nom") nom: String,
-//        @Field("prenom") prenom: String
-//    ): Call<ReponseRequete>
-
-    /**
-     * Requête utilisé pour tester si l'adresse IP actuelle est celle du serveur.
-     * Ne prend aucun paramètre, ne fais rien d'autre que d'assayer d'atteindre la route pour le test.
-     *
-     * @return réponse de la requête
-     */
-//    @GET("/controlleur/connexion")
-//    fun TestBonneAdresseIP(): Call<ReponseRequete>
+    @FormUrlEncoded
+    @POST("authenticate")
+    fun authentification(@Field("email") email: String,
+                        @Field("password") password: String) : Call<TokenAuthentification>
 
 }
