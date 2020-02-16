@@ -25,7 +25,6 @@ Rails.application.routes.draw do
   get 'sondages' => 'sondages#index' # Fournir la liste des sondages
   get 'sondages/categorie/:id' => 'sondages#sondagesParCategorie' # Fournir la liste des sondages par categorie
   get 'sondages/admin/:id' => 'sondages#sondagesParAdmin' # Fournir la liste des sondages créés par un admin
-  get 'questions/sondage/:idSondage' => 'questions#questionsParSondage' # Afficher les questions d'un sondage par l'id du sondage
   get 'sondage/:id' => 'sondages#show' # Fournir un sondage par son id => id_sondage
   post 'new/sondage' => 'sondages#create' # Ajouter un nouveau sondage | éléments à fournir: {intituleSondage, descriptionSondage, administrateur_id}
   put 'update/sondage/:id' => 'sondages#update' # Modifier un sondage par son id_sondage | éléments à fournir: {intituleSondage, descriptionSondage, publier, resultats}
