@@ -108,7 +108,7 @@ Lancer:
 
 curl -H "Content-Type: application/json" -X POST -d '{"email":"reactapp@gmail.com","password":"reactapptest"}' http://localhost:3100/authenticate
 
-Une fois cette commade est lancée, un token a été généré sous format :
+Une fois cette commande est lancée, un token a été généré sous format :
 
 {"auth_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE0NjA2NTgxODZ9.xsSwcPC22IR71OBv6bU_OGCSyfE89DvEzWfDU0iybAZ"}
 
