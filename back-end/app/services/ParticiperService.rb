@@ -1,5 +1,7 @@
 require 'singleton'
 require 'ChoixService'
+require 'QuestionService'
+require 'ChoixService'
 
 # Si l'attribut 'etat' égale 'false' donc l'enregistrement est considiré comme non supprimé dans la base de données
 
@@ -182,6 +184,57 @@ class ParticiperService
         end
 
         resultat = hash
+
+    end
+
+
+    # renvoie les participations d'un sondage afin de les utilisés sous format csv
+    def participationsCSV(id_sondage)
+
+        # array contient les participations détailés
+        array = []
+
+
+        # récupérer la liste des participations par sondage
+        # et traiter chaque participation
+        Participer.where(id_sondage: id_sondage, etat: false).find_each do |participation|
+
+            # recuperer la question
+            question = QuestionService.instance.afficherQuestionParId(participation.id_question)
+
+            # la reponse de la question
+            reponseString = participation.reponse
+
+            # dans le cas de la question choix la reponse est sous format : idChoix;idChoix;...
+            if question.type == 'QuestionChoix' && !question.estUnique
+                
+                repChoix = ''
+
+                # parcourir les id des choix
+                reponseString.split(';').each do |id|
+
+                    # recuperer le choix
+                    choix = ChoixService.instance.afficherChoixParId(id)
+                    repChoix = repChoix + choix.intituleChoix + ' ### '    
+
+                end
+
+                reponseString = repChoix
+            end
+
+            particip = {
+                utilisateur: participation.id_utilisateur,
+                question: question.intitule,
+                typeQuestion: question.type,
+                reponse: reponseString
+            }
+
+            array << particip
+        
+        end
+
+        resultat = array
+
 
     end
 
