@@ -28,7 +28,7 @@ Rails.application.routes.draw do
   get 'sondage/:id' => 'sondages#show' # Fournir un sondage par son id => id_sondage
   post 'new/sondage' => 'sondages#create' # Ajouter un nouveau sondage | éléments à fournir: {intituleSondage, descriptionSondage, administrateur_id}
   put 'update/sondage/:id' => 'sondages#update' # Modifier un sondage par son id_sondage | éléments à fournir: {intituleSondage, descriptionSondage, publier, resultats}
-  put 'publier/sondage/:id' => 'sondages#publierSondage' # Publier un sondage par son id => id_sondage afin de le mettre visible pour les smartphone
+  put 'publier/sondage/:id' => 'sondages#publierSondage' # Publier un sondage par son id => id_sondage afin de le mettre visible pour les smartphone | éléments à fournir: {publier: true}
   put 'activer/resultats/:id' => 'sondages#activerResultats' # Activer/Desactiver l'option resultats d'un sondage par son id => id_sondage. Si l'option est activée, l'utilisateur "Mobile" à le droit de voir les résultats de ce sondage
   put 'delete/sondage/:id' => 'sondages#delete' # Supprimer un sondage par son id => id_sondage
 

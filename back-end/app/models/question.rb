@@ -10,10 +10,4 @@
 #   datetime - updated_at
 
 class Question < ApplicationRecord
-
-    validates :intitule, presence: true
-    validates :estObligatoire, presence: true
-    validates :ordre, presence: true
-    validates :sondage_id, presence: true
-
 end
