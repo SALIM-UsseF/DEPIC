@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ApplicationMobileDEPIC</string>
+    <string name="app_name">DEPIC</string>
     <string name="IntitulerQuestionChoixUnique">La question à choix unique</string>
     <string name="TexteRadioButton1ChoixUnique">RadioButton</string>
     <string name="TexteRadioButton2ChoixUnique">RadioButton</string>

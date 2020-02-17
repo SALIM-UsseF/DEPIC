@@ -1,9 +1,12 @@
 package com.android.application.applicationmobiledepic
 
+import android.app.ActionBar
 import android.app.Activity
 import android.content.*
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Parcel
@@ -41,6 +44,7 @@ import java.util.ArrayList
 
 class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSelectedListener {
 
+    private var m_actionBar: ActionBar? = null
     //Le coroutinecontext pour pouvoir utilise rles coroutines
     override val coroutineContext = Dispatchers.Main + SupervisorJob()
     //    get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
@@ -157,12 +161,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
     private var boutonPrecedent : Button? = null
     private var boutonSuivant : Button? = null
     private var boutonValider : Button? = null
+    private var boutonReinitialiser : Button? = null
 
     private var radioGroupPourQuestionChoixUnique: RadioGroup? = null
-    private lateinit var linearLayoutPrecedentSuivant : LinearLayout
+    private lateinit var linearLayoutButtons : LinearLayout
 
 
-    private lateinit var linearLayoutValiderReinit : LinearLayout
+    //private lateinit var linearLayoutValiderReinit : LinearLayout
     private var dialogUtilisateur: AlertDialog? = null
 
     private var viewLinearLayoutAlertDialog:LinearLayout? = null
@@ -182,6 +187,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         context = this
         Toast.makeText(context, "Veuillez patienter, la connexion au serveur est en train d'être testée.", Toast.LENGTH_SHORT).show()
         savedInstanceStateBundle = savedInstanceState
@@ -498,15 +504,21 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         //On sauvegarde le linearLayout où les questions doivent être placés, les différents boutons et leurs layouts.
         linearLayout = findViewById(R.id.layout_general)
         boutonPrecedent = findViewById(R.id.Button_Precedent)
-        boutonPrecedent!!.visibility = View.INVISIBLE
+        boutonPrecedent!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
+        boutonPrecedent!!.isEnabled = false
         boutonSuivant = findViewById(R.id.Button_Suivant)
-        boutonSuivant!!.visibility = View.INVISIBLE
+        boutonSuivant!!.isEnabled = false
+        boutonSuivant!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
         boutonValider = findViewById(R.id.Button_Validation_Enregistrement)
-        boutonValider!!.visibility = View.INVISIBLE
-        linearLayoutPrecedentSuivant = findViewById(R.id.Layout_Buttons_Precedent_Suivant)
-        linearLayoutPrecedentSuivant.visibility = View.INVISIBLE
-        linearLayoutValiderReinit = findViewById(R.id.Layout_Buttons_Valider_Reinitialiser)
-        linearLayoutValiderReinit.visibility = View.INVISIBLE
+        boutonValider!!.isEnabled = false
+        boutonValider!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
+        boutonReinitialiser = findViewById(R.id.Button_Reinitialisation)
+        boutonReinitialiser!!.isEnabled = false
+        boutonReinitialiser!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
+        linearLayoutButtons = findViewById(R.id.Layout_Buttons)
+        linearLayoutButtons.visibility = View.INVISIBLE
+        //linearLayoutValiderReinit = findViewById(R.id.Layout_Buttons)
+        //linearLayoutValiderReinit.visibility = View.INVISIBLE
 
         //Recherche du spinner pour choix de sondages
         spinner = findViewById<View>(R.id.spinner) as Spinner
@@ -538,8 +550,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
 
                 indiceQuestionMax = savedInstanceStateBundle!!.getInt(TAG_INDICE_QUESTION_MAX)
                 indiceQuestionAfficher = savedInstanceStateBundle!!.getInt(TAG_INDICE_QUESTION_A_AFFICHER)
-                linearLayoutValiderReinit.visibility = View.VISIBLE
-                linearLayoutPrecedentSuivant.visibility = View.VISIBLE
+                //linearLayoutValiderReinit.visibility = View.VISIBLE
+                linearLayoutButtons.visibility = View.VISIBLE
             }
 //            idUtilisateur = savedInstanceState.getInt(TAG_UTILISATEUR)
 //            // idUtilisateur vaut -1 si il a appuyé sur refuser la dernière fois.
@@ -807,6 +819,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
 
     fun affichageQuestion(){
         if(positionSpinner != 0) {
+            boutonReinitialiser!!.isEnabled = true
+            boutonReinitialiser!!.setTextColor(resources.getColor(R.color.btn_txt_color))
             var question = listeQuestions.get(indiceQuestionAfficher)
             if (question.type.equals("GroupeQuestion")) {
                 LancementQuestionGroupe(question)
@@ -1164,8 +1178,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
             linearLayout!!.removeViewAt(i - 1)
         }
         if (nomSondage != "Choissisez un sondage" && positionSpinner != 0) {
-            linearLayoutPrecedentSuivant.visibility = View.VISIBLE
-            linearLayoutValiderReinit.visibility = View.VISIBLE
+            linearLayoutButtons.visibility = View.VISIBLE
+            //linearLayoutValiderReinit.visibility = View.VISIBLE
 
             linearLayout!!.getChildAt(0).visibility = View.VISIBLE
             if(testConnexion){
@@ -1174,15 +1188,16 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
 //                RequeteChoixPourQuestions()
 
             } else {
-                boutonSuivant!!.visibility = View.VISIBLE
+                boutonSuivant!!.isEnabled = true
+                boutonSuivant!!.setTextColor(resources.getColor(R.color.btn_txt_color))
                 sondage = SelectionSondageVoulueParNom(nomSondage)
                 if(sondage != null){
                     GettingSondageFromBDD(sondage!!.id_sondage)
                 }
             }
         } else {
-            linearLayoutPrecedentSuivant.visibility = View.INVISIBLE
-            linearLayoutValiderReinit.visibility = View.INVISIBLE
+            linearLayoutButtons.visibility = View.INVISIBLE
+            //linearLayoutValiderReinit.visibility = View.INVISIBLE
             linearLayout!!.getChildAt(0).visibility = View.INVISIBLE
         }
     }
@@ -1201,9 +1216,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
         linearLayoutPourQuestionGroup = null
         radioGroupPourQuestionChoixUnique = null
         listLayoutQuestion = ArrayList()
-        boutonPrecedent!!.visibility = View.INVISIBLE
-        boutonSuivant!!.visibility = View.VISIBLE
-        boutonValider!!.visibility = View.INVISIBLE
+        boutonPrecedent!!.isEnabled = false
+        boutonPrecedent!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
+        boutonSuivant!!.isEnabled = true
+        boutonSuivant!!.setTextColor(resources.getColor(R.color.btn_txt_color))
+        boutonValider!!.isEnabled = false
+        boutonValider!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
+        boutonReinitialiser!!.isEnabled = true
+        boutonReinitialiser!!.setTextColor(resources.getColor(R.color.btn_txt_color))
         //reinit reponses
         listeReponsesTemporaires = ArrayList()
         //reinit progression
@@ -1345,7 +1365,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
                     for(reponseEnProbation in listeReponsesEnProbation){
                         RequeteEnvoieReponse(reponseEnProbation)
                     }
-                    boutonValider!!.visibility = View.INVISIBLE
+                    boutonValider!!.isEnabled = false
+                    boutonValider!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
                     ChangementEtatSondage(sondage!!, EtatSondage.ENVOYE)
 
                 } else {
@@ -1703,15 +1724,21 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
 //                deplacement++
 //            }
         sauvegardeReponsesAvantPassage()
+
+        boutonReinitialiser!!.isEnabled = true
+        boutonReinitialiser!!.setTextColor(resources.getColor(R.color.btn_txt_color))
         // Si on était à la dernière question, on affiche le bouton suivant et on chache le bouton valider.
         if (indiceQuestionAfficher == listeQuestions.size - 1) {
-            boutonSuivant!!.visibility = View.VISIBLE
-            boutonValider!!.visibility = View.INVISIBLE
+            boutonSuivant!!.isEnabled = true
+            boutonSuivant!!.setTextColor(resources.getColor(R.color.btn_txt_color))
+            boutonValider!!.isEnabled = false
+            boutonValider!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
         }
         // On se déplace
         indiceQuestionAfficher = indiceQuestionAfficher - 1// - deplacement
         if (indiceQuestionAfficher == 0) {
-            boutonPrecedent!!.visibility = View.INVISIBLE
+            boutonPrecedent!!.isEnabled = false
+            boutonPrecedent!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
         }
         affichageQuestion()
     }
@@ -1738,24 +1765,31 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
 //                }
 //                indiceQuestionMax = indiceQuestionMax// + deplacement
 //            }
+
+        boutonReinitialiser!!.isEnabled = true
+        boutonReinitialiser!!.setTextColor(resources.getColor(R.color.btn_txt_color))
             //Si la question que l'on quitte était la première, on affiche le bouton précédent.
         if(indiceQuestionAfficher == 0){
-            boutonPrecedent!!.visibility = View.VISIBLE
+            boutonPrecedent!!.isEnabled = true
+            boutonPrecedent!!.setTextColor(resources.getColor(R.color.btn_txt_color))
         }
         if(indiceQuestionAfficher == indiceQuestionMax){
             indiceQuestionMax++
         }
+
         //On se déplace
         indiceQuestionAfficher = indiceQuestionAfficher + 1// + deplacement
         // Si le bouton est maintenant le dernier, on cache le bouton suivant et on affiche le bouton valider.
         if(indiceQuestionAfficher == listeQuestions.size-1){
-            boutonSuivant!!.visibility = View.INVISIBLE
-            boutonValider!!.visibility = View.VISIBLE
+            boutonSuivant!!.isEnabled = false
+            boutonSuivant!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
+            boutonValider!!.isEnabled = true
+            boutonValider!!.setTextColor(resources.getColor(R.color.btn_txt_color))
 //               if(sondage != null && sondage!!.etat.equals("")){
 //                    sondage!!.etat = EtatSondage.DISPONIBLE.toString()
 //                }
 //                if(sondage!!.etat.equals(EtatSondage.DISPONIBLE.toString()) || sondage!!.etat.equals(EtatSondage.REPONDU.toString())) {
-//                    boutonValider!!.visibility = View.VISIBLE
+//                    boutonValider!!.isEnabled = true
 //                }
         }
 
@@ -1943,19 +1977,25 @@ class MainActivity : AppCompatActivity(), CoroutineScope, AdapterView.OnItemSele
                             if(question.id_question == derniereQuestionChoix.id_question) {
                                 if (listeQuestions.size - 1 == indiceQuestionAfficher) {
                                     // Si la question à afficher est la dernière, on cache le bouton suivant et on affiche le bouton valider.
-                                    boutonSuivant!!.visibility = View.INVISIBLE
-                                    boutonValider!!.visibility = View.VISIBLE
+                                    boutonSuivant!!.isEnabled = false
+                                    boutonSuivant!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
+                                    boutonValider!!.isEnabled = true
+                                    boutonValider!!.setTextColor(resources.getColor(R.color.btn_txt_color))
                                 } else {
                                     // Si la question n'est pas la dernière, on affiche le bouton suivant et on cache le bouton valider.
-                                    boutonSuivant!!.visibility = View.VISIBLE
-                                    boutonValider!!.visibility = View.INVISIBLE
+                                    boutonSuivant!!.isEnabled = true
+                                    boutonSuivant!!.setTextColor(resources.getColor(R.color.btn_txt_color))
+                                    boutonValider!!.isEnabled = false
+                                    boutonValider!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
                                 }
                                 if (0 == indiceQuestionAfficher) {
                                     // Si la question est la première, on cache le bouton précédent.
-                                    boutonPrecedent!!.visibility = View.INVISIBLE
+                                    boutonPrecedent!!.isEnabled = false
+                                    boutonPrecedent!!.setTextColor(resources.getColor(R.color.btn_txt_color_hide))
                                 } else {
                                     // Si la question n'est pas la première, on affiche le bouton précédent.
-                                    boutonPrecedent!!.visibility = View.VISIBLE
+                                    boutonPrecedent!!.isEnabled = true
+                                    boutonPrecedent!!.setTextColor(resources.getColor(R.color.btn_txt_color))
                                 }
                                 affichageQuestion()
                             }
