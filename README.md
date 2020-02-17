@@ -28,7 +28,7 @@ Installer RUBY ON RAILS
 
 ```bash
 Installer Ruby:
-rvm install 2.6.5
+rvm install ruby-2.6.3
 
 installer rails :
 gem install rails --version 5.2.4.1
@@ -54,9 +54,6 @@ modifier le fichier database.yml :
 username: Myname
 password: your_password
 
-Dans le terminal lancer:
-rake db:drop db:create db:migrate db:seed
-
 ```
 
 ## Usage
@@ -64,7 +61,11 @@ rake db:drop db:create db:migrate db:seed
 ```python
 cd DEPIC/back-end
 
+gem install bundler:2.1.0
+
 bundle install
+
+rake db:drop db:create db:migrate db:seed
 
 lancer le serveur:
 rails s
