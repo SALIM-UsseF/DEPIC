@@ -9,6 +9,8 @@ Une solution logiciel qui implémentera les fonctionnalités de base d’une dé
 Installer RVM
 
 ```bash
+installer rvm:
+
 https://rvm.io/rvm/install
 
 sudo apt-get update
