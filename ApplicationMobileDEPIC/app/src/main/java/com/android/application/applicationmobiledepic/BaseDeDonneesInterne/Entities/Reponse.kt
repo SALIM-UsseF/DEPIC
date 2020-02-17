@@ -7,15 +7,17 @@ import androidx.room.PrimaryKey
 import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.EtatReponse
 
 /**
- * Entité représentant une question,
- * questionId : id autogénéré pour la bdd,
- * questionIdWeb : id autogénéré pour la bdd du site,
- * id_Question_Web : id de la question dans la bdd du site,
- * sondageId : id du sondage dans cette bdd,
- * sondageIdWeb : id du sondage dans la bdd du site,
- * questionNumero : Numéro de la question dans le sondage,
- * type : Type de la question,
- * questionIntitule : Intitulé de la question
+ * Classe représentant le modèle des réponses,
+ * id_reponse : id autogénéré pour la réponse par la base de données interne,
+ * id_utilisateur : id de l'utilisateur ayant fait cette réponse,
+ * id_sondage : id du sondage contenant la question liée avec cette réponse,
+ * question_id : id de la question liée avec cette réponse,
+ * reponse : la réponse,
+ * etat : les différents états possible spour la réponses (A_REPONDRE, ENREGISTRER, ENVOYER)
+ *
+ * A_REPONDRE : la réponse n'a ni été enregistrée ni été envoyée.
+ * ENREGISTRER : la réponse a été enregistrée dans la base de données interne en attent mais pas envoyée au serveur.
+ * ENVOYER : la réponse a été enregistrée dans la base de données interne et envoyée au serveur.
  */
 @Entity(tableName = "Reponses")
 data class Reponse(

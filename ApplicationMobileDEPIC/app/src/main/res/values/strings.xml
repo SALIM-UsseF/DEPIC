@@ -21,10 +21,12 @@
     <string name="Texte_Button_Suivant">Suivant</string>
 
 
-    // Textes pour le dialog pour l'utilisateur
+    // Textes pour les dialog
     <string name="Button_Accepter">Accepter</string>
     <string name="Button_Refuser">Refuser</string>
     <string name="Message_Utilisateur">Si vous voulez vous connecter, donnez une adresse email valide et appuyez sur le bouton Accepter, toute autre action vous connectera en tant qu\'utilisateur inconnu.</string>
+    <string name="Message_Confirmation_Reinitialisation">Si vous voulez réinitialiser toutes les réponses de ce sondage, appuyez sur Accepter</string>
+    <string name="Message_Confirmation_Envoi_Donnees">Si vous voulez enregistrer ou envoyer les réponses à ce sondage, appuyez sur Accepter</string>
     <string name="Texte_Valider_Changement_Categories">Valider les changements.</string>
     <string name="Texte_Item_Categories">Categories</string>
     <string name="Texte_TexteView_Categorie">Texte bouton catégorie</string>
