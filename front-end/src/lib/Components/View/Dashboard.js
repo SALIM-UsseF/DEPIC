@@ -155,6 +155,21 @@ export default class Dashboard extends React.Component {
                             }}
                           />
                           <Dropdown.Item 
+                            icon='file excel outline' 
+                            text='Format CSV'
+                            onClick={() => {
+                              this.props.client.Participation.readBySondage(
+                                survey.id_sondage,
+                                result => {
+                                  console.log(result)
+                                },
+                                error => {
+                                  console.log(error)
+                                }
+                              );
+                            }}
+                          />
+                          <Dropdown.Item 
                             icon='trash alternate' 
                             text='Supprimer'
                             onClick={() => {
