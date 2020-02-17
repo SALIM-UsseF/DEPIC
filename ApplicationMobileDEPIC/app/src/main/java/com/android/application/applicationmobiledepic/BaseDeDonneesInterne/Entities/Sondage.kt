@@ -8,10 +8,16 @@ import com.android.application.applicationmobiledepic.BaseDeDonneesInterne.EtatS
 
 
 /**
- * Entité représentant un sondage,
- * sondageId : id automatique pour la base de données
- * sondageIdWeb : id automatique venant de la base de données du site
- * sondageNom : nom du sondage à afficher
+ * Classe représentant le modèle des sondages,
+ * id_sondage : id du sondage obtenu du serveur,
+ * intituleSondage : intitule du sondage,
+ * administrateur_id : id de l'administrateur ayant créé ce sondage,
+ * etat : l'état du sondage, peut être (DISPONIBLE, REPNDU, ENVOYE),
+ * categorie_id : id de la catégorie dont fait partie ce sondage.
+ *
+ * DISPONIBLE : les réponses du sondage n'ont pas encore été enregistrées dans la base de données interne ou envoyées au serveur.
+ * REPONDU : les réponses du sondage ont été enregistrées dans la base de données interne mais pas encore envoyées au serveur.
+ * ENVOYE : les réponses du sondage ont été enregistrées dans la base de données interne et envoyées au serveur.
  */
 @Entity(tableName = "Sondages")
 data class Sondage(

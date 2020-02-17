@@ -1,6 +1,5 @@
-package com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Retrofit
+package com.android.application.applicationmobiledepic.Retrofit
 
-import retrofit2.http.Query
 
 object Model {
     data class Result(val query : Query)

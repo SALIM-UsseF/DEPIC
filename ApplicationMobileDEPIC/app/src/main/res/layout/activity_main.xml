@@ -86,7 +86,7 @@
             android:textColor="@color/btn_txt_color"
             android:id="@+id/Button_Validation_Enregistrement"
             android:text="@string/Texte_Button_Valider_Enregistrer"
-            android:onClick="validationSondage"
+            android:onClick="CreationAlertDialogConfirmationEnvoiDonnees"
             />
 
         <Button
@@ -99,7 +99,7 @@
             android:textColor="@color/btn_txt_color"
             android:id="@+id/Button_Reinitialisation"
             android:text="@string/Texte_Button_Reinitialisation"
-            android:onClick="ReinitialiserLayoutSondage"
+            android:onClick="CreationAlertDialogConfirmationReinitialisation"
             />
 
         <Button

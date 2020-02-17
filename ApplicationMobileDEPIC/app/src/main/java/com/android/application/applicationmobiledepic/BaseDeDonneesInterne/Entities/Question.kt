@@ -6,42 +6,30 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
- * Entité représentant une question,
- * questionId : id autogénéré pour la bdd,
- * questionIdWeb : id autogénéré pour la bdd du site,
- * id_Question_Web : id de la question dans la bdd du site,
- * sondageId : id du sondage dans cette bdd,
- * sondageIdWeb : id du sondage dans la bdd du site,
- * questionNumero : Numéro de la question dans le sondage,
- * type : Type de la question,
- * questionIntitule : Intitulé de la question
+ * Classe représentant le modèle des questions,
+ *      id_question : id de la question obtenu du serveur,
+ *      sondage_id : id du sondage contenant cette question,
+ *      intitule : intitule de la question,
+ *      estObligatoire : etat de la question déterminant si elle est obligatoire,
+ *      estUnique : état de la question déterminant en cas de question de type choix si c'est une question à choix multiple ou à choix unique,
+ *      nombreDeCaractere : le nombre de caractères maximum autorisé pour une question à réponse libre,
+ *      idQuestionDeGroupe : si la question est une sous-question, id de la question de type GroupeQuestion,
+ *      minPoints : points minimum possible à donner à une question de type QuestionPoint,
+ *      maxpoints : points maximum possible à donner à une question de type QuestionPoint,
+ *      ordre : le numéro de la question dans le sondage,
+ *      type : le type de la question.
  */
 @Entity(tableName = "Questions")
-
 data class Question(
-/*
-    @PrimaryKey(autoGenerate = true) var questionId: Int = 0,
-    var questionIdWeb: Long,
-    var sondageId: Int,
-    var sondageIdWeb: Long,
-    var questionNumero: Int,
-    var type: String,
-    var questionIntitule: String
-*/
-
 @PrimaryKey val id_question : Int,
 val sondage_id : Int,
 val intitule : String,
 val estObligatoire : Boolean,
-val nombreChoix : Int?,
 val estUnique : Boolean?,
 val nombreDeCaractere : Int?,
-val numerosDeQuestionsGroupe : String?,
 var idQuestionDeGroupe : Int?,
 val minPoints : Int?,
 val maxPoints : Int?,
 val ordre : Int,
 val type : String
-
-
 )

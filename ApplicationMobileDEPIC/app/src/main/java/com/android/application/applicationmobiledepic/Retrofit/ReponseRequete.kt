@@ -1,4 +1,4 @@
-package com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Retrofit
+package com.android.application.applicationmobiledepic.Retrofit
 
 class ReponseRequete
 /**
