@@ -75,3 +75,21 @@ lancer le serveur avec des paramètres personnaliser:
 rails server --binding 192.168.43.24 --port 3100
  
 ```
+
+```python
+Exemple d'utilisation de l'authentification JWT en ligne de commande
+
+Lancer:
+
+curl -H "Content-Type: application/json" -X POST -d '{"email":"reactapp@gmail.com","password":"reactapptest"}' http://localhost:3100/authenticate
+
+Une fois cette commade est lancée, un token a été généré sous format :
+
+{"auth_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE0NjA2NTgxODZ9.xsSwcPC22IR71OBv6bU_OGCSyfE89DvEzWfDU0iybAZ"}
+
+Utilser ce token pour obtenir par exemple une liste des sondages:
+
+curl -H "Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE0NjA2NTgxODZ9.xsSwcPC22IR71OBv6bU_OGCSyfE89DvEzWfDU0iybAZ" http://localhost:3100/sondages
+
+ 
+```
