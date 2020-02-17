@@ -42,6 +42,20 @@ Essayez de créer un utilisateur avec mot de passe dans psql:
 
 CREATE USER Myname WITH PASSWORD 'your_password';
 
+Editer le fichier pg_hba.conf:
+
+/etc/postgresql/votreVersion/main/pg_hba.conf
+
+Changer la ligne:
+local   all             postgres                                peer
+
+par:
+
+local   all             postgres                                md5
+
+Redémarrer postgresql:
+sudo service postgresql restart
+
 ```
 
 Configurer Ruby on Rails
@@ -63,9 +77,19 @@ cd DEPIC/back-end
 
 gem install bundler:2.1.0
 
+sudo apt-get install libpq-dev
+
+sudo apt-get update
+
 bundle install
 
-rake db:drop db:create db:migrate db:seed
+En cas d'erreur lancer:
+gem uninstall -i /home/utilisateur/.rvm/rubies/ruby-2.6.3/lib/ruby/gems/2.6.0 rubygems-bundler
+
+puis relancer:
+bundle install
+
+rake db:create db:migrate db:seed
 
 lancer le serveur:
 rails s
