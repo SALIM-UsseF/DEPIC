@@ -226,7 +226,8 @@ class ParticiperService
                 utilisateur: participation.id_utilisateur,
                 question: question.intitule,
                 typeQuestion: question.type,
-                reponse: reponseString
+                reponse: reponseString,
+                dateReponse: participation.created_at
             }
 
             array << particip
