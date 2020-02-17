@@ -46,6 +46,7 @@ Rails.application.routes.draw do
   get 'participations/Sondage/:id' => 'participers#showParticipationsBySondage' # Fournir la liste des participations pour un sondage donné par son id => id_sondage
   get 'participations/user/sondage/:idUser/:idSondage' => 'participers#showParticipationsByUserAndSondage' # Fournir la liste des participations d'un user(id_utilisateur) pour un sondage donné par son id => id_sondage
   get 'participations/question/sondage/:idQuestion/:idSondage' => 'participers#showParticipationsByQuestionAndSondage' # Fournir la liste des participations pour une question donnée(id_question) pour un sondage donné par son id => id_sondage
+  get 'participationsCSV/:idSondage' => 'participers#participationsCSV' # Fournir les participations d'un sondage afin de les utilisés sous format csv
   #post 'new/participation' => 'participers#create' # Ajouter une participation par un admin
   #put 'update/participation/:idUser/:idSondage/:idQuestion' => 'participers#update' # Modifier une participation
   put 'delete/participation/:idUser/:idSondage/:idQuestion' => 'participers#delete' # Supprimer une participation

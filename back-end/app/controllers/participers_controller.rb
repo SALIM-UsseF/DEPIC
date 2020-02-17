@@ -40,6 +40,12 @@ class ParticipersController < ApplicationController
     (participations != nil) ? (render json: participations, status: :ok) : (render json: nil, status: :not_found)
   end
 
+  # renvoie les participations d'un sondage afin de les utilisés sous format csv
+  def participationsCSV
+    participations = ParticiperService.instance.participationsCSV(params[:idSondage])
+    (participations != nil) ? (render json: participations, status: :ok) : (render json: nil, status: :not_found)
+  end
+
   # Creer une participation
   def create
     params.permit(:id_utilisateur, :id_sondage, :id_question, :reponse)
