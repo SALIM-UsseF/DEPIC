@@ -47,7 +47,7 @@ Rails.application.routes.draw do
   get 'participations/user/sondage/:idUser/:idSondage' => 'participers#showParticipationsByUserAndSondage' # Fournir la liste des participations d'un user(id_utilisateur) pour un sondage donné par son id => id_sondage
   get 'participations/question/sondage/:idQuestion/:idSondage' => 'participers#showParticipationsByQuestionAndSondage' # Fournir la liste des participations pour une question donnée(id_question) pour un sondage donné par son id => id_sondage
   get 'participationsCSV/:idSondage' => 'participers#participationsCSV' # Fournir les participations d'un sondage afin de les utilisés sous format csv
-  #post 'new/participation' => 'participers#create' # Ajouter une participation par un admin
+  #post 'new/participation' => 'participers#create' # Ajouter une participation par un admin | éléments à fournir: {id_utilisateur, id_sondage, id_question, reponse}
   #put 'update/participation/:idUser/:idSondage/:idQuestion' => 'participers#update' # Modifier une participation
   put 'delete/participation/:idUser/:idSondage/:idQuestion' => 'participers#delete' # Supprimer une participation
 
@@ -112,7 +112,7 @@ Rails.application.routes.draw do
   get 'sondagesPublies' => 'sondages#showSondagesPublies' # Fournir la liste des sondages publies
   get 'sondagesPublies/categorie/:id' => 'sondages#showSondagesPubliesByCategorie' # Fournir la liste des sondages publies par categorie
   get 'sondagePublie/:idSondage' => 'sondages#showSondagePublie' # Fournir un sondage donné par son id => id du sondage
-  post 'repondre' => 'participers#repondreSondagePublie' # Le post contient les éléments suivants: {utilisateur_id, sondage_id, question_id, reponse}
+  post 'repondre' => 'participers#repondreSondagePublie' # Le post contient les éléments suivants: {id_utilisateur, id_sondage, id_question, reponse}
   get 'questionsDuSondage/:idSondage' => 'questions#questionsDuSondage' # Afficher les questions d'un sondage publié par l'id du sondage
   get 'questionDuSondage/:idSondage/:idQuestion' => 'questions#questionDuSondage' # Afficher une question d'un sondage publié par l'id du sondage et l'id question
   get 'questionsDuGroupe/:id' => 'groupes#show' # Fournir les questions d'un groupe | :id => est l'id du question de type GroupeQuestion
