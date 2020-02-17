@@ -2,10 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 
-import { 
-  Button
-} from 'semantic-ui-react'
-
 import ListQuestions from './ListQuestions'
 
 export default class CreationQuestions extends React.Component {
@@ -33,12 +29,6 @@ export default class CreationQuestions extends React.Component {
         <ListQuestions
           client={this.props.client}
           listQuestions={this.state.listQuestions}
-        />
-        <Button
-          icon='plus circle'
-          content='Question suivante'
-          positive
-          onClick={this.onNextQuestion}
         />
       </React.Fragment>
     );

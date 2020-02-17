@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
+import md5 from 'js-md5'
 
 import {
   Button,
@@ -107,7 +108,7 @@ export default class Register extends React.Component {
         let params = {
           pseudo_administrateur: this.state.login, 
           email_administrateur: this.state.email, 
-          motDePasse_administrateur: this.state.password
+          motDePasse_administrateur: md5(this.state.password)
         };
     
         this.props.client.Admin.create(

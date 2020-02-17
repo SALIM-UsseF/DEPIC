@@ -4,16 +4,37 @@ import {
   Client,
   MainView 
 } from './lib'
-import { url } from './lib/Helpers/Settings'
-
-const client = new Client(url)
+import { url, emailSuperAdmin, passwordSuperAdmin } from './lib/Helpers/Settings'
 
 export default class App extends React.Component {
+  state = {
+    client: new Client(url, '')
+  }
+
+  componentDidMount() {
+    this.state.client.AuthApi.authenticate(
+      {
+        email: emailSuperAdmin,
+        password: passwordSuperAdmin
+      },
+      result => {
+        this.setState({
+          client: new Client(url, result.data.auth_token)
+        });
+      },
+      error => {
+        console.log(error);
+      }
+    )
+  }
+
   render() {
     return (
       <div>
         <MainView
-          client={client}
+          client={this.state.client}
+          emailSuperAdmin={emailSuperAdmin}
+          passwordSuperAdmin={passwordSuperAdmin}
           lang='fr'
         />
       </div>

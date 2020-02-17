@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 // import { dictionnary } from '../../Langs/langs'
 
-export default class Settings extends React.Component {
+export default class Resultats extends React.Component {
   static propTypes = {
     client: PropTypes.any.isRequired,
     lang: PropTypes.string

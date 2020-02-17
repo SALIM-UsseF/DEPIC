@@ -70,7 +70,9 @@ export default class MainReponse extends React.Component {
             });
           },
           error => {
-            console.log(error)
+            this.setState({
+              questions: []
+            });
           }
         )
       },

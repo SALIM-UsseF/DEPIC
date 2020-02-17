@@ -48,7 +48,8 @@ export default class ListTypeQuestion extends React.Component {
     isModifying: PropTypes.bool,
     typeOfQuestion: PropTypes.string,
     isUnique: PropTypes.bool,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    error: PropTypes.bool
   }
 
   render() {
@@ -82,6 +83,7 @@ export default class ListTypeQuestion extends React.Component {
               this.props.onChangeTypeQuestion(data.value);
             }
           }}
+          error={this.props.error}
         />
       </React.Fragment>
     );

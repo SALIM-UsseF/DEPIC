@@ -18,7 +18,7 @@ export default class QuestionOuverte extends React.Component {
       <React.Fragment>
         <Form.Group>
           <Form.Input
-            disabled={this.props.disabled}
+            disabled={this.props.isModifying?this.props.disabled:false}
             value={this.props.nbCharactere}
             fluid
             label='Nombre de caractères autorisés'

@@ -8,6 +8,8 @@ import { MainReponse } from './Reponse'
 export default class MainView extends React.Component {
   static propTypes = {
     client: PropTypes.any.isRequired,
+    emailSuperAdmin: PropTypes.string,
+    passwordSuperAdmin: PropTypes.string,
     lang: PropTypes.string
   }
 

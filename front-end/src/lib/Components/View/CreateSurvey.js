@@ -41,7 +41,17 @@ export default class CreateSurvey extends React.Component {
     maxPointsNouvelleQuestion: 5,
     numerosDeQuestionsGroupeNouvelleQuestion: '0',
     nbCharactereNouvelleQuestion: 100,
-    nombreChoixNouvelleQuestion: 5
+    nombreChoixNouvelleQuestion: 5,
+    errorIntituleNouvelleQuestion: false,
+    errorTypeNouvelleQuestion: false,
+    errorEstObligatoireNouvelleQuestion: false,
+    categories: [],
+    nomCategorie: '',
+    categorie_id: '',
+    errorCategorie: false,
+    openModalCategorie: false,
+    nouvelleCategorie: '',
+    errorNouvelleCategorie: false
   }
 
   componentDidMount() {
@@ -56,16 +66,18 @@ export default class CreateSurvey extends React.Component {
                 idSondage: result.data.id_sondage,
                 nomSondage: result.data.intituleSondage,
                 descriptionSondage: result.data.descriptionSondage,
+                categorie_id: result.data.categorie_id,
                 questions: success.data
-              })
+              });
             },
             error => {
               this.setState({
                 idSondage: result.data.id_sondage,
                 nomSondage: result.data.intituleSondage,
                 descriptionSondage: result.data.descriptionSondage,
+                categorie_id: result.data.categorie_id,
                 questions: []
-              })
+              });
             }
           )
         },
@@ -73,24 +85,25 @@ export default class CreateSurvey extends React.Component {
           console.log(error)
         }
       )
+    } else {
+      this.props.client.Categorie.readAll(
+        result => {
+          this.setState({
+            categories: result.data
+          });
+        },
+        error => {
+          this.setState({
+            categories: []
+          });
+        }
+      );
     }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.idSondage !== prevProps.idSondage) {
-      this.props.client.Sondage.read(
-        this.props.idSondage,
-        result => {
-          this.setState({
-            idSondage: result.data.id_sondage,
-            nomSondage: result.data.intituleSondage,
-            descriptionSondage: result.data.descriptionSondage
-          });
-        },
-        error => {
-          console.log(error)
-        }
-      )
+      this.updateSondage();
     }
   }
 
@@ -105,11 +118,18 @@ export default class CreateSurvey extends React.Component {
               idSondage: result.data.id_sondage,
               nomSondage: result.data.intituleSondage,
               descriptionSondage: result.data.descriptionSondage,
+              categorie_id: result.data.categorie_id,
               questions: success.data
             })
           },
           error => {
-            console.log(error)
+            this.setState({
+              idSondage: result.data.id_sondage,
+              nomSondage: result.data.intituleSondage,
+              descriptionSondage: result.data.descriptionSondage,
+              categorie_id: result.data.categorie_id,
+              questions: []
+            });
           }
         )
       },
@@ -125,16 +145,45 @@ export default class CreateSurvey extends React.Component {
       success => {
         this.setState({
           questions: success.data
-        })
+        });
       },
       error => {
-        console.log(error)
+        this.setState({
+          questions: []
+        });
       }
     )
   }
 
+  categorieOption = () => {
+    let categorieOption = [];
+
+    _.map(this.state.categories, categorie => {
+      let option = {
+        key: categorie.id_categorie,
+        text: categorie.intitule,
+        value: categorie.intitule,
+        id: categorie.id_categorie,
+        onClick: (e, result) => this.onClickCategorie(result)
+      }
+
+      categorieOption.push(option);
+    });
+
+    return categorieOption;
+  }
+
+  onClickCategorie = (result) => {
+    this.setState({
+      nomCategorie: result.value,
+      categorie_id: result.id,
+      errorCategorie: false
+    });
+  }
+
   render() {
-    let key = 0;
+    let key1 = 0;
+    let key2 = 0;
     let creation = (
       <React.Fragment>
         <Title
@@ -148,22 +197,44 @@ export default class CreateSurvey extends React.Component {
             onChange={(e, value) => {
               this.setState({
                 descriptionSondage: value.value
-              })
+              });
             }}
             style={{ minHeight: 100 }}
           />
         </Form>
         <Divider hidden />
-        <MainQuestion
-          client={this.props.client}
-          isModifying={false}
-           />
+        {_.map(this.state.questions, question => {
+          key1++;
+
+          return (               
+            <React.Fragment key={key1}>
+              <MainQuestion
+                client={this.props.client}
+                isModifying={this.props.modifying}
+                question={question}
+                numberOfQuestion={key1}
+                removeQuestion={this.removeQuestion} />
+            </React.Fragment>
+          )
+        })}
         <div style={{ marginBottom:"50px" }}>
           <Button
-            icon='plus circle'
-            content='Question suivante'
-            positive
-            onClick={this.onNextQuestion}
+            icon='plus'
+            content='Ajouter une question'
+            floated='left'
+            primary
+            onClick={() => {
+              this.setState({
+                ajoutNouvelleQuestion: true,
+                intituleNouvelleQuestion: '',
+                typeNouvelleQuestion: '',
+                estObligatoireNouvelleQuestion: '',
+                maxPointsNouvelleQuestion: 5,
+                numerosDeQuestionsGroupeNouvelleQuestion: '0',
+                nbCharactereNouvelleQuestion: 100,
+                nombreChoixNouvelleQuestion: 5
+              });
+            }}
           />
           <Button
             content='Terminer'
@@ -174,7 +245,8 @@ export default class CreateSurvey extends React.Component {
                 this.props.idSondage,
                 {
                   intituleSondage: this.state.nomSondage,
-                  descriptionSondage: this.state.descriptionSondage
+                  descriptionSondage: this.state.descriptionSondage,
+                  categorie_id: this.state.categorie_id
                 },
                 result => {
                   this.setState({
@@ -210,24 +282,15 @@ export default class CreateSurvey extends React.Component {
         </Form>
         <Divider hidden />
         {_.map(this.state.questions, question => {
-          key++;
+          key2++;
 
           return (               
-            <React.Fragment key={key}>
+            <React.Fragment key={key2}>
               <MainQuestion
                 client={this.props.client}
                 isModifying={this.props.modifying}
-                idQuestion={question.id_question}
-                numberOfQuestion={key}
-                type={question.type}
-                intituleQuestion={question.intitule}
-                isOptional={question.estObligatoire}
-                ordre={question.ordre}
-                nbChoix={question.nombreChoix}
-                isUnique={question.estUnique}
-                nbCharactere={question.nombreDeCaractere}
-                minPoints={question.minPoints}
-                maxPoints={question.maxPoints}
+                question={question}
+                numberOfQuestion={key2}
                 removeQuestion={this.removeQuestion} />
             </React.Fragment>
           )
@@ -260,7 +323,8 @@ export default class CreateSurvey extends React.Component {
                 this.props.idSondage,
                 {
                   intituleSondage: this.state.nomSondage,
-                  descriptionSondage: this.state.descriptionSondage
+                  descriptionSondage: this.state.descriptionSondage,
+                  categorie_id: this.state.categorie_id
                 },
                 result => {
                   this.setState({
@@ -328,10 +392,12 @@ export default class CreateSurvey extends React.Component {
                   placeholder='Saisissez votre question'
                   onChange={(e, data) => {
                     this.setState({
-                      intituleNouvelleQuestion: data.value
+                      intituleNouvelleQuestion: data.value,
+                      errorIntituleNouvelleQuestion: false
                     });
                   }}
-                  width={10} />
+                  width={10}
+                  error={this.state.errorIntituleNouvelleQuestion} />
                 <ListTypeQuestion
                   disabled={false}
                   client={this.props.client}
@@ -339,12 +405,14 @@ export default class CreateSurvey extends React.Component {
                   onChangeTypeQuestion={value => {
                     this.setState({
                       typeNouvelleQuestion: value,
+                      errorTypeNouvelleQuestion: false
                     });
                   }}
                   isModifying={false}
                   typeOfQuestion={this.state.typeNouvelleQuestion}
                   isUnique={(this.state.typeNouvelleQuestion==='Choix unique')?true:false}
-                  width={3} />
+                  width={3}
+                  error={this.state.errorTypeNouvelleQuestion} />
                 <Form.Select
                   disabled={false}
                   options={options}
@@ -352,10 +420,12 @@ export default class CreateSurvey extends React.Component {
                   placeholder='Facultative'
                   onChange={(e, data) => {
                     this.setState({
-                      estObligatoireNouvelleQuestion: data.value
+                      estObligatoireNouvelleQuestion: data.value,
+                      errorEstObligatoireNouvelleQuestion: false
                     });
                   }}
                   width={3}
+                  error={this.state.errorEstObligatoireNouvelleQuestion}
                 />
               </Form.Group>
             </Form>
@@ -424,6 +494,27 @@ export default class CreateSurvey extends React.Component {
               positive
               content='Ajouter'
               onClick={() => {
+                if (this.state.intituleNouvelleQuestion === '') {
+                  this.setState({
+                    errorIntituleNouvelleQuestion: true
+                  });
+                  return;
+                }
+
+                if (this.state.typeNouvelleQuestion === '') {
+                  this.setState({
+                    errorTypeNouvelleQuestion: true
+                  });
+                  return;
+                }
+
+                if (this.state.estObligatoireNouvelleQuestion === '') {
+                  this.setState({
+                    errorEstObligatoireNouvelleQuestion: true
+                  });
+                  return;
+                }
+
                 this.setState({
                   ajoutNouvelleQuestion: false
                 });
@@ -514,6 +605,67 @@ export default class CreateSurvey extends React.Component {
                 }
               }}
             />
+          </Modal.Actions>
+        </Modal>
+        <Modal open={this.state.openModalCategorie}>
+          <Modal.Header>Ajouter une nouvelle categorie</Modal.Header>
+          <Modal.Content>
+            <Form>
+              <Form.Input
+                fluid 
+                placeholder='Nom de la nouvelle catégorie'
+                error={this.state.errorNouvelleCategorie}
+                onChange={(e, value) => {
+                  this.setState({
+                    nouvelleCategorie: value.value,
+                    errorNouvelleCategorie: false
+                  })
+                }} />
+            </Form>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button
+              negative
+              onClick={() => {
+                this.setState({
+                  nouvelleCategorie: '',
+                  openModalCategorie: false
+                })
+              }}
+            >
+              Annuler
+            </Button>
+            <Button
+              positive
+              onClick={() => {
+                this.props.client.Categorie.create(
+                  {
+                    intitule: this.state.nouvelleCategorie
+                  },
+                  result => {
+                    this.props.client.Categorie.readAll(
+                      result => {
+                        this.setState({
+                          categories: result.data,
+                          nouvelleCategorie: '',
+                          openModalCategorie: false
+                        });
+                      },
+                      error => {
+                        this.setState({
+                          categories: []
+                        });
+                      }
+                    );
+                  },
+                  error => {
+                    console.log(error);
+                  }
+                )
+              }}
+            >
+              Ajouter
+            </Button>
           </Modal.Actions>
         </Modal>
       </React.Fragment>

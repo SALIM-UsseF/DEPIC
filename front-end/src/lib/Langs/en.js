@@ -29,7 +29,7 @@ const EN = {
   signIn1: "sign in",
   signIn2: "sign into your account",
   signOut: "sign out",
-  settings: "settings",
+  resultats: "result",
   statistics: "statistics",
   successRegister: "welcome. Your account creation has been successfully completed. You can access your account using the pseudo and password created",
   time: "time",

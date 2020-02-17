@@ -5,7 +5,7 @@ import _ from 'lodash'
 import Title from '../Title'
 import Dashboard from './Dashboard'
 import CreateSurvey from './CreateSurvey'
-import Settings from './Settings'
+import Resultats from './Resultats'
 
 import { dictionnary } from '../../Langs/langs'
 import { Form, Modal, Button } from 'semantic-ui-react'
@@ -16,6 +16,7 @@ export default class Frame extends React.Component {
     lang: PropTypes.string,
     title: PropTypes.string,
     idAdmin: PropTypes.number,
+    supAdmin: PropTypes.bool,
     onCreateSurvey: PropTypes.func,
     openModalSondage: PropTypes.bool,
     openModalSondageFunc: PropTypes.func,
@@ -32,9 +33,31 @@ export default class Frame extends React.Component {
     idSondage: 0,
     nomSondage: '',
     descriptionSondage: '',
+    categorie_id: 0,
+    categories: [],
+    nomCategorie: '',
     errorNomSondage: false,
     errorDescriptionSondage: false,
-    modifying: false
+    errorCategorie: false,
+    modifying: false,
+    openModalCategorie: false,
+    nouvelleCategorie: '',
+    errorNouvelleCategorie: false
+  }
+
+  componentDidMount() {
+    this.props.client.Categorie.readAll(
+      result => {
+        this.setState({
+          categories: result.data
+        });
+      },
+      error => {
+        this.setState({
+          categories: []
+        });
+      }
+    );
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -63,6 +86,32 @@ export default class Frame extends React.Component {
     this.props.closeModalSondageFunc();
   }
 
+  categorieOption = () => {
+    let categorieOption = [];
+
+    _.map(this.state.categories, categorie => {
+      let option = {
+        key: categorie.id_categorie,
+        text: categorie.intitule,
+        value: categorie.intitule,
+        id: categorie.id_categorie,
+        onClick: (e, result) => this.onClickCategorie(result)
+      }
+
+      categorieOption.push(option);
+    });
+
+    return categorieOption;
+  }
+
+  onClickCategorie = (result) => {
+    this.setState({
+      nomCategorie: result.value,
+      categorie_id: result.id,
+      errorCategorie: false
+    });
+  }
+
   render() {
     let lang = _.toUpper(this.props.lang);
     let title = _.get(dictionnary, lang + '.' + this.state.title);
@@ -78,7 +127,9 @@ export default class Frame extends React.Component {
           client={this.props.client}
           lang={this.props.lang}
           onCreateSurvey={this.onCreateSurvey}
-          onModify={this.onModify} />
+          onModify={this.onModify}
+          idAdmin={this.props.idAdmin}
+          supAdmin={this.props.supAdmin} />
       </React.Fragment>
     );
     let createSurvey = (
@@ -106,12 +157,39 @@ export default class Frame extends React.Component {
                     errorDescriptionSondage: false
                   })
                 }} />
+              <Form.Group widths='equal'>
+                <Form.Dropdown
+                  error={this.state.errorCategorie}
+                  fluid
+                  placeholder='Catégorie'
+                  selection
+                  options={this.categorieOption()}
+                  value={this.state.nomCategorie}
+                />
+                <Form.Button
+                  circular
+                  icon='plus'
+                  onClick={() => {
+                    this.setState({
+                      openModalCategorie: true
+                    });
+                  }} />
+              </Form.Group>
             </Form>
           </Modal.Content>
           <Modal.Actions>
             <Button 
               onClick={() => {
                 if (this.props.closeModalSondageFunc) {
+                  this.setState({
+                    nomSondage: '',
+                    descriptionSondage: '',
+                    categorie_id: 0,
+                    nomCategorie: '',
+                    errorNomSondage: false,
+                    errorDescriptionSondage: false,
+                    errorCategorie: false
+                  });
                   this.props.closeModalSondageFunc();
                 }
               }}
@@ -135,10 +213,18 @@ export default class Frame extends React.Component {
                   return;
                 }
 
+                if (this.state.nomCategorie === '') {
+                  this.setState({
+                    errorCategorie: true
+                  });
+                  return;
+                }
+
                 let params = {
                   intituleSondage: this.state.nomSondage,
                   descriptionSondage: this.state.descriptionSondage,
-                  administrateur_id: this.props.idAdmin
+                  administrateur_id: this.props.idAdmin,
+                  categorie_id: this.state.categorie_id
                 };
 
                 this.props.client.Sondage.create(
@@ -171,16 +257,78 @@ export default class Frame extends React.Component {
           idSondage={this.state.idSondage}
           modifying={this.state.modifying}
           onUpdate={this.onUpdate} />
+
+        <Modal open={this.state.openModalCategorie}>
+          <Modal.Header>Ajouter une nouvelle categorie</Modal.Header>
+          <Modal.Content>
+            <Form>
+              <Form.Input
+                fluid 
+                placeholder='Nom de la nouvelle catégorie'
+                error={this.state.errorNouvelleCategorie}
+                onChange={(e, value) => {
+                  this.setState({
+                    nouvelleCategorie: value.value,
+                    errorNouvelleCategorie: false
+                  })
+                }} />
+            </Form>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button
+              negative
+              onClick={() => {
+                this.setState({
+                  nouvelleCategorie: '',
+                  openModalCategorie: false
+                })
+              }}
+            >
+              Annuler
+            </Button>
+            <Button
+              positive
+              onClick={() => {
+                this.props.client.Categorie.create(
+                  {
+                    intitule: this.state.nouvelleCategorie
+                  },
+                  result => {
+                    this.props.client.Categorie.readAll(
+                      result => {
+                        this.setState({
+                          categories: result.data,
+                          nouvelleCategorie: '',
+                          openModalCategorie: false
+                        });
+                      },
+                      error => {
+                        this.setState({
+                          categories: []
+                        });
+                      }
+                    );
+                  },
+                  error => {
+                    console.log(error);
+                  }
+                )
+              }}
+            >
+              Ajouter
+            </Button>
+          </Modal.Actions>
+        </Modal>
       </React.Fragment>
     );
-    let settings = (
+    let resultats = (
       <React.Fragment>
         <Title
           as='h1'
           content={_.upperFirst(title)}
           color='teal' />
 
-        <Settings
+        <Resultats
           client={this.props.client}
           lang={this.props.lang} />
       </React.Fragment>
@@ -191,8 +339,8 @@ export default class Frame extends React.Component {
           dashboard
           :(this.state.title === 'createSurvey')?
             createSurvey
-            :(this.state.title === 'settings')?
-              settings
+            :(this.state.title === 'resultats')?
+              resultats
               :''
         }
       </React.Fragment>

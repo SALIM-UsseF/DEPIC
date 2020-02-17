@@ -115,6 +115,7 @@ export default class View extends React.Component {
             lang={this.props.lang}
             title={this.state.title}
             idAdmin={this.props.admin.idAdmin}
+            supAdmin={this.props.admin.supAdmin}
             onCreateSurvey={this.onCreateSurvey}
             openModalSondage={this.state.openModalSondage}
             openModalSondageFunc={this.openModalSondageFunc}

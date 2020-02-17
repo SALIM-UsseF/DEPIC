@@ -23,7 +23,9 @@ export default class Dashboard extends React.Component {
     client: PropTypes.any.isRequired,
     lang: PropTypes.string,
     onCreateSurvey: PropTypes.func,
-    onModify: PropTypes.func
+    onModify: PropTypes.func,
+    idAdmin: PropTypes.number,
+    supAdmin: PropTypes.bool
   }
 
   static defaultProps = {
@@ -40,16 +42,35 @@ export default class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.props.client.Sondage.readAll(
-      result => {
-        this.setState({
-          listSondage: result.data
-        })
-      },
-      error => {
-        console.log(error)
-      }
-    )
+    // l'admin possède tous les droits
+    if (this.props.supAdmin) {
+      this.props.client.Sondage.readAll(
+        result => {
+          this.setState({
+            listSondage: result.data
+          });
+        },
+        error => {
+          this.setState({
+            listSondage: []
+          });
+        }
+      )
+    } else {
+      this.props.client.Sondage.readAllByAdmin(
+        this.props.idAdmin,
+        result => {
+          this.setState({
+            listSondage: result.data
+          });
+        },
+        error => {
+          this.setState({
+            listSondage: []
+          });
+        }
+      )
+    }
   }
 
   render() {
@@ -246,6 +267,7 @@ export default class Dashboard extends React.Component {
           </Modal.Content>
           <Modal.Actions>
             <Button
+              positive
               icon='checkmark'
               content='OK'
               onClick={() => {

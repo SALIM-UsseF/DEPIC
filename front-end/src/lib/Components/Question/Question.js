@@ -7,10 +7,11 @@ import {
   Form, 
   Segment,
   Button,
-  Confirm
+  Confirm,
+  Modal,
+  Message
 } from 'semantic-ui-react'
 
-import ListTypeQuestion from './ListTypeQuestion'
 import QuestionOuverte from './QuestionOuverte'
 import QuestionChoixUnique from './QuestionChoixUnique'
 import QuestionChoixMultiple from './QuestionChoixMultiple'
@@ -28,48 +29,64 @@ const options = [
 export default class Question extends React.Component {
   static propTypes = {
     client: PropTypes.any.isRequired,
-    idQuestion: PropTypes.number,
+    question: PropTypes.object,
     numberOfQuestion: PropTypes.number,
+    isModifying: PropTypes.bool,
+    color: PropTypes.string,
     onChangeQuestion: PropTypes.func,
     onChangeTypeQuestion: PropTypes.func,
     onChangeCharacter: PropTypes.func,
-    color: PropTypes.string,
-    isModifying: PropTypes.bool,
-    typeQuestion: PropTypes.string,
-    intituleQuestion: PropTypes.string,
-    isOptional: PropTypes.bool,
-    ordre: PropTypes.number,
-    nbChoix: PropTypes.number,
-    isUnique: PropTypes.bool,
-    nbCharactere: PropTypes.number,
-    minPoints: PropTypes.number,
-    maxPoints: PropTypes.number,
     removeQuestion: PropTypes.func
   }
 
   state = {
     typeQuestion: '',
-    isOptional: this.props.isOptional?'Obligatoire':'Facultative',
     choix: [],
     remove: false,
     save: true,
-    intitule: this.props.isModifying?this.props.intituleQuestion:'',
-    nbCharactere: this.props.isModifying?this.props.nbCharactere:0,
-    maxPoints: this.props.isModifying?this.props.maxPoints:0
+    isOptional: this.props.question.estObligatoire?'Obligatoire':'Facultative',
+    intitule: this.props.question.intitule,
+    nbCharactere: this.props.question.nombreDeCaractere,
+    maxPoints: this.props.question.maxPoints,
+    errorEmptyStringQuestion: false,
+    enregistrementQuestion: false
   }
 
   componentDidMount() {
     this.props.client.Choix.readByQuestion(
-      this.props.idQuestion,
+      this.props.question.id_question,
       result => {
         this.setState({
           choix: result.data
-        })
+        });
       },
       error => {
         console.log(error);
       }
     )
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.question !== this.props.question) {
+      this.props.client.Choix.readByQuestion(
+        this.props.question.id_question,
+        result => {
+          this.setState({
+            choix: result.data,
+            isOptional: this.props.question.estObligatoire?'Obligatoire':'Facultative',
+            intitule: this.props.question.intitule,
+            nbCharactere: this.props.question.nombreDeCaractere,
+            maxPoints: this.props.question.maxPoints,
+            typeQuestion: '',
+            remove: false,
+            save: true
+          })
+        },
+        error => {
+          console.log(error);
+        }
+      )
+    }
   }
 
   onChangeTypeQuestion = value => {
@@ -94,7 +111,7 @@ export default class Question extends React.Component {
 
   update = () => {
     this.props.client.Choix.readByQuestion(
-      this.props.idQuestion,
+      this.props.question.id_question,
       result => {
         this.setState({
           choix: result.data
@@ -112,7 +129,7 @@ export default class Question extends React.Component {
         {_.map(this.state.choix, uniqueChoix => (
           <QuestionChoixUnique
             client={this.props.client}
-            disabled={this.state.save}
+            disabled={this.props.isModifying?this.state.save:!this.state.save}
             key={uniqueChoix.id_choix}
             isModifying={this.props.isModifying}
             choix={uniqueChoix.intituleChoix}
@@ -121,13 +138,13 @@ export default class Question extends React.Component {
         ))}
         <Form.Button
           primary 
-          disabled={this.state.save}
+          disabled={this.props.isModifying?this.state.save:!this.state.save}
           circular 
           icon='plus'
           onClick={() => {
             let params = {
               intituleChoix: 'Nouveau choix',
-              question_id: this.props.idQuestion
+              question_id: this.props.question.id_question
             };
 
             this.props.client.Choix.create(
@@ -148,8 +165,8 @@ export default class Question extends React.Component {
         {_.map(this.state.choix, uniqueChoix => (
           <QuestionChoixMultiple
             client={this.props.client}
-            idQuestion={this.props.idQuestion}
-            disabled={this.state.save}
+            idQuestion={this.props.question.id_question}
+            disabled={this.props.isModifying?this.state.save:!this.state.save}
             key={uniqueChoix.id_choix}
             isModifying={this.props.isModifying}
             choix={uniqueChoix.intituleChoix}
@@ -158,13 +175,13 @@ export default class Question extends React.Component {
         ))}
         <Form.Button
           primary 
-          disabled={this.state.save}
+          disabled={this.props.isModifying?this.state.save:!this.state.save}
           circular 
           icon='plus'
           onClick={() => {
             let params = {
               intituleChoix: 'Nouveau choix',
-              question_id: this.props.idQuestion
+              question_id: this.props.question.id_question
             };
 
             this.props.client.Choix.create(
@@ -196,35 +213,30 @@ export default class Question extends React.Component {
             >Question n°{this.props.numberOfQuestion}</p>
             <Form.Group>
               <Form.Input
-                disabled={this.state.save}
+                error={this.state.errorEmptyStringQuestion}
+                disabled={this.props.isModifying?this.state.save:!this.state.save}
                 value={this.state.intitule}
                 placeholder='Saisissez votre question'
                 onChange={(e, data) => {
                   this.setState({
-                    intitule: data.value
-                  })
+                    intitule: data.value,
+                    errorEmptyStringQuestion: false
+                  });
+
+                  if (data.value === '') {
+                    return;
+                  }
+                  
                   if (this.props.onChangeQuestion) {
                     this.props.onChangeQuestion(data.value);
                   }
                 }}
                 width={13}
               />
-              {!this.props.isModifying?
-                <ListTypeQuestion
-                  disabled={this.state.save}
-                  client={this.props.client}
-                  fluid={false}
-                  onChangeTypeQuestion={this.onChangeTypeQuestion}
-                  isModifying={this.props.isModifying}
-                  typeOfQuestion={this.props.typeQuestion}
-                  isUnique={this.props.isUnique}
-                />
-                :''
-              }
               <Form.Select
-                disabled={this.state.save}
+                disabled={this.props.isModifying?this.state.save:!this.state.save}
                 options={options}
-                value={this.props.isModifying?this.state.isOptional:''}
+                value={this.state.isOptional}
                 placeholder='Facultative'
                 onChange={(e, data) => {
                   this.setState({
@@ -239,201 +251,169 @@ export default class Question extends React.Component {
               />
             </Form.Group>
             <Divider />
-            {this.props.isModifying?
-              (this.props.typeQuestion === 'QuestionChoix')?
-                (this.props.isUnique)?
+            {true?
+              (this.props.question.type === 'QuestionChoix')?
+                (this.props.question.estUnique)?
                   choixunique
                 :choixMultiple
-              :(this.props.typeQuestion === 'QuestionOuverte')?
+              :(this.props.question.type === 'QuestionOuverte')?
                 <QuestionOuverte
-                  disabled={this.state.save}
+                  disabled={this.props.isModifying?this.state.save:!this.state.save}
                   nbCharactere={this.state.nbCharactere}
                   isModifying={this.props.isModifying}
                   onChangeNbCharactere={this.onChangeNbCharactere} />
-              :(this.props.typeQuestion === 'QuestionPoint')?
+              :(this.props.question.type === 'QuestionPoint')?
                 <QuestionPoints
-                  disabled={this.state.save}
+                  disabled={this.props.isModifying?this.state.save:!this.state.save}
                   maxPoints={this.state.maxPoints}
                   isModifying={this.props.isModifying}
                   onChangeMaxPoints={this.onChangeMaxPoints} />
-              :(this.props.typeQuestion === 'GroupeQuestion')?
+              :(this.props.question.type === 'GroupeQuestion')?
                 ''
               :''
             :''
-            }
-            {/* {(this.state.typeQuestion === 'Question ouverte')?
-                (
-                  <QuestionOuverte />
-                ):
-              (this.state.typeQuestion === 'Choix unique')?
-                (
-                  <React.Fragment>
-                    <QuestionChoixUnique />
-                    <QuestionChoixUnique />
-                    <QuestionChoixUnique />
-                  </React.Fragment>
-                ):
-              (this.state.typeQuestion === 'Choix multiple')?
-                (
-                  <React.Fragment>
-                    <QuestionChoixMultiple />
-                    <QuestionChoixMultiple />
-                    <QuestionChoixMultiple />
-                  </React.Fragment>
-                ):
-              (this.state.typeQuestion === 'Évaluation par points')?
-                (
-                  <QuestionPoints />
-                ):''
-            } */}
+          }
           </Form>
-          {this.props.isModifying?
-            (
-              <React.Fragment>
-                {this.state.save?
+          <React.Fragment>
+            {this.state.save && this.props.isModifying?
+              <Button
+                size='huge'
+                circular
+                icon='edit'
+                floated='right'
+                primary
+                onClick={() => {
+                  this.setState({
+                    save: false
+                  });
+                }}
+              />:
+              (
+                <React.Fragment>
                   <Button
                     size='huge'
                     circular
-                    icon='edit'
+                    icon='save'
                     floated='right'
-                    primary
+                    positive
+                    onClick={() => {
+                      if (this.props.question.type === 'QuestionChoix') {
+                        const params = {
+                          intitule: this.state.intitule,
+                          estObligatoire: (this.state.isOptional==='Obligatoire')?true:false,
+                          nombreChoix: 5,
+                          estUnique: this.props.question.estUnique,
+                          ordre: this.props.question.ordre,
+                          type: "QuestionChoix"
+                        }
+
+                        this.props.client.QuestionChoix.update(
+                          this.props.question.id_question,
+                          params,
+                          result => {
+                            this.setState({
+                              save: true,
+                              enregistrementQuestion: this.props.isModifying?false:true
+                            });
+                          },
+                          error => {
+                            this.setState({
+                              errorEmptyStringQuestion: true
+                            });
+                          }
+                        )
+                      } else if (this.props.question.type === 'QuestionOuverte') {
+                        const params = {
+                          intitule: this.state.intitule,
+                          estObligatoire: (this.state.isOptional==='Obligatoire')?true:false,
+                          nombreDeCaractere: this.state.nbCharactere,
+                          ordre: this.props.question.ordre,
+                          type: "QuestionOuverte"
+                        }
+
+                        this.props.client.QuestionOuverte.update(
+                          this.props.question.id_question,
+                          params,
+                          result => {
+                            this.setState({
+                              save: true,
+                              enregistrementQuestion: this.props.isModifying?false:true
+                            });
+                          },
+                          error => {
+                            this.setState({
+                              errorEmptyStringQuestion: true
+                            });
+                          }
+                        )
+                      } else if (this.props.question.type === 'QuestionPoint') {
+                        const params = {
+                          intitule: this.state.intitule,
+                          estObligatoire: (this.state.isOptional==='Obligatoire')?true:false,
+                          minPoints: this.props.question.minPoints,
+                          maxPoints: this.state.maxPoints,
+                          ordre: this.props.question.ordre,
+                          type: "QuestionPoint"
+                        }
+
+                        this.props.client.QuestionPoints.update(
+                          this.props.question.id_question,
+                          params,
+                          result => {
+                            this.setState({
+                              save: true,
+                              enregistrementQuestion: this.props.isModifying?false:true
+                            });
+                          },
+                          error => {
+                            this.setState({
+                              errorEmptyStringQuestion: true
+                            });
+                          }
+                        )
+                      } else if (this.props.question.type === 'GroupeQuestion') {
+                        const params = {
+                          intitule: this.state.intitule,
+                          estObligatoire: (this.state.isOptional==='Obligatoire')?true:false,
+                          numerosDeQuestionsGroupe:'',
+                          ordre: this.props.question.ordre,
+                          type: "GroupeQuestion"
+                        }
+
+                        this.props.client.GroupQuestions.update(
+                          this.props.question.id_question,
+                          params,
+                          result => {
+                            this.setState({
+                              save: true,
+                              enregistrementQuestion: this.props.isModifying?false:true
+                            });
+                          },
+                          error => {
+                            this.setState({
+                              errorEmptyStringQuestion: true
+                            });
+                          }
+                        )
+                      }
+                    }}
+                  />
+                  <Button
+                    size='huge'
+                    circular
+                    icon='trash'
+                    floated='right'
+                    negative
                     onClick={() => {
                       this.setState({
-                        save: false
+                        remove: true
                       });
                     }}
-                  />:
-                  (
-                    <React.Fragment>
-                      <Button
-                        size='huge'
-                        circular
-                        icon='save'
-                        floated='right'
-                        positive
-                        onClick={() => {
-                          if (this.props.typeQuestion === 'QuestionChoix') {
-                            const params = {
-                              intitule: this.state.intitule,
-                              estObligatoire: (this.state.isOptional==='Obligatoire')?true:false,
-                              nombreChoix: 5,
-                              estUnique: this.props.isUnique,
-                              ordre: this.props.ordre,
-                              type: "QuestionChoix"
-                            }
-  
-                            this.props.client.QuestionChoix.update(
-                              this.props.idQuestion,
-                              params,
-                              result => {
-                                this.setState({
-                                  save: true
-                                });
-                              },
-                              error => {
-                                console.log(error);
-                              }
-                            )
-                          } else if (this.props.typeQuestion === 'QuestionOuverte') {
-                            const params = {
-                              intitule: this.state.intitule,
-                              estObligatoire: (this.state.isOptional==='Obligatoire')?true:false,
-                              nombreDeCaractere: this.state.nbCharactere,
-                              ordre: this.props.ordre,
-                              type: "QuestionOuverte"
-                            }
-
-                            this.props.client.QuestionOuverte.update(
-                              this.props.idQuestion,
-                              params,
-                              result => {
-                                this.setState({
-                                  save: true
-                                });
-                              },
-                              error => {
-                                console.log(error);
-                              }
-                            )
-                          } else if (this.props.typeQuestion === 'QuestionPoint') {
-                            const params = {
-                              intitule: this.state.intitule,
-                              estObligatoire: (this.state.isOptional==='Obligatoire')?true:false,
-                              minPoints: this.props.minPoints,
-                              maxPoints: this.state.maxPoints,
-                              ordre: this.props.ordre,
-                              type: "QuestionPoint"
-                            }
-
-                            this.props.client.QuestionPoints.update(
-                              this.props.idQuestion,
-                              params,
-                              result => {
-                                this.setState({
-                                  save: true
-                                });
-                              },
-                              error => {
-                                console.log(error);
-                              }
-                            )
-                          } else if (this.props.typeQuestion === 'GroupeQuestion') {
-                            const params = {
-                              intitule: this.state.intitule,
-                              estObligatoire: (this.state.isOptional==='Obligatoire')?true:false,
-                              numerosDeQuestionsGroupe:'',
-                              ordre: this.props.ordre,
-                              type: "GroupeQuestion"
-                            }
-
-                            this.props.client.GroupQuestions.update(
-                              this.props.idQuestion,
-                              params,
-                              result => {
-                                this.setState({
-                                  save: true
-                                });
-                              },
-                              error => {
-                                console.log(error);
-                              }
-                            )
-                          }
-                        }}
-                      />
-                      <Button
-                        size='huge'
-                        circular
-                        icon='trash'
-                        floated='right'
-                        negative
-                        onClick={() => {
-                          this.setState({
-                            remove: true
-                          });
-                        }}
-                      />
-                    </React.Fragment>
-                  )
-                }
-              </React.Fragment>
-            ):
-            (
-              <React.Fragment>
-                <Button
-                  content='Enregistrer'
-                  floated='right'
-                  positive
-                />
-                <Button
-                  content='Annuler'
-                  floated='right'
-                  basic
-                  color='black'
-                />
-              </React.Fragment>
-            )
-          }
+                  />
+                </React.Fragment>
+              )
+            }
+          </React.Fragment>
         </Segment>
         <Confirm
           header="Suppression définitive de la question"
@@ -460,15 +440,15 @@ export default class Question extends React.Component {
             })
           }}
           onConfirm={() => {
-            if (this.props.typeQuestion === 'QuestionChoix') {
+            if (this.props.question.type === 'QuestionChoix') {
               this.props.client.QuestionChoix.delete(
-                this.props.idQuestion,
+                this.props.question.id_question,
                 result => {
                   this.props.client.Choix.readByQuestion(
-                    this.props.idQuestion,
+                    this.props.question.id_question,
                     result => {
                       if (this.props.removeQuestion) {
-                        this.props.removeQuestion()
+                        this.props.removeQuestion();
                       }
 
                       this.setState({
@@ -478,14 +458,10 @@ export default class Question extends React.Component {
                       _.map(result.data, choix => {
                         this.props.client.Choix.delete(
                           choix.id_choix,
-                          result => {
-                            this.update();
-                          },
-                          error => {
-                            console.log(error);
-                          }
+                          result => {},
+                          error => {}
                         );
-                      })
+                      });
                     },
                     error => {
                       console.log(error);
@@ -496,9 +472,9 @@ export default class Question extends React.Component {
                   console.log(error)
                 }
               )
-            } else if (this.props.typeQuestion === 'QuestionOuverte') {
+            } else if (this.props.question.type === 'QuestionOuverte') {
               this.props.client.QuestionOuverte.delete(
-                this.props.idQuestion,
+                this.props.question.id_question,
                 result => {
                   if (this.props.removeQuestion) {
                     this.props.removeQuestion()
@@ -511,9 +487,9 @@ export default class Question extends React.Component {
                   console.log(error)
                 }
               )
-            } else if (this.props.typeQuestion === 'QuestionPoint') {
+            } else if (this.props.question.type === 'QuestionPoint') {
               this.props.client.QuestionPoints.delete(
-                this.props.idQuestion,
+                this.props.question.id_question,
                 result => {
                   if (this.props.removeQuestion) {
                     this.props.removeQuestion()
@@ -526,9 +502,9 @@ export default class Question extends React.Component {
                   console.log(error)
                 }
               )
-            } else if (this.props.typeQuestion === 'GroupeQuestion') {
+            } else if (this.props.question.type === 'GroupeQuestion') {
               this.props.client.GroupQuestions.delete(
-                this.props.idQuestion,
+                this.props.question.id_question,
                 result => {
                   if (this.props.removeQuestion) {
                     this.props.removeQuestion()
@@ -544,6 +520,25 @@ export default class Question extends React.Component {
             }
           }}
         />
+        <Modal open={this.state.enregistrementQuestion}>
+          <Modal.Content>
+            <Message positive>
+              <p>Votre question vient d'être enregistrée</p>
+            </Message>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button
+              positive
+              icon='checkmark'
+              content='OK'
+              onClick={() => {
+                this.setState({
+                  enregistrementQuestion: false
+                })
+              }}
+            />
+          </Modal.Actions>
+        </Modal>
       </React.Fragment>
     );
   }

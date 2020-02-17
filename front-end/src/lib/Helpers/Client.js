@@ -1,8 +1,15 @@
 import axios from "axios";
 
 class Client {
-  constructor(url) {
+  constructor(url, token) {
     this.url = url;
+
+    this.header = {
+      headers:{
+        'Authorization' : token,
+        'Content-Type': 'application/json'
+      }
+    }
   };
 
   // create : {pseudo_administrateur, email_administrateur, motDePasse_administrateur}
@@ -10,150 +17,162 @@ class Client {
   Admin = {
     readAll: (success, errors) => {
       axios
-        .get(this.url + 'admins')
+        .get(this.url + 'admins', this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     read: (id, success, errors) => {
       axios
-        .get(this.url + 'admin/' + id)
+        .get(this.url + 'admin/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     login: (email, password, success, errors) => {
       axios
-        .post(this.url + 'loginAdmin', { 
-          email_administrateur: email, 
-          motDePasse_administrateur: password 
-        })
+        .post(this.url + 'login/admin', { 
+            email_administrateur: email, 
+            motDePasse_administrateur: password 
+          },
+          this.header
+        )
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     checkEmail: (email, success, errors) => {
       axios
-        .post(this.url + 'checkAdminEmail', { 
-          email_administrateur: email 
-        })
+        .post(this.url + 'checkEmail/admin', { 
+            email_administrateur: email 
+          },
+          this.header
+        )
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     checkPassword: (id, password, success, errors) => {
       axios
-        .post(this.url + 'checkAdminPassword/' + id, { 
-          motDePasse_administrateur: password 
-        })
+        .post(this.url + 'checkPassword/admin/' + id, { 
+            motDePasse_administrateur: password 
+          },
+          this.header
+        )
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     create: (params, success, errors) => {
       axios
-        .post(this.url + 'newAdmin', params)
+        .post(this.url + 'new/admin', params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     update: (id, params, success, errors) => {
       axios
-        .put(this.url + 'updateAdmin/' + id, params)
+        .put(this.url + 'update/admin/' + id, params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     delete: (id, success, errors) => {
       axios
-        .put(this.url + 'deleteAdmin/' + id)
+        .put(this.url + 'delete/admin/' + id, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     }
   };
 
   // create : {intitule}
-  // update : {à voir}
+  // update : {intitule}
   Categorie = {
     readAll: (success, errors) => {
       axios
-        .get(this.url + 'categories')
+        .get(this.url + 'categories', this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     read: (id, success, errors) => {
       axios
-        .get(this.url + 'categorie/' + id)
+        .get(this.url + 'categorie/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     create: (params, success, errors) => {
       axios
-        .post(this.url + 'newCategorie', params)
+        .post(this.url + 'new/categorie', params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     update: (id, params, success, errors) => {
       axios
-        .put(this.url + 'updateCategorie/' + id, params)
+        .put(this.url + 'update/categorie/' + id, params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     delete: (id, success, errors) => {
       axios
-        .put(this.url + 'deleteCategorie/' + id)
+        .put(this.url + 'delete/categorie/' + id, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     }
   };
 
-  // create : {intituleSondage, descriptionSondage, administrateur_id}
-  // update : {intituleSondage, descriptionSondage}
+  // create : {intituleSondage, descriptionSondage, administrateur_id, categorie_id}
+  // update : {intituleSondage, descriptionSondage, categorie_id}
   Sondage = {
     readAll: (success, errors) => {
       axios
-        .get(this.url + 'sondages')
+        .get(this.url + 'sondages', this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     read: (id, success, errors) => {
       axios
-        .get(this.url + 'sondage/' + id)
+        .get(this.url + 'sondage/' + id, this.header)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
+    },
+    readAllByAdmin: (idAdmin, success, errors) => {
+      axios
+        .get(this.url + 'sondages/admin/' + idAdmin, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     readByCategorie: (id, success, errors) => {
       axios
-        .get(this.url + 'sondages/categorie/' + id)
+        .get(this.url + 'sondages/categorie/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     readQuestionBySondage: (id, success, errors) => {
       axios
-        .get(this.url + 'questions/Sondage/' + id)
+        .get(this.url + 'questions/sondage/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     create: (params, success, errors) => {
       axios
-        .post(this.url + 'newSondage', params)
+        .post(this.url + 'new/sondage', params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     update: (id, params, success, errors) => {
       axios
-        .put(this.url + 'updateSondage/' + id, params)
+        .put(this.url + 'update/sondage/' + id, params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     delete: (id, success, errors) => {
       axios
-        .put(this.url + 'deleteSondage/' + id)
+        .put(this.url + 'delete/sondage/' + id, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     publier: (id, success, errors) => {
       axios
-        .put(this.url + 'publierSondage/' + id)
+        .put(this.url + 'publier/sondage/' + id, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     activerResultats: (id, success, errors) => {
       axios
-        .put(this.url + 'activerResultats/' + id)
+        .put(this.url + 'activer/resultats/' + id, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     }
@@ -163,31 +182,31 @@ class Client {
   User = {
     readAll: (success, errors) => {
       axios
-        .get(this.url + 'utilisateurs')
+        .get(this.url + 'utilisateurs', this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     read: (id, success, errors) => {
       axios
-        .get(this.url + 'utilisateur/' + id)
+        .get(this.url + 'utilisateur/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     create: (params, success, errors) => {
       axios
-        .post(this.url + 'newUtilisateur', params)
+        .post(this.url + 'new/utilisateur', params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     update: (id, params, success, errors) => {
       axios
-        .put(this.url + 'updateUtilisateur/' + id, params)
+        .put(this.url + 'update/utilisateur/' + id, params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     delete: (id, success, errors) => {
       axios
-        .put(this.url + 'deleteUtilisateur/' + id)
+        .put(this.url + 'delete/utilisateur/' + id, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     }
@@ -196,31 +215,31 @@ class Client {
   Participation = {
     readAll: (success, errors) => {
       axios
-        .get(this.url + 'participations')
+        .get(this.url + 'participations', this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     readBySondage: (id, success, errors) => {
       axios
-        .get(this.url + 'participationsBySondage/' + id)
+        .get(this.url + 'participations/Sondage/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     readByUserAndSondage: (idUser, idSondage, success, errors) => {
       axios
-        .get(this.url + 'participationsByUserAndSondage/' + idUser + '/' + idSondage)
+        .get(this.url + 'participations/user/sondage/' + idUser + '/' + idSondage, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     readByQuestionAndSondage: (idQuestion, idSondage, success, errors) => {
       axios
-        .get(this.url + 'participationsByQuestionAndSondage/' + idQuestion + '/' + idSondage)
+        .get(this.url + 'participations/question/sondage/' + idQuestion + '/' + idSondage, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     delete: (idUser, idSondage, idQuestion, success, errors) => {
       axios
-        .put(this.url + 'deleteParticipation/' + idUser + '/' + idSondage + '/' + idQuestion)
+        .put(this.url + 'delete/participation/' + idUser + '/' + idSondage + '/' + idQuestion, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     }
@@ -229,19 +248,19 @@ class Client {
   Question = {
     readAll: (success, errors) => {
       axios
-        .get(this.url + 'questions')
+        .get(this.url + 'questions', this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     read: (id, success, errors) => {
       axios
-        .get(this.url + 'question/' + id)
+        .get(this.url + 'question/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     readBySondage: (id, success, errors) => {
       axios
-        .get(this.url + 'questionsBySondage/' + id)
+        .get(this.url + 'questions/sondage/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     }
@@ -252,31 +271,31 @@ class Client {
   QuestionOuverte = {
     readAll: (success, errors) => {
       axios
-        .get(this.url + 'questionsOuvertes')
+        .get(this.url + 'questionsOuvertes', this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     read: (id, success, errors) => {
       axios
-        .get(this.url + 'questionOuverte/' + id)
+        .get(this.url + 'questionOuverte/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     create: (params, success, errors) => {
       axios
-        .post(this.url + 'newQuestionOuverte', params)
+        .post(this.url + 'new/questionOuverte', params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     update: (id, params, success, errors) => {
       axios
-        .put(this.url + 'updateQuestionOuverte/' + id, params)
+        .put(this.url + 'update/questionOuverte/' + id, params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     delete: (id, success, errors) => {
       axios
-        .put(this.url + 'deleteQuestionOuverte/' + id)
+        .put(this.url + 'delete/questionOuverte/' + id, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     }
@@ -287,31 +306,31 @@ class Client {
   QuestionChoix = {
     readAll: (success, errors) => {
       axios
-        .get(this.url + 'questionsChoix')
+        .get(this.url + 'questionsChoix', this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     read: (id, success, errors) => {
       axios
-        .get(this.url + 'questionChoix/' + id)
+        .get(this.url + 'questionChoix/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     create: (params, success, errors) => {
       axios
-        .post(this.url + 'newQuestionChoix', params)
+        .post(this.url + 'new/questionChoix', params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     update: (id, params, success, errors) => {
       axios
-        .put(this.url + 'updateQuestionChoix/' + id, params)
+        .put(this.url + 'update/questionChoix/' + id, params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     delete: (id, success, errors) => {
       axios
-        .put(this.url + 'deleteQuestionChoix/' + id)
+        .put(this.url + 'delete/questionChoix/' + id, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     }
@@ -322,31 +341,31 @@ class Client {
   QuestionPoints = {
     readAll: (success, errors) => {
       axios
-        .get(this.url + 'questionsPoints')
+        .get(this.url + 'questionsPoints', this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     read: (id, success, errors) => {
       axios
-        .get(this.url + 'questionPoints/' + id)
+        .get(this.url + 'questionPoints/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     create: (params, success, errors) => {
       axios
-        .post(this.url + 'newQuestionPoints', params)
+        .post(this.url + 'new/questionPoints', params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     update: (id, params, success, errors) => {
       axios
-        .put(this.url + 'updateQuestionPoints/' + id, params)
+        .put(this.url + 'update/questionPoints/' + id, params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     delete: (id, success, errors) => {
       axios
-        .put(this.url + 'deleteQuestionPoints/' + id)
+        .put(this.url + 'delete/questionPoints/' + id, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     }
@@ -357,31 +376,31 @@ class Client {
   GroupQuestions = {
     readAll: (success, errors) => {
       axios
-        .get(this.url + 'groupesQuestions')
+        .get(this.url + 'groupesQuestions', this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     read: (id, success, errors) => {
       axios
-        .get(this.url + 'groupeQuestions/' + id)
+        .get(this.url + 'groupeQuestions/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     create: (params, success, errors) => {
       axios
-        .post(this.url + 'newGroupeQuestions', params)
+        .post(this.url + 'new/groupeQuestions', params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     update: (id, params, success, errors) => {
       axios
-        .put(this.url + 'updateGroupeQuestions/' + id, params)
+        .put(this.url + 'update/groupeQuestions/' + id, params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     delete: (id, success, errors) => {
       axios
-        .put(this.url + 'deleteGroupeQuestions/' + id)
+        .put(this.url + 'delete/groupeQuestions/' + id, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     }
@@ -391,19 +410,19 @@ class Client {
   Groupe = {
     read: (idQuestion, success, errors) => {
       axios
-        .get(this.url + 'questions/groupe/' + idQuestion)
+        .get(this.url + 'questions/groupe/' + idQuestion, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     create: (params, success, errors) => {
       axios
-        .post(this.url + 'groupe/ajoutQuestion', params)
+        .post(this.url + 'addQuestion/groupe', params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
     delete: (id, success, errors) => {
       axios
-        .put(this.url + 'deleteGroupe/' + id)
+        .put(this.url + 'delete/groupe/' + id, {}, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response))
     }
@@ -412,7 +431,7 @@ class Client {
   Resultat = {
     read: (idSondage, success, errors) => {
       axios
-        .get(this.url + 'resultats/' + idSondage)
+        .get(this.url + 'resultats/' + idSondage, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     }
@@ -423,37 +442,47 @@ class Client {
   Choix = {
     readAll: (success, errors) => {
       axios
-        .get(this.url + 'choix')
+        .get(this.url + 'choix', this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     read: (id, success, errors) => {
       axios
-        .get(this.url + 'choix/' + id)
+        .get(this.url + 'choix/' + id, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     readByQuestion: (idQuestion, success, errors) => {
       axios
-        .get(this.url + 'choixByQuestion/' + idQuestion)
+        .get(this.url + 'choix/question/' + idQuestion, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     create: (params, success, errors) => {
       axios
-        .post(this.url + 'newChoix', params)
+        .post(this.url + 'new/choix', params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     update: (id, params, success, errors) => {
       axios
-        .put(this.url + 'updateChoix/' + id, params)
+        .put(this.url + 'update/choix/' + id, params, this.header)
         .then(result => success(result))
         .catch(error => errors(error.response));
     },
     delete: (id, success, errors) => {
       axios
-        .put(this.url + 'deleteChoix/' + id)
+        .put(this.url + 'delete/choix/' + id, {}, this.header)
+        .then(result => success(result))
+        .catch(error => errors(error.response));
+    }
+  };
+
+  // élément à fournir : email et password
+  AuthApi = {
+    authenticate: (params, success, errors) => {
+      axios
+        .post(this.url + 'authenticate/', params)
         .then(result => success(result))
         .catch(error => errors(error.response));
     }

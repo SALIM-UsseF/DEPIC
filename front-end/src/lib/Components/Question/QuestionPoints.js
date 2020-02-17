@@ -18,8 +18,8 @@ export default class QuestionPoints extends React.Component {
       <React.Fragment>
         <Form.Group>
           <Form.Input
-            disabled={this.props.disabled}
-            value={this.props.isModifying?this.props.maxPoints:''}
+            disabled={this.props.isModifying?this.props.disabled:false}
+            value={this.props.maxPoints}
             fluid
             label='Nombre de points maximal'
             placeholder='5'

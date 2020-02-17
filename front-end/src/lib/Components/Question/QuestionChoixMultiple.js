@@ -17,7 +17,8 @@ export default class QuestionChoixMultiple extends React.Component {
   }
 
   state = {
-    choix: this.props.isModifying?this.props.choix:''
+    choix: this.props.isModifying?this.props.choix:'',
+    error: false
   }
 
   render() {
@@ -26,13 +27,24 @@ export default class QuestionChoixMultiple extends React.Component {
         <Form.Group inline>
           <Form.Checkbox readOnly />
           <Form.Input
-            disabled={this.props.disabled}
+            disabled={this.props.isModifying?this.props.disabled:false}
             value={this.state.choix}
+            error={this.state.error}
             placeholder='Saisissez un choix de réponse'
             width='12'
             onChange={(e, data) => {
+              if (data.value === '') {
+                this.setState({
+                  choix: '',
+                  error: true
+                });
+
+                return;
+              }
+
               this.setState({
-                choix: data.value
+                choix: data.value,
+                error: false
               });
 
               let params = {
@@ -44,14 +56,12 @@ export default class QuestionChoixMultiple extends React.Component {
                 this.props.id_choix,
                 params,
                 result => {},
-                error => {
-                  console.log(error);
-                }
+                error => {}
               )
             }}
           />
           <Form.Button
-            disabled={this.props.disabled}
+            disabled={this.props.isModifying?this.props.disabled:false}
             circular 
             icon='trash'
             onClick={() => {
