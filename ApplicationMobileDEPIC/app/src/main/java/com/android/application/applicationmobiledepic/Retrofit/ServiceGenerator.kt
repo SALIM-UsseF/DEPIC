@@ -1,4 +1,4 @@
-package com.android.application.applicationmobiledepic.BaseDeDonneesInterne.Retrofit
+package com.android.application.applicationmobiledepic.Retrofit
 
 import android.content.Context
 import android.util.Log
@@ -8,8 +8,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
 import java.io.IOException
 import android.widget.Toast
-import okhttp3.Request
-import okhttp3.Response
 
 
 class ServiceGenerator {
