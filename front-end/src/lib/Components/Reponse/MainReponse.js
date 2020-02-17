@@ -140,7 +140,6 @@ export default class MainReponse extends React.Component {
                       obligatoire={question.estObligatoire}
                       idQuestion={question.id_question}
                       intitule={question.intitule}
-                      numerosDeQuestionsGroupe={question.numerosDeQuestionsGroupe}
                       ordre={key}
                       styles={styles} />
                   );

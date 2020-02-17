@@ -7,11 +7,24 @@ import PropTypes from 'prop-types'
 export default class Resultats extends React.Component {
   static propTypes = {
     client: PropTypes.any.isRequired,
-    lang: PropTypes.string
+    lang: PropTypes.string,
+    idSondage: PropTypes.number
   }
 
   static defaultProps = {
     lang: 'fr'
+  }
+
+  componentDidMount() {
+    this.props.client.Resultat.read(
+      this.props.idSondage,
+      result => {
+        console.log(result);
+      },
+      error => {
+        console.log(error);
+      }
+    )
   }
 
   render() {

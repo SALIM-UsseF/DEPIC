@@ -4,6 +4,7 @@ import _ from 'lodash'
 
 import ReponseChoix from './ReponseChoix'
 import ReponseOuverte from './ReponseOuverte'
+import ReponsePoints from './ReponsePoints'
 
 import { 
   Segment 
@@ -26,7 +27,6 @@ export default class GroupeReponse extends React.Component {
     obligatoire: PropTypes.bool,
     idQuestion: PropTypes.number,
     intitule: PropTypes.string,
-    numerosDeQuestionsGroupe: PropTypes.string,
     ordre: PropTypes.number,
     styles: PropTypes.object
   }
@@ -40,26 +40,17 @@ export default class GroupeReponse extends React.Component {
   }
 
   componentDidMount() {
-    let groupQuestions = _.split(this.props.numerosDeQuestionsGroupe, ';');
-    let tmpQuestions = [];
-    
-    _.forEach(groupQuestions, numeroOfQuestion => {
-      let numero = parseInt(numeroOfQuestion);
-
-      this.props.client.Question.read(
-        numero,
-        result => {
-          tmpQuestions.push(result.data);
-
-          this.setState({
-            questions: tmpQuestions
-          });
-        }, 
-        error => {
-          console.log(error)
-        }
-      );
-    });
+    this.props.client.Groupe.read(
+      this.props.idQuestion,
+      result => {
+        this.setState({
+          questions: result.data
+        });
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   render() {
@@ -72,38 +63,49 @@ export default class GroupeReponse extends React.Component {
         >{this.props.ordre}. {this.props.intitule}{this.props.obligatoire?' * ':''}</p>
 
         <Segment color='teal'>
-        {_.map(this.state.questions, question => {
-          key++;
+          {_.map(this.state.questions, question => {
+            key++;
 
-          if (question.type === 'QuestionChoix') {
-            return (               
-              <ReponseChoix
-                key={key} 
-                client={this.props.client}
-                obligatoire={question.estObligatoire}
-                unique={question.estUnique}
-                idQuestion={question.id_question}
-                intitule={question.intitule}
-                nbChoix={question.nombreChoix}
-                ordre={key}
-                styles={styles} />
-            )
-          } else if (question.type === 'QuestionOuverte') {
-            return (
-              <ReponseOuverte
-                key={key}
-                client={this.props.client}
-                obligatoire={question.estObligatoire}
-                idQuestion={question.id_question}
-                intitule={question.intitule}
-                nombreDeCaractere={question.nombreDeCaractere}
-                ordre={key}
-                styles={styles} />
-            );
-          } else if (question.type === 'QuestionPoint') {
-            
-          }
-        })}
+            if (question.type === 'QuestionChoix') {
+              return (
+                <ReponseChoix
+                  key={key} 
+                  client={this.props.client}
+                  obligatoire={question.estObligatoire}
+                  unique={question.estUnique}
+                  idQuestion={question.id_question}
+                  intitule={question.intitule}
+                  nbChoix={question.nombreChoix}
+                  ordre={key}
+                  styles={styles} />
+              );
+            } else if (question.type === 'QuestionOuverte') {
+              return (
+                <ReponseOuverte
+                  key={key}
+                  client={this.props.client}
+                  obligatoire={question.estObligatoire}
+                  idQuestion={question.id_question}
+                  intitule={question.intitule}
+                  nombreDeCaractere={question.nombreDeCaractere}
+                  ordre={key}
+                  styles={styles} />
+              );
+            } else if (question.type === 'QuestionPoint') {
+              return (
+                <ReponsePoints
+                  key={key}
+                  client={this.props.client}
+                  obligatoire={question.estObligatoire}
+                  idQuestion={question.id_question}
+                  intitule={question.intitule}
+                  maxPoints={question.maxPoints}
+                  minPoints={question.minPoints}
+                  ordre={key}
+                  styles={styles} />
+              );
+            }
+          })}
         </Segment>      
       </React.Fragment>
     );

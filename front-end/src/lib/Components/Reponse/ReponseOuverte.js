@@ -32,7 +32,6 @@ export default class ReponseOuverte extends React.Component {
           <Form.TextArea
             onChange={(e, result) => {
               if (result.value.length > this.props.nombreDeCaractere) {
-                console.log('Nombre de caractères dépassé')
               }
             }}
           />

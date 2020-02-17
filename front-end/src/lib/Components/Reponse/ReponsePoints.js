@@ -37,7 +37,6 @@ export default class ReponsePoints extends React.Component {
           icon='star' 
           size='massive'
           onRate={(e, result) => {
-            console.log(result.rating)
           }} />
       </React.Fragment>
     );

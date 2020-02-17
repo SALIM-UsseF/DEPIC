@@ -82,6 +82,16 @@ export default class Frame extends React.Component {
     });
   }
 
+  onResultat = idSondage => {
+    if (this.props.onCreateSurvey) {
+      this.props.onCreateSurvey('resultats');
+    }
+
+    this.setState({
+      idSondage: idSondage
+    });
+  }
+
   onUpdate = () => {
     this.props.closeModalSondageFunc();
   }
@@ -128,6 +138,7 @@ export default class Frame extends React.Component {
           lang={this.props.lang}
           onCreateSurvey={this.onCreateSurvey}
           onModify={this.onModify}
+          onResultat={this.onResultat}
           idAdmin={this.props.idAdmin}
           supAdmin={this.props.supAdmin} />
       </React.Fragment>
@@ -330,7 +341,8 @@ export default class Frame extends React.Component {
 
         <Resultats
           client={this.props.client}
-          lang={this.props.lang} />
+          lang={this.props.lang}
+          idSondage={this.state.idSondage} />
       </React.Fragment>
     );
     return (

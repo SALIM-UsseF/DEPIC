@@ -15,6 +15,7 @@ import {
 } from 'semantic-ui-react'
 
 import Title from '../Title'
+import { MainReponse } from '../Reponse'
 
 import { dictionnary } from '../../Langs/langs'
 
@@ -24,6 +25,7 @@ export default class Dashboard extends React.Component {
     lang: PropTypes.string,
     onCreateSurvey: PropTypes.func,
     onModify: PropTypes.func,
+    onResultat: PropTypes.func,
     idAdmin: PropTypes.number,
     supAdmin: PropTypes.bool
   }
@@ -38,7 +40,8 @@ export default class Dashboard extends React.Component {
     publier: false,
     supprimer: false,
     publierFinal: false,
-    id_sondage: 0
+    id_sondage: 0,
+    apercu: false
   }
 
   componentDidMount() {
@@ -130,6 +133,25 @@ export default class Dashboard extends React.Component {
                                 publier: true,
                                 id_sondage: survey.id_sondage
                               });
+                            }}
+                          />
+                          <Dropdown.Item 
+                            icon='chart line' 
+                            text='Résultat'
+                            onClick={() => {
+                              if (this.props.onResultat) {
+                                this.props.onResultat(survey.id_sondage);
+                              }
+                            }}
+                          />
+                          <Dropdown.Item 
+                            icon='eye' 
+                            text='Aperçu'
+                            onClick={() => {
+                              this.setState({
+                                apercu: true,
+                                id_sondage: survey.id_sondage
+                              })
                             }}
                           />
                           <Dropdown.Item 
@@ -273,6 +295,27 @@ export default class Dashboard extends React.Component {
               onClick={() => {
                 this.setState({
                   publierFinal: false
+                })
+              }}
+            />
+          </Modal.Actions>
+        </Modal>
+        <Modal open={this.state.apercu} size="large">
+          <Modal.Header>Aperçu du sondage</Modal.Header>
+          <Modal.Content>
+            <MainReponse
+              client={this.props.client}
+              idSondage={this.state.id_sondage}
+            />
+          </Modal.Content>
+          <Modal.Actions>
+            <Button
+              positive
+              icon='checkmark'
+              content='OK'
+              onClick={() => {
+                this.setState({
+                  apercu: false
                 })
               }}
             />
