@@ -41,13 +41,13 @@ export default class SideBarHome extends React.Component {
               item
             >
               <Dropdown.Menu>
-                <Dropdown.Item
+                {/* <Dropdown.Item
                   icon='user outline'
                   content='Mon compte'
                   onClick={() => {
                     this.handleItemClick('compte')
                   }}
-                />
+                /> */}
                 <Dropdown.Item
                   icon='sign-out alternate'
                   content='Se déconnecter'
