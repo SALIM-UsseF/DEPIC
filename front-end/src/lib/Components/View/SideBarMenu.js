@@ -97,6 +97,7 @@ export default class SideBarMenu extends React.Component {
               content={_.upperFirst(createSurvey)} />
           </Menu.Item>
           <Menu.Item
+            disabled
             name='resultats'
             style={{
               backgroundColor: (this.props.title === 'resultats')?backgroundColorMenuItem:''
