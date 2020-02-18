@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
+import md5 from 'js-md5'
 
 import { 
   Button,
@@ -13,9 +14,11 @@ import {
 } from 'semantic-ui-react'
 
 import { dictionnary } from '../../Langs/langs'
+import { emailValidityForm } from '../../Helpers/Helpers'
 
 export default class Login extends React.Component {
   static propTypes = {
+    client: PropTypes.any.isRequired,
     lang: PropTypes.string,
     onSuccess: PropTypes.func,
     createAccount: PropTypes.func
@@ -26,7 +29,7 @@ export default class Login extends React.Component {
   }
 
   state = {
-    login: '',
+    email: '',
     password: '',
     error: false,
     errorMessage: '',
@@ -35,7 +38,7 @@ export default class Login extends React.Component {
 
   handleChangeInput = (e, name) => {
     let state = {
-      login: this.state.login,
+      email: this.state.email,
       password: this.state.password,
       error: false,
       errorMessage: '',
@@ -46,8 +49,12 @@ export default class Login extends React.Component {
     this.setState({...state});
   }
 
+  emailValidity = () => {
+    return (_.isEmpty(this.state.email) || emailValidityForm(this.state.email));
+  }
+
   valideForm = () => {
-    return (!_.isEmpty(this.state.login) && !_.isEmpty(this.state.password));
+    return (this.emailValidity() && !_.isEmpty(this.state.password));
   }
 
   connexion = () => {
@@ -63,27 +70,32 @@ export default class Login extends React.Component {
       return;
     }
 
-    /**
-     * Lorsque l'utilisateur renseigne ses identifiants (non vides), on va envoyer le 'login' et le 'password' au serveur pour les vérifications
-     * Si les identifiants sont enregistrés dans la BDD, alors on se connecte (affichage de la page d'accueil des questionnaires)
-     * Sinon on affiche un message d'erreur
-     * Exemple avec les 'login=user' et 'password=user'
-     */
+    this.props.client.Admin.login(
+      this.state.email,
+      md5(this.state.password),
+      result => {
+        if (this.props.onSuccess) {
+          let admin = {
+            idAdmin: result.data.id_administrateur,
+            pseudoAdmin: result.data.pseudo_administrateur,
+            emailAdmin: result.data.email_administrateur,
+            supAdmin: result.data.supAdmin
+          }
 
-    if (this.state.login === 'user' && this.state.password === 'user') {
-      if (this.props.onSuccess) {
-        this.props.onSuccess();
+          this.props.onSuccess(admin);
+        }
+      },
+      error => {
+        let lang = _.toUpper(this.props.lang);
+        let errorMessageLogin2 = _.get(dictionnary, lang + '.errorMessageLogin2');
+
+        this.setState({
+          error: true,
+          errorMessage: _.upperFirst(errorMessageLogin2),
+          openMessage: true
+        });
       }
-    } else {
-      let lang = _.toUpper(this.props.lang);
-      let errorMessageLogin2 = _.get(dictionnary, lang + '.errorMessageLogin2');
-
-      this.setState({
-        error: true,
-        errorMessage: _.upperFirst(errorMessageLogin2),
-        openMessage: true
-      });
-    }
+    );
   }
 
   register = () => {
@@ -94,7 +106,7 @@ export default class Login extends React.Component {
 
   render() {
     let lang = _.toUpper(this.props.lang);
-    let login = _.get(dictionnary, lang + '.login');
+    let email = _.get(dictionnary, lang + '.email');
     let password = _.get(dictionnary, lang + '.password');
     let createAccount = _.get(dictionnary, lang + '.createAccount');
     let signIn1 = _.get(dictionnary, lang + '.signIn1');
@@ -120,12 +132,12 @@ export default class Login extends React.Component {
 
               <Form>
                 <Form.Input
-                  error={this.state.error}
+                  error={!this.emailValidity()}
                   focus
                   icon='user'
                   iconPosition='left'
-                  placeholder={_.upperFirst(login)}
-                  onChange={e => this.handleChangeInput(e, 'login')} />
+                  placeholder={_.upperFirst(email)}
+                  onChange={e => this.handleChangeInput(e, 'email')} />
 
                 <Form.Input
                   error={this.state.error}

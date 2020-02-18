@@ -8,17 +8,19 @@ import {
   Sidebar 
 } from 'semantic-ui-react'
 
-import Title from './Title'
+import Title from '../Title'
 
 import { dictionnary } from '../../Langs/langs'
 
 export default class SideBarMenu extends React.Component {
   static propTypes = {
+    client: PropTypes.any.isRequired,
     lang: PropTypes.string,
     open: PropTypes.bool,
     title: PropTypes.string,
     onHide: PropTypes.func,
-    onItemClick: PropTypes.func
+    onItemClick: PropTypes.func,
+    onOpenSondage: PropTypes.func
   }
 
   static defaultProps = {
@@ -39,12 +41,18 @@ export default class SideBarMenu extends React.Component {
     if (this.props.onHide) {
       this.props.onHide();
     }
+
+    if (name === 'createSurvey') {
+      if (this.props.onOpenSondage) {
+        this.props.onOpenSondage();
+      }
+    }
   }
 
   render() {
     let lang = _.toUpper(this.props.lang);
     let dashboard = _.get(dictionnary, lang + '.dashboard');
-    let settings = _.get(dictionnary, lang + '.settings');
+    let resultats = _.get(dictionnary, lang + '.resultats');
     let createSurvey = _.get(dictionnary, lang + '.createSurvey');
     let backgroundColorMenuItem = 'lightgrey';
 
@@ -89,16 +97,16 @@ export default class SideBarMenu extends React.Component {
               content={_.upperFirst(createSurvey)} />
           </Menu.Item>
           <Menu.Item
-            name='settings'
+            name='resultats'
             style={{
-              backgroundColor: (this.props.title === 'settings')?backgroundColorMenuItem:''
+              backgroundColor: (this.props.title === 'resultats')?backgroundColorMenuItem:''
             }}
             onClick={this.handleItemClick}
           >
-            <Icon name='setting' />
+            <Icon name='chart line' />
             <Title
               as='h3'
-              content={_.upperFirst(settings)} />
+              content={_.upperFirst(resultats)} />
           </Menu.Item>
         </Sidebar>
       </React.Fragment>

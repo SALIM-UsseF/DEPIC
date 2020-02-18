@@ -10,6 +10,7 @@ import Question from './Question'
 
 export default class ListeQuestions extends React.Component {
   static propTypes = {
+    client: PropTypes.any.isRequired,
     listQuestions: PropTypes.array
   }
 
@@ -41,6 +42,8 @@ export default class ListeQuestions extends React.Component {
           {_.map(this.props.listQuestions, numberOfQuestion => (
             <List.Item key={numberOfQuestion}>
               <Question
+                client={this.props.client}
+                color='black'
                 numberOfQuestion={numberOfQuestion}
                 onChangeQuestion={this.onChangeQuestion}
                 onChangeTypeQuestion={this.onChangeTypeQuestion}
