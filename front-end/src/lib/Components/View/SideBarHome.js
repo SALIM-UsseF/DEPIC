@@ -3,11 +3,12 @@ import PropTypes from 'prop-types'
 
 import { 
   Menu, 
-  Sidebar 
+  Dropdown
 } from 'semantic-ui-react'
 
 export default class SideBarHome extends React.Component {
   static propTypes = {
+    client: PropTypes.any.isRequired,
     onItemClick: PropTypes.func
   }
 
@@ -20,11 +21,10 @@ export default class SideBarHome extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Sidebar
-          as={Menu}
+        <Menu
           secondary
           icon='labeled'
-          visible
+          visible="true"
           direction='top'
           inverted
           color='teal'
@@ -36,14 +36,29 @@ export default class SideBarHome extends React.Component {
             }} 
           />
           <Menu.Menu position='right'>
-            <Menu.Item
+            <Dropdown
               icon='user circle'
-              onClick={() => {
-                this.handleItemClick('user')
-              }} 
-            />
+              item
+            >
+              <Dropdown.Menu>
+                <Dropdown.Item
+                  icon='user outline'
+                  content='Mon compte'
+                  onClick={() => {
+                    this.handleItemClick('compte')
+                  }}
+                />
+                <Dropdown.Item
+                  icon='sign-out alternate'
+                  content='Se déconnecter'
+                  onClick={() => {
+                    this.handleItemClick('déconnecter')
+                  }}
+                />
+              </Dropdown.Menu>
+            </Dropdown>
           </Menu.Menu>
-        </Sidebar>
+        </Menu>
       </React.Fragment>
     );
   }

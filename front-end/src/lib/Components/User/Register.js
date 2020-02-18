@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
+import md5 from 'js-md5'
 
 import {
   Button,
@@ -16,6 +17,7 @@ import { emailValidityForm } from '../../Helpers/Helpers'
 
 export default class Register extends React.Component {
   static propTypes = {
+    client: PropTypes.any.isRequired,
     lang: PropTypes.string,
     onSuccess: PropTypes.func,
     onCancel: PropTypes.func
@@ -26,16 +28,17 @@ export default class Register extends React.Component {
   }
 
   state = {
+    admin: false,
     login: '',
     password: '',
     confirmPassword: '',
-    firstname: '',
-    lastname: '',
     email: '',
+    // ip: '',
     error: false,
     errorMessage: '',
     openMessage: false,
-    modalType: null // success en cas de succès et error dans le cas contraire
+    modalType: null, // success en cas de succès et error dans le cas contraire
+    emailExiste: false
   }
 
   handleChangeInput = (e, name) => {
@@ -43,12 +46,12 @@ export default class Register extends React.Component {
       login: this.state.login,
       password: this.state.password,
       confirmPassword: this.state.confirmPassword,
-      firstname: this.state.firstname,
-      lastname: this.state.lastname,
       email: this.state.email,
+      // ip: this.state.ip,
       error: false,
       errorMessage: '',
-      openMessage: false
+      openMessage: false,
+      emailExiste: false
     };
 
     _.set(state, name, e.target.value);
@@ -63,11 +66,22 @@ export default class Register extends React.Component {
     return (
       !_.isEmpty(this.state.login) &&
       !_.isEmpty(this.state.password) &&
-      !_.isEmpty(this.state.firstname) &&
-      !_.isEmpty(this.state.lastname) &&
       this.emailValidity() &&
       (this.state.password === this.state.confirmPassword)
     );
+    // if (this.state.admin) {
+    //   return (
+    //     !_.isEmpty(this.state.login) &&
+    //     !_.isEmpty(this.state.password) &&
+    //     this.emailValidity() &&
+    //     (this.state.password === this.state.confirmPassword)
+    //   );
+    // } else {
+    //   return (
+    //     !_.isEmpty(this.state.ip) &&
+    //     this.emailValidity()
+    //   );
+    // }
   }
 
   register = () => {
@@ -83,22 +97,76 @@ export default class Register extends React.Component {
       return;
     }
 
-    /**
-     * Lorsque l'utilisateur renseigne ses coordonnées, on envoyera au serveur pour les enregistrer
-     * Si les coordonnées sont enregistrés dans la BDD, alors on revient à la page de connexion pour se connecter
-     * Sinon on affiche un message d'erreur
-     */
+    this.props.client.Admin.checkEmail(
+      this.state.email,
+      result => {
+        this.setState({
+          emailExiste: true
+        });
+      },
+      error => {
+        let params = {
+          pseudo_administrateur: this.state.login, 
+          email_administrateur: this.state.email, 
+          motDePasse_administrateur: md5(this.state.password)
+        };
+    
+        this.props.client.Admin.create(
+          params,
+          result => {
+            this.setState({
+              modalType: 1
+            });
+          },
+          error => {
+            this.setState({
+              modalType: 2
+            });
+          }
+        );
+      }
+    );
 
-    // Je fais un test si l'identifiant n'existe pas déjà
-    if (this.state.login === 'user') {
-      this.setState({
-        modalType: 2
-      })
-    } else {
-      this.setState({
-        modalType: 1
-      })
-    }
+    // if (this.state.admin) {
+    //   let params = {
+    //     pseudo_administrateur: this.state.login, 
+    //     email_administrateur: this.state.email, 
+    //     motDePasse_administrateur: md5(this.state.password)
+    //   }
+
+    //   this.props.client.Admin.create(
+    //     params,
+    //     result => {
+    //       this.setState({
+    //         modalType: 1
+    //       });
+    //     },
+    //     error => {
+    //       this.setState({
+    //         modalType: 2
+    //       });
+    //     }
+    //   )
+    // } else {
+    //   let params = {
+    //     email: this.state.email, 
+    //     adresseIp: this.state.ip
+    //   }
+      
+    //   this.props.client.User.create(
+    //     params,
+    //     result => {
+    //       this.setState({
+    //         modalType: 1
+    //       });
+    //     },
+    //     error => {
+    //       this.setState({
+    //         modalType: 2
+    //       });
+    //     }
+    //   )
+    // }
   }
 
   onCancel = () => {
@@ -109,10 +177,8 @@ export default class Register extends React.Component {
 
   render() {
     let lang = _.toUpper(this.props.lang);
-    let lastname = _.get(dictionnary, lang + '.lastname');
-    let firstname = _.get(dictionnary, lang + '.firstname');
     let email = _.get(dictionnary, lang + '.email');
-    let login = _.get(dictionnary, lang + '.login');
+    let pseudo = _.get(dictionnary, lang + '.login');
     let password = _.get(dictionnary, lang + '.password');
     let confirmPassword = _.get(dictionnary, lang + '.confirmPassword');
     let createAccount = _.get(dictionnary, lang + '.createAccount');
@@ -120,6 +186,50 @@ export default class Register extends React.Component {
     let cancel = _.get(dictionnary, lang + '.cancel');
     let successRegister = _.get(dictionnary, lang + '.successRegister');
     let errorRegister = _.get(dictionnary, lang + '.errorRegister');
+    // let user = (
+    //   <React.Fragment>
+    //     <Form.Input
+    //       error={!this.emailValidity()}
+    //       focus
+    //       placeholder={_.upperFirst(email)}
+    //       onChange={e => this.handleChangeInput(e, 'email')} />
+
+    //     <Form.Input
+    //       focus
+    //       placeholder={_.upperFirst('adresse IP')}
+    //       onChange={e => this.handleChangeInput(e, 'ip')} />
+    //   </React.Fragment>
+    // );
+    let admin = (
+      <React.Fragment>
+        <Form.Input
+          error={!this.emailValidity()}
+          focus
+          placeholder={_.upperFirst(email)}
+          onChange={e => this.handleChangeInput(e, 'email')} />
+
+        <Form.Input
+          focus
+          placeholder={_.upperFirst(pseudo)}
+          onChange={e => this.handleChangeInput(e, 'login')} />
+
+        <Form.Input
+          focus
+          placeholder={_.upperFirst(password)}
+          type='password'
+          onChange={e => this.handleChangeInput(e, 'password')} />
+      
+        <Form.Input
+          error={
+            !_.isEmpty(this.state.confirmPassword) &&
+            this.state.confirmPassword !== this.state.password
+          }
+          focus
+          placeholder={_.upperFirst(confirmPassword)}
+          type='password'
+          onChange={e => this.handleChangeInput(e, 'confirmPassword')} />
+      </React.Fragment>
+    );
 
     return (
       <React.Fragment>
@@ -132,42 +242,20 @@ export default class Register extends React.Component {
             {_.upperFirst(createAccount)}
           </Header>
           <Form size='big'>
-            <Form.Input
-              focus
-              placeholder={_.upperFirst(lastname)}
-              onChange={e => this.handleChangeInput(e, 'lastname')} />
+            {/* {this.state.admin?
+              admin
+              :user
+            } */}
+            {admin}
 
-            <Form.Input
-              focus
-              placeholder={_.upperFirst(firstname)}
-              onChange={e => this.handleChangeInput(e, 'firstname')} />
-
-            <Form.Input
-              error={!this.emailValidity()}
-              focus
-              placeholder={_.upperFirst(email)}
-              onChange={e => this.handleChangeInput(e, 'email')} />
-
-            <Form.Input
-              focus
-              placeholder={_.upperFirst(login)}
-              onChange={e => this.handleChangeInput(e, 'login')} />
-
-            <Form.Input
-              focus
-              placeholder={_.upperFirst(password)}
-              type='password'
-              onChange={e => this.handleChangeInput(e, 'password')} />
-          
-            <Form.Input
-              error={
-                !_.isEmpty(this.state.confirmPassword) &&
-                this.state.confirmPassword !== this.state.password
-              }
-              focus
-              placeholder={_.upperFirst(confirmPassword)}
-              type='password'
-              onChange={e => this.handleChangeInput(e, 'confirmPassword')} />
+            {/* <Form.Checkbox 
+              toggle
+              label={_.upperFirst('je suis administrateur')}
+              onChange={(e, value) => {
+                this.setState({
+                  admin: value.checked
+                });
+              }} /> */}
 
             <Form.Button
               fluid
@@ -190,6 +278,15 @@ export default class Register extends React.Component {
             <Message
               error={this.state.error}
               content={this.state.errorMessage}
+            />
+          ):''
+        }
+
+        {this.state.emailExiste?
+          (
+            <Message
+              error={true}
+              content={_.upperFirst("L'email a déjà été utilisé par un autre utilisateur")}
             />
           ):''
         }
