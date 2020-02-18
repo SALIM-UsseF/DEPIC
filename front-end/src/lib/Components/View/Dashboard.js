@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
+import { CSVLink } from 'react-csv';
 
 import { 
   Button,
@@ -18,6 +19,14 @@ import Title from '../Title'
 import { MainReponse } from '../Reponse'
 
 import { dictionnary } from '../../Langs/langs'
+
+const headers = [
+  { label: "utilisateur", key: "utilisateur" },
+  { label: "question", key: "question" },
+  { label: "typeQuestion", key: "typeQuestion" },
+  { label: "reponse", key: "reponse" },
+  { label: "dateReponse", key: "dateReponse" }
+];
 
 export default class Dashboard extends React.Component {
   static propTypes = {
@@ -41,7 +50,10 @@ export default class Dashboard extends React.Component {
     supprimer: false,
     publierFinal: false,
     id_sondage: 0,
-    apercu: false
+    apercu: false,
+    dataCSV: [],
+    csv: false,
+    titreSondageCSV: ''
   }
 
   componentDidMount() {
@@ -155,20 +167,31 @@ export default class Dashboard extends React.Component {
                             }}
                           />
                           <Dropdown.Item 
-                            icon='file excel outline' 
+                            icon='file excel outline'
                             text='Format CSV'
                             onClick={() => {
-                              this.props.client.Participation.readBySondage(
+                              this.props.client.Participation.participationsCSV(
                                 survey.id_sondage,
                                 result => {
-                                  console.log(result)
+                                  this.props.client.Sondage.read(
+                                    survey.id_sondage,
+                                    success => {
+                                      this.setState({
+                                        titreSondageCSV: success.data.intituleSondage,
+                                        dataCSV: result.data,
+                                        csv: true
+                                      });
+                                    },
+                                    error => {
+                                      console.log(error);
+                                    }
+                                  );
                                 },
                                 error => {
-                                  console.log(error)
+                                  console.log(error);
                                 }
                               );
-                            }}
-                          />
+                            }} />
                           <Dropdown.Item 
                             icon='trash alternate' 
                             text='Supprimer'
@@ -334,6 +357,39 @@ export default class Dashboard extends React.Component {
                 })
               }}
             />
+          </Modal.Actions>
+        </Modal>
+        <Modal open={this.state.csv}>
+          <Modal.Header>Format CSV</Modal.Header>
+          <Modal.Content>Voulez-vous télécharger les réponses du sondage au format CSV ?</Modal.Content>
+          <Modal.Actions>
+            <Button
+              negative
+              content='Non'
+              icon='close'
+              onClick={() => {
+                this.setState({
+                  dataCSV: [],
+                  csv: false
+                });
+              }} />
+            <CSVLink
+              data={this.state.dataCSV} 
+              headers={headers}
+              onClick={() => {
+                this.setState({
+                  csv: false,
+                  dataCSV: []
+                });
+              }}
+              filename={_.toLower(_.replace(this.state.titreSondageCSV, ' ', '_') + '.csv')}
+            >
+              <Button
+                positive
+                content='Oui'
+                icon='check'
+              />
+            </CSVLink>
           </Modal.Actions>
         </Modal>
       </React.Fragment>

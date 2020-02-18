@@ -1,9 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Header, Divider } from 'semantic-ui-react'
-// import _ from 'lodash'
+import _ from 'lodash'
+import { Divider, Segment, List } from 'semantic-ui-react'
 
-// import { dictionnary } from '../../Langs/langs'
+const styles = {
+  titre: {
+    fontFamily: 'serif',
+    fontSize: '1.2em'
+  },
+  normal: {
+    fontFamily: 'serif',
+    fontSize: 'smaller'
+  }
+};
 
 export default class Resultats extends React.Component {
   static propTypes = {
@@ -17,7 +26,7 @@ export default class Resultats extends React.Component {
   }
 
   state = {
-    resultat: {}
+    resultats: {}
   }
 
   componentDidMount() {
@@ -25,7 +34,7 @@ export default class Resultats extends React.Component {
       this.props.idSondage,
       result => {
         this.setState({
-          resultat: result.data
+          resultats: result.data
         });
       },
       error => {
@@ -35,16 +44,26 @@ export default class Resultats extends React.Component {
   }
 
   render() {
-    console.log(this.state.resultat);
+    let key = 0;
+
     return (
       <React.Fragment>
-        <Divider hidden />
-        <Form>
-          <Header as='h2'>Nombre de participations : </Header>
-          <Header as='h2'>Moyennes générales des questions à points : </Header>
-          <Header as='h2'>Nombre de participations sur chaque choix des questions à choix unique</Header>
-          <Header as='h2'>Nombre de participations sur chaque choix des questions à choix multiple</Header>
-        </Form>
+        <Divider hidden /> 
+        <List divided relaxed>
+          {_.map(this.state.resultats, resultat => {
+            key++;
+            
+            return (
+              <Segment color='teal' key={key}>
+                <p style={styles.titre}>Nombre de participations : {resultat.nombre_de_participations}</p>
+                <p style={styles.titre}>Nombre de questions : {resultat.nombre_de_questions}</p>
+                <p style={styles.titre}>Moyennes générales des questions à points : </p>
+                <p style={styles.titre}>Nombre de participations sur chaque choix des questions à choix unique</p>
+                <p style={styles.titre}>Nombre de participations sur chaque choix des questions à choix multiple</p>
+              </Segment>
+            )
+          })}
+        </List>
       </React.Fragment>
     );
   }

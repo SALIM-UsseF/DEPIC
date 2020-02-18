@@ -237,6 +237,12 @@ class Client {
         .then(result => success(result))
         .catch(error => errors(error.response))
     },
+    participationsCSV: (idSondage, success, errors) => {
+      axios
+        .get(this.url + 'participationsCSV/' + idSondage, this.header)
+        .then(result => success(result))
+        .catch(error => errors(error.response))
+    },
     delete: (idUser, idSondage, idQuestion, success, errors) => {
       axios
         .put(this.url + 'delete/participation/' + idUser + '/' + idSondage + '/' + idQuestion, {}, this.header)
