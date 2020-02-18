@@ -120,7 +120,7 @@ curl -H "Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ
 ```
 # Installation FRONT-END
 
-Le but de ce projet est de créer une application web permettant la gestion de sondages par les administrateurs. De plus, cette application permet aussi la publication des sondages.
+Application web permettant la gestion de sondages par les administrateurs. De plus, cette application permet aussi la publication des sondages.
 
 ## Technologies
 
@@ -152,4 +152,21 @@ git clone https://github.com/SALIM-UsseF/DEPIC.git
 cd front-end
 npm install
 npm start
+```
+
+## Partie Android
+
+Pour pouvoir utiliser l'application
+
+```bash
+Créez un projet android sur AndroidStudio à partir du dossier ApplicationMobileDEPIC
+
+Accédez au fichier ServiceGenerator : 
+ApplicationMobileDEPIC/app/src/main/java/com/android/application/applicationmobiledepic/BaseDeDonneesInterne/Retrofit
+
+Changez la variable baseURL pour obtenir http://Adresse_Serveur:Port_A_Utiliser/ 
+à partir de l'adresse du serveur et du port attribué
+
+Créez l'apk et l'utiliser pour installer l'application ou installez directement à partir d'AndroidStudio
+
 ```
