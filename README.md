@@ -154,7 +154,7 @@ npm install
 npm start
 ```
 
-## Partie Android
+# Partie Android
 
 Pour pouvoir utiliser l'application
 
